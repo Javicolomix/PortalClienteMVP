@@ -29,27 +29,34 @@ function Contactos({ datos }: { datos: DatosMiEquipo }) {
           {datos.contactos.map((contacto, indice) => (
             <li
               key={contacto.id}
-              className={cn(
-                "flex flex-wrap items-center justify-between gap-3 px-5 py-4",
-                indice > 0 && "border-t border-border-subtle",
-              )}
+              className={cn("px-5 py-4", indice > 0 && "border-t border-border-subtle")}
             >
-              <span>
-                <span className="block type-item-title text-foreground">{contacto.nombre}</span>
-                <span className="block type-supporting text-muted-foreground">
-                  {ETIQUETA_ROL[contacto.rol]}
+              {/* Los dos contactos pesan lo mismo, así que sus botones también:
+                  mismo estilo y mismo ancho. Antes el primero iba relleno y el
+                  segundo delineado, y además la fila los acomodaba al lado del
+                  nombre solo si cabían — con «Camila Rivera» cabía y con
+                  «Matías Fuenzalida» no, así que cada uno quedaba en un sitio
+                  distinto. Acá abajo se apilan siempre; desde `sm` van al
+                  costado los dos. */}
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <span>
+                  <span className="block type-item-title text-foreground">{contacto.nombre}</span>
+                  <span className="block type-supporting text-muted-foreground">
+                    {ETIQUETA_ROL[contacto.rol]}
+                  </span>
                 </span>
-              </span>
-              <Button asChild variant={indice === 0 ? "default" : "outline"} size="lg">
-                <a
-                  href={enlaceWhatsapp(contacto.telefonoWhatsapp, datos.cliente.nombre)}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <MessageCircle aria-hidden />
-                  Escribir por WhatsApp
-                </a>
-              </Button>
+
+                <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
+                  <a
+                    href={enlaceWhatsapp(contacto.telefonoWhatsapp, datos.cliente.nombre)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <MessageCircle aria-hidden />
+                    Escribir por WhatsApp
+                  </a>
+                </Button>
+              </div>
             </li>
           ))}
         </ul>
