@@ -365,10 +365,12 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   línea dentro del estado del caso: avanza por su cuenta y con otros tiempos.
   Solo se dibuja si el cliente tiene una gestión activa —sin datos no hay ni
   placeholder— y **nunca en Renegociación**, que es incompatible.
-- 2026-09-08: **pendiente de contenido legal.** El copy de las etapas de Litigios
-  y de Protección Patrimonial está escrito como marcador de posición para poder
-  recorrer el flujo. Falta el texto real de **Admisibilidad** y **Término
-  probatorio**, que tiene que definir el equipo legal.
+- 2026-09-08: **pendiente de contenido.** El copy de las etapas de Litigios y de
+  Protección Patrimonial lo escribió el agente como marcador de posición, solo
+  para poder recorrer el flujo. No es contenido aprobado. Los nombres de etapas
+  que circularon en la instrucción («Admisibilidad», «Término probatorio») eran
+  un ejemplo, no el embudo real: **falta que Lexy defina cuáles son las etapas de
+  Litigios y qué dice cada una.**
 - 2026-09-08: cuenta de prueba de Litigios con tres causas (una madre) y
   Protección Patrimonial: `rodrigo.paredes@example.com` / `R17845221`.
 
