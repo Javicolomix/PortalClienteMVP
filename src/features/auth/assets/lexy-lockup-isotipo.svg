@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generado desde lexy-dark-vertical-slogan.svg del registry Lexy: mismas rutas, mismo viewBox.
+     Son los dos planos del mismo lockup, para poder girar el isotipo sin
+     tocar la palabra ni el eslogan. Si cambia el logo del registry, se
+     regeneran; no se dibujan a mano. -->
+<!-- Plano 2: solo el isotipo, en su sitio dentro del lockup. -->
+<svg
+   version="1.1"
+   id="svg1"
+   width="463.26318"
+   height="626.43488"
+   viewBox="0 0 463.2632 626.4349"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <g id="layer-MC1" transform="translate(-7201.7007,-353.44887)">
+    <path
+         id="path110"
+         d="m 0,0 46.517,46.517 c 1.879,1.879 1.879,4.926 0,6.805 l -172.156,172.155 c -1.879,1.879 -4.926,1.879 -6.805,0 l -46.517,-46.516 c -1.879,-1.88 -1.879,-4.926 0,-6.806 L -6.805,0 C -4.926,-1.879 -1.879,-1.879 0,0"
+         style="fill:#efefef;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         transform="matrix(1.3333333,0,0,-1.3333333,7523.0171,655.96467)" />
+    <path
+         id="path111"
+         d="M 0,0 -53.322,53.322 36.158,104.306 89.48,50.985 Z"
+         style="fill:#9d90fc;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         transform="matrix(1.3333333,0,0,-1.3333333,7350.9619,609.17387)" />
+    <path
+         id="path112"
+         d="m 0,0 -0.089,-36.494 c 1.261,-0.023 2.529,0.439 3.491,1.401 L 89.48,50.985 Z"
+         style="fill:#27198e;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         transform="matrix(1.3333333,0,0,-1.3333333,7350.9619,609.17387)" />
+    <path
+         id="path113"
+         d="m 0,0 0.089,36.494 -53.322,53.322 -0.089,-36.443 c -0.002,-1.183 0.446,-2.31 1.226,-3.19 L -3.314,1.401 C -2.397,0.484 -1.202,0.022 0,0"
+         style="fill:#4429cc;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         transform="matrix(1.3333333,0,0,-1.3333333,7350.8437,657.83267)" />
+    <path
+         id="path114"
+         d="m 0,0 -46.516,46.517 c -1.88,1.879 -4.926,1.879 -6.806,0 L -139.399,-39.561 -86.078,-92.883 0,-6.805 C 1.879,-4.926 1.879,-1.879 0,0"
+         style="fill:#4429cc;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         transform="matrix(1.3333333,0,0,-1.3333333,7585.0391,417.35053)" />
+  </g>
+</svg>

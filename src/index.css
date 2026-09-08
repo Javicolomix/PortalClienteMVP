@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@import "./lexy-theme.css";
+
+/**
+ * Nada del portal puede empujar la página a lo ancho.
+ *
+ * En el teléfono, un solo elemento que se pase del ancho de la pantalla hace que
+ * el navegador deje scroll horizontal, y eso se siente como si la página
+ * estuviera con zoom: hay que alejarla para ver el contenido completo. `clip`
+ * corta esa posibilidad de raíz sin crear un contenedor de scroll, así que no
+ * rompe elementos pegajosos ni el desplazamiento lateral del carrusel, que tiene
+ * su propio `overflow`.
+ */
+@layer base {
+  html {
+    overflow-x: clip;
+  }
+}

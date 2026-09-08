@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "generatedAt": "2026-09-03T21:55:31.385Z",
+  "architecture": "feature",
+  "world": "cliente",
+  "registry": {
+    "package": "@lexydesign/registry",
+    "cdn": "https://cdn.jsdelivr.net/npm/@lexydesign/registry"
+  },
+  "componentImportPattern": "@/shared/components/base/{Component}",
+  "paths": {
+    "components": "src/shared/components/base",
+    "hooks": "src/shared/hooks",
+    "services": "src/shared/services",
+    "lib": "src/shared/lib",
+    "views": "src/features"
+  },
+  "prototype": {
+    "dataContractVersion": "1",
+    "dataContractPath": "src/prototype/data-contract/prototype-data-contract.ts",
+    "runtimeVersion": "1",
+    "mockStorePath": "src/prototype/mock-store/mock-store.ts",
+    "fixturesPath": "src/prototype/mock-store/fixtures.ts",
+    "portsPath": "src/prototype/ports/index.ts",
+    "designerPanelVersion": "1",
+    "designerPanelPath": "src/prototype/designer-panel/PrototypeDesignerPanel.tsx",
+    "designerActivityStorePath": "src/prototype/designer-panel/designer-activity.ts"
+  },
+  "installed": {
+    "button": "0.1.38",
+    "card": "0.1.38",
+    "tag": "0.1.38",
+    "input": "0.1.38",
+    "textarea": "0.1.38",
+    "label": "0.1.38",
+    "switch": "0.1.38",
+    "radio-group": "0.1.38",
+    "tabs": "0.1.38",
+    "status-dot": "0.1.38",
+    "skeleton": "0.1.38",
+    "empty": "0.1.38",
+    "toaster": "0.1.38",
+    "logo": "0.1.38",
+    "header-bar": "0.1.38",
+    "form": "0.1.38",
+    "select": "0.1.38",
+    "brand-background": "0.1.38"
+  }
+}
