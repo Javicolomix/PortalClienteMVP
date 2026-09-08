@@ -13,6 +13,17 @@ const ETIQUETA_ROL = {
   abogado: "Tu abogado",
 } as const satisfies Record<RolContacto, string>;
 
+/**
+ * El primer contacto lleva el botón sólido y el resto delineado: una sola acción
+ * principal por pantalla, no dos compitiendo por la mirada.
+ *
+ * La regla se escribe sobre la **posición** y no sobre el rol a propósito. La
+ * lista es dinámica —puede venir la ejecutiva y el abogado, o solo uno de los
+ * dos—, y así, cuando viene uno solo, ese uno es el primero y queda sólido, sea
+ * quien sea. No hace falta un caso aparte para «hay un solo contacto».
+ */
+const estiloDelBoton = (indice: number) => (indice === 0 ? "default" : "outline");
+
 const enlaceWhatsapp = (telefono: string, nombreCliente: string) => {
   const numero = telefono.replace(/\D/g, "");
   const mensaje = encodeURIComponent(
@@ -31,13 +42,11 @@ function Contactos({ datos }: { datos: DatosMiEquipo }) {
               key={contacto.id}
               className={cn("px-5 py-4", indice > 0 && "border-t border-border-subtle")}
             >
-              {/* Los dos contactos pesan lo mismo, así que sus botones también:
-                  mismo estilo y mismo ancho. Antes el primero iba relleno y el
-                  segundo delineado, y además la fila los acomodaba al lado del
-                  nombre solo si cabían — con «Camila Rivera» cabía y con
-                  «Matías Fuenzalida» no, así que cada uno quedaba en un sitio
-                  distinto. Acá abajo se apilan siempre; desde `sm` van al
-                  costado los dos. */}
+              {/* La fila acomodaba el botón al lado del nombre solo si cabía:
+                  con «Camila Rivera» cabía y con «Matías Fuenzalida» no, así que
+                  la posición dependía del largo del nombre del contacto. Acá
+                  abajo se apilan siempre, a todo el ancho; desde `sm` los dos
+                  van al costado, alineados a la derecha. */}
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <span>
                   <span className="block type-item-title text-foreground">{contacto.nombre}</span>
@@ -46,7 +55,12 @@ function Contactos({ datos }: { datos: DatosMiEquipo }) {
                   </span>
                 </span>
 
-                <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
+                <Button
+                  asChild
+                  variant={estiloDelBoton(indice)}
+                  size="lg"
+                  className="w-full sm:w-auto"
+                >
                   <a
                     href={enlaceWhatsapp(contacto.telefonoWhatsapp, datos.cliente.nombre)}
                     target="_blank"
