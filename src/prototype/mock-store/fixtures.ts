@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 13,
+  datasetVersion: 14,
   entities: {
     cliente: [
       {
@@ -29,6 +29,16 @@ export const fixtures: Fixtures = {
         rut: "15.204.336-8",
         servicioId: "srv-renegociacion",
         etapaActualId: "etp-reneg-02",
+      },
+      {
+        id: "cli-003",
+        nombre: "Rodrigo",
+        correo: "rodrigo.paredes@example.com",
+        rut: "17.845.221-5",
+        servicioId: "srv-litigios",
+        // Para Litigios la etapa sale de las causas, no de acá. Este campo queda
+        // como respaldo del embudo único y apunta a la caja madre.
+        etapaActualId: "etp-lit-madre",
       },
     ],
 
@@ -56,6 +66,13 @@ export const fixtures: Fixtures = {
           "Te representamos ante el tribunal y ordenamos tu patrimonio para dejarlo resguardado.",
         queEs:
           "Este servicio cubre dos frentes que suelen ir juntos. En los litigios llevamos tu caso ante el tribunal: preparamos la demanda o la defensa, presentamos las pruebas y te representamos en cada audiencia.\n\nEn la protección patrimonial revisamos qué tienes a tu nombre, qué riesgos corre y cómo ordenarlo para dejarlo resguardado dentro de lo que permite la ley.\n\nUn juicio tiene tiempos que fija el tribunal y no nosotros. Por eso, más que darte una fecha de término, te vamos contando en qué va y qué se viene en cada etapa.",
+      },
+      {
+        id: "srv-pp",
+        nombre: "Protección Patrimonial",
+        resumen: "Ordenamos lo que tienes a tu nombre para dejarlo resguardado dentro de la ley.",
+        queEs:
+          "La protección patrimonial revisa qué bienes tienes, qué riesgo corren frente a tus deudas o a un juicio en curso, y qué se puede hacer para resguardarlos dentro de lo que permite la ley.\n\nAvanza por su cuenta, con tiempos distintos a los de tus causas: son dos trabajos en paralelo sobre la misma situación.",
       },
     ],
 
@@ -391,6 +408,93 @@ export const fixtures: Fixtures = {
         plazoEsperado: "",
         nivelUrgencia: "tranquilidad",
       },
+      {
+        id: "etp-lit-madre",
+        servicioId: "srv-litigios",
+        orden: 0,
+        visibleParaCliente: true,
+        nombreParaCliente: "Monitoreando tu caso",
+        mensajePrincipal:
+          "No hay un trámite en curso ahora mismo. Seguimos revisando tu situación por si aparece algo que atender.",
+        queHaceLexy:
+          "Tu abogado revisa periódicamente si hay movimientos que te afecten y si corresponde abrir una gestión nueva.",
+        queNecesitamosDelCliente:
+          "Nada por ahora. Si te llega una notificación o una carta de cobranza, avísale a tu ejecutiva el mismo día.",
+        quePuedePasarDespues:
+          "Si aparece algo que requiera acción, abrimos la gestión que corresponda y te contamos de qué se trata.",
+        plazoEsperado: "No hay un plazo: el monitoreo es permanente mientras dure el servicio.",
+        nivelUrgencia: "tranquilidad",
+      },
+      {
+        id: "etp-pp-01",
+        servicioId: "srv-pp",
+        orden: 1,
+        visibleParaCliente: true,
+        nombreParaCliente: "Revisando qué tienes a tu nombre",
+        mensajePrincipal:
+          "Estamos levantando el catastro de tus bienes para saber qué hay, a nombre de quién está y qué riesgo corre.",
+        queHaceLexy:
+          "Revisamos registros públicos y los documentos que nos entregaste para armar el mapa completo de tu patrimonio.",
+        queNecesitamosDelCliente:
+          "Si tienes escrituras, títulos de vehículos o contratos que no nos hayas pasado, mándaselos a tu ejecutiva.",
+        quePuedePasarDespues:
+          "Con el catastro listo te proponemos qué conviene hacer con cada bien y por qué.",
+        plazoEsperado: "Entre 15 y 20 días hábiles desde que tenemos todos tus documentos.",
+        nivelUrgencia: "atencion",
+      },
+      {
+        id: "etp-pp-02",
+        servicioId: "srv-pp",
+        orden: 2,
+        visibleParaCliente: true,
+        nombreParaCliente: "Ordenando tu patrimonio",
+        mensajePrincipal:
+          "Ya sabemos qué tienes y qué conviene hacer. Ahora estamos ejecutando los trámites que dejan tus bienes resguardados.",
+        queHaceLexy:
+          "Preparamos y presentamos las escrituras y las inscripciones que corresponden a cada bien.",
+        queNecesitamosDelCliente:
+          "Vas a tener que firmar ante notario. Tu ejecutiva te coordina día y hora.",
+        quePuedePasarDespues:
+          "Cuando queden inscritos los cambios, te entregamos el detalle de cómo quedó tu patrimonio.",
+        plazoEsperado: "Depende de los tiempos del notario y del conservador; suelen ser semanas.",
+        nivelUrgencia: "atencion",
+      },
+    ],
+
+    causa: [
+      {
+        id: "cau-001",
+        clienteId: "cli-003",
+        rol: null,
+        esCajaMadre: true,
+        activa: true,
+        etapaId: "etp-lit-madre",
+      },
+      {
+        id: "cau-002",
+        clienteId: "cli-003",
+        rol: "C-1842-2026",
+        esCajaMadre: false,
+        activa: true,
+        etapaId: "etp-lit-02",
+      },
+      {
+        id: "cau-003",
+        clienteId: "cli-003",
+        rol: "C-2117-2026",
+        esCajaMadre: false,
+        activa: true,
+        etapaId: "etp-lit-01",
+      },
+    ],
+
+    gestionPatrimonial: [
+      {
+        id: "gpp-001",
+        clienteId: "cli-003",
+        activa: true,
+        etapaId: "etp-pp-01",
+      },
     ],
 
     contacto: [
@@ -425,6 +529,15 @@ export const fixtures: Fixtures = {
     ],
 
     cuota: [
+      {
+        id: "cuo-030",
+        clienteId: "cli-003",
+        numero: 4,
+        fechaVencimiento: "2026-09-22",
+        monto: 74900,
+        estado: "pendiente",
+      },
+
       {
         id: "cuo-016",
         clienteId: "cli-001",
@@ -472,6 +585,13 @@ export const fixtures: Fixtures = {
         fechaVencimiento: "2026-10-15",
         monto: 12900,
         estado: "pendiente",
+      },
+      {
+        id: "con-005",
+        clienteId: "cli-003",
+        nombre: "Matías Fuenzalida",
+        rol: "abogado",
+        telefonoWhatsapp: "+56 9 5530 9174",
       },
     ],
 

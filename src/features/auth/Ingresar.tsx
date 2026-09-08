@@ -164,8 +164,19 @@ export function Ingresar() {
         <Hero />
 
         <div className="px-6 py-10 md:px-10 md:py-12">
-          <h1 className="type-page-title text-foreground">Ingresa a tu portal</h1>
-          <p className="mt-2 type-body text-muted-foreground">
+          {/* En el teléfono el hero va centrado y esta columna iba a la
+              izquierda: dos alineaciones distintas dentro de la misma tarjeta
+              angosta, que es lo que se leía descuadrado. Acá abajo el titular
+              acompaña al hero; desde `lg`, cuando la tarjeta se parte en dos
+              columnas, cada una vuelve a alinearse a la izquierda.
+
+              El titular también baja un escalón: a 32 px «Ingresa a tu portal»
+              ocupaba casi todo el ancho de la columna y quedaba al borde de
+              partirse en dos líneas. */}
+          <h1 className="type-page-title text-center text-xl text-balance text-foreground lg:text-left lg:text-3xl">
+            Ingresa a tu portal
+          </h1>
+          <p className="mt-2 text-center type-body text-muted-foreground lg:text-left">
             Usa el correo y la clave que te enviamos.
           </p>
 

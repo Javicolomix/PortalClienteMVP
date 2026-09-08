@@ -1,7 +1,10 @@
 import { sesion } from "@/features/auth";
 import { read } from "@/prototype/ports";
 
+import { admiteProteccionPatrimonial } from "./estado-del-caso";
 import type {
+  Causa,
+  CausaConEtapa,
   Cliente,
   ConfiguracionPortal,
   Contacto,
@@ -10,8 +13,10 @@ import type {
   DatosMiCaso,
   DatosMiEquipo,
   DatosMiServicio,
+  DatosMisEscrituras,
   DatosMisPagos,
   Etapa,
+  GestionPatrimonial,
   ResultadoServicio,
   Servicio,
 } from "./portal.types";
@@ -63,11 +68,99 @@ async function cargarConfiguracion(): Promise<ConfiguracionPortal> {
   return configuracion;
 }
 
+/**
+ * Las causas activas del cliente, cada una con la etapa en que va.
+ *
+ * Son dos cargas y un cruce en el portal. Para Desarrollo esto es **una sola
+ * consulta con join**: acá se separa solo porque el adaptador de prototipo filtra
+ * por igualdad exacta y no sabe pedir «las etapas de estos ids».
+ */
+async function cargarCausasDelCliente(clienteId: string): Promise<CausaConEtapa[]> {
+  const causas = await read.load<Causa[]>(
+    "causasActivasDelCliente",
+    { clienteId, activa: true },
+    {
+      description: "Causas en curso del cliente, una por escritura o rol",
+      trigger: "Al abrir el inicio o «Mis escrituras»",
+      reads: {
+        entities: ["causa"],
+        fields: ["causa.rol", "causa.esCajaMadre", "causa.activa", "causa.etapaId"],
+      },
+    },
+  );
+
+  if (causas.length === 0) return [];
+
+  const etapas = await read.load<Etapa[]>("etapasDeLasCausas", undefined, {
+    description: "Etapa en que va cada causa del cliente",
+    trigger: "Al abrir el inicio o «Mis escrituras»",
+    reads: {
+      entities: ["etapa"],
+      fields: [
+        "etapa.orden",
+        "etapa.visibleParaCliente",
+        "etapa.nombreParaCliente",
+        "etapa.nivelUrgencia",
+      ],
+    },
+  });
+
+  const porId = new Map(etapas.map((etapa) => [etapa.id, etapa]));
+
+  return causas.flatMap((causa) => {
+    const etapa = porId.get(causa.etapaId);
+    // Una causa sin etapa conocida no se muestra: es mejor no decir nada que
+    // decir algo a medias sobre el caso de alguien.
+    return etapa ? [{ causa, etapa }] : [];
+  });
+}
+
+/**
+ * La etapa de la gestión de Protección Patrimonial, si el cliente tiene una y su
+ * servicio la admite. Sin datos no devuelve nada y el inicio no dibuja nada.
+ */
+async function cargarProteccionPatrimonial(
+  clienteId: string,
+  servicioId: string,
+): Promise<Etapa | null> {
+  if (!admiteProteccionPatrimonial(servicioId)) return null;
+
+  const [gestion] = await read.load<GestionPatrimonial[]>(
+    "gestionPatrimonialDelCliente",
+    { clienteId, activa: true },
+    {
+      description: "Gestión de Protección Patrimonial del cliente, si tiene una en curso",
+      trigger: "Al abrir el inicio",
+      reads: {
+        entities: ["gestionPatrimonial"],
+        fields: ["gestionPatrimonial.activa", "gestionPatrimonial.etapaId"],
+      },
+    },
+  );
+
+  if (!gestion) return null;
+
+  const [etapa] = await read.load<Etapa[]>(
+    "etapaDeLaProteccionPatrimonial",
+    { id: gestion.etapaId },
+    {
+      description: "Etapa en que va la Protección Patrimonial",
+      trigger: "Al abrir el inicio",
+      reads: {
+        entities: ["etapa"],
+        fields: ["etapa.visibleParaCliente", "etapa.nombreParaCliente", "etapa.nivelUrgencia"],
+      },
+    },
+  );
+
+  return etapa?.visibleParaCliente ? etapa : null;
+}
+
 /** Inicio: solo lo justo para saludar y anticipar si hay algo que hacer. */
 export async function cargarInicio(): Promise<DatosInicio> {
   const cliente = await cargarClienteEnSesion();
 
-  const [servicios, etapas, configuracion] = await Promise.all([
+  const [servicios, etapas, causas, proteccion, configuracion] = await Promise.all([
     read.load<Servicio[]>(
       "servicioEnInicio",
       { id: cliente.servicioId },
@@ -89,13 +182,21 @@ export async function cargarInicio(): Promise<DatosInicio> {
         },
       },
     ),
+    cargarCausasDelCliente(cliente.id),
+    cargarProteccionPatrimonial(cliente.id, cliente.servicioId),
     cargarConfiguracion(),
   ]);
 
   const servicio = servicios[0];
   if (!servicio) throw new Error("Falta el servicio contratado.");
 
-  return { cliente, servicio, etapa: etapas[0] ?? null, configuracion };
+  return { cliente, servicio, etapa: etapas[0] ?? null, causas, proteccion, configuracion };
+}
+
+/** «Mis escrituras»: la lista completa de causas en curso. */
+export async function cargarMisEscrituras(): Promise<DatosMisEscrituras> {
+  const cliente = await cargarClienteEnSesion();
+  return { causas: await cargarCausasDelCliente(cliente.id) };
 }
 
 /** «¿En qué está mi caso?»: el contenido completo que escribió el capitán. */

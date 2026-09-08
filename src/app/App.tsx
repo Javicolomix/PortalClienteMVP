@@ -2,7 +2,7 @@ import { Route, Routes, useLocation } from "react-router";
 
 import { PanelEtapas } from "@/features/admin";
 import { Ingresar, RutaProtegida } from "@/features/auth";
-import { Inicio, MiCaso, MiEquipo, MiServicio, MisPagos } from "@/features/portal";
+import { Inicio, MiCaso, MiEquipo, MiServicio, MisEscrituras, MisPagos } from "@/features/portal";
 import { Toaster } from "@/shared/components/base/Toaster";
 
 import {
@@ -50,6 +50,14 @@ export const App = () => {
           element={
             <RutaProtegida>
               <MiEquipo />
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path="/mis-escrituras"
+          element={
+            <RutaProtegida>
+              <MisEscrituras />
             </RutaProtegida>
           }
         />

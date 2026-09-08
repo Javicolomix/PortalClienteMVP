@@ -10,6 +10,7 @@ import { Logo } from "@/shared/components/base/Logo";
 import { useCarga } from "@/shared/hooks/useCarga";
 import { cn } from "@/shared/lib/utils/cn";
 
+import { type EstadoDelCaso, resolverEstadoDelCaso } from "./estado-del-caso";
 import { ICONOS } from "./iconos";
 import { NIVELES } from "./nivel-urgencia";
 import { CargandoPagina, ErrorDeCarga } from "./PaginaDelPortal";
@@ -270,21 +271,58 @@ function PuntosDelCarrusel({ total, activa }: { total: number; activa: number })
  * la pantalla se lea como una sola pieza. Desde `md` vuelven a ser dos columnas,
  * donde caben sin competir.
  */
-function Destacados({ datos }: { datos: DatosInicio }) {
-  const etapaVisible = datos.etapa?.visibleParaCliente ? datos.etapa : null;
-  const nivel = etapaVisible ? NIVELES[etapaVisible.nivelUrgencia] : null;
+function Destacados({ datos, estado }: { datos: DatosInicio; estado: EstadoDelCaso }) {
+  const nivel = estado.etapa ? NIVELES[estado.etapa.nivelUrgencia] : null;
+  const nivelProteccion = datos.proteccion ? NIVELES[datos.proteccion.nivelUrgencia] : null;
 
   const pista = useRef<HTMLDivElement>(null);
   const [activa, setActiva] = useState(0);
 
   // La posición se mide contra el ancho de una tarjeta, no contra un valor fijo:
-  // así sigue funcionando si mañana entra una tercera.
+  // así sigue funcionando cuando entra la tarjeta de Protección Patrimonial.
   const alDeslizar = () => {
     const carril = pista.current;
     const primera = carril?.firstElementChild as HTMLElement | null;
     if (!carril || !primera) return;
     setActiva(Math.round(carril.scrollLeft / primera.offsetWidth));
   };
+
+  const tarjetas = [
+    <TarjetaDestacada
+      key="servicio"
+      lavanda
+      rotulo="Mi servicio"
+      Icono={ICONOS.balanza}
+      titulo={datos.servicio.nombre}
+      ruta="/mi-servicio"
+    />,
+    <TarjetaDestacada
+      key="caso"
+      rotulo="Estado de mi caso"
+      Icono={ICONOS.etapa}
+      tono={nivel?.color}
+      titulo={estado.etapa ? estado.etapa.nombreParaCliente : "Tu caso está avanzando"}
+      estado={nivel ? <SenalDeEstado nivel={nivel} /> : undefined}
+      ruta="/mi-caso"
+    />,
+  ];
+
+  // Protección Patrimonial es una tarjeta más, no una línea dentro del caso:
+  // avanza por su cuenta y con tiempos distintos. Sin datos no se dibuja nada,
+  // ni siquiera un espacio.
+  if (datos.proteccion && nivelProteccion) {
+    tarjetas.push(
+      <TarjetaDestacada
+        key="proteccion"
+        rotulo="Protección patrimonial"
+        Icono={ICONOS.escudo}
+        tono={nivelProteccion.color}
+        titulo={datos.proteccion.nombreParaCliente}
+        estado={<SenalDeEstado nivel={nivelProteccion} />}
+        ruta="/mi-caso"
+      />,
+    );
+  }
 
   return (
     <>
@@ -296,42 +334,25 @@ function Destacados({ datos }: { datos: DatosInicio }) {
           "md:mx-0 md:grid md:grid-cols-2 md:gap-3.5 md:overflow-visible md:px-0 md:pb-0",
         )}
       >
-        <div className="w-[86%] shrink-0 snap-start md:w-auto">
-          <TarjetaDestacada
-            lavanda
-            rotulo="Mi servicio"
-            Icono={ICONOS.balanza}
-            titulo={datos.servicio.nombre}
-            ruta="/mi-servicio"
-          />
-        </div>
-
-        <div className="w-[86%] shrink-0 snap-start md:w-auto">
-          <TarjetaDestacada
-            rotulo="Estado de mi caso"
-            Icono={ICONOS.etapa}
-            tono={nivel?.color}
-            titulo={etapaVisible ? etapaVisible.nombreParaCliente : "Tu caso está avanzando"}
-            estado={
-              nivel ? (
-                <span
-                  className={cn(
-                    "mt-2 flex items-center gap-1.5 type-supporting font-medium",
-                    nivel.color,
-                  )}
-                >
-                  <nivel.Icono className="size-4 shrink-0" aria-hidden />
-                  {nivel.resumen}
-                </span>
-              ) : undefined
-            }
-            ruta="/mi-caso"
-          />
-        </div>
+        {tarjetas.map((tarjeta) => (
+          <div key={tarjeta.key} className="w-[86%] shrink-0 snap-start md:w-auto">
+            {tarjeta}
+          </div>
+        ))}
       </div>
 
-      <PuntosDelCarrusel total={2} activa={activa} />
+      <PuntosDelCarrusel total={tarjetas.length} activa={activa} />
     </>
+  );
+}
+
+/** La línea que dice si hay algo que hacer. Un solo signo de urgencia por tarjeta. */
+function SenalDeEstado({ nivel }: { nivel: (typeof NIVELES)[keyof typeof NIVELES] }) {
+  return (
+    <span className={cn("mt-2 flex items-center gap-1.5 type-supporting font-medium", nivel.color)}>
+      <nivel.Icono className="size-4 shrink-0" aria-hidden />
+      {nivel.resumen}
+    </span>
   );
 }
 
@@ -354,7 +375,7 @@ type Opcion = {
  * caso aunque también tengan tarjeta arriba. Agregar un acceso nuevo es agregar
  * una fila acá: las dos presentaciones salen de la misma lista.
  */
-const OPCIONES: Opcion[] = [
+const OPCIONES_FIJAS: Opcion[] = [
   {
     ruta: "/mi-servicio",
     titulo: "Saber sobre mi servicio",
@@ -386,6 +407,29 @@ const OPCIONES: Opcion[] = [
 ];
 
 /**
+ * «Mis escrituras» solo existe cuando hay más de una causa en curso: con una
+ * sola, la tarjeta de arriba ya cuenta todo y el acceso llevaría a una lista de
+ * un elemento.
+ */
+function opcionesDelPortal(estado: EstadoDelCaso): Opcion[] {
+  if (!estado.tieneVariasCausas) return OPCIONES_FIJAS;
+
+  const [servicio, caso, ...resto] = OPCIONES_FIJAS;
+  return [
+    servicio,
+    caso,
+    {
+      ruta: "/mis-escrituras",
+      titulo: "Revisar mis escrituras",
+      corto: "Mis escrituras",
+      apoyo: "En qué va cada una de tus causas",
+      Icono: ICONOS.documento,
+    },
+    ...resto,
+  ];
+}
+
+/**
  * Accesos del teléfono: cuadrados que se tocan, en dos columnas.
  *
  * El icono va suelto y grande, sin la pastilla lila detrás. La pastilla lo
@@ -397,10 +441,10 @@ const OPCIONES: Opcion[] = [
  * aunque un nombre ocupe dos líneas y otro una. El texto de apoyo no viaja acá:
  * en un cuadrado sobra, y el nombre del acceso ya dice a dónde lleva.
  */
-function AccesosEnCuadricula() {
+function AccesosEnCuadricula({ opciones }: { opciones: Opcion[] }) {
   return (
     <ul className="grid auto-rows-fr grid-cols-2 gap-3 md:hidden">
-      {OPCIONES.map((opcion) => (
+      {opciones.map((opcion) => (
         <li key={opcion.ruta}>
           <Link
             to={opcion.ruta}
@@ -420,11 +464,11 @@ function AccesosEnCuadricula() {
  * no tarjetas sueltas — la regla de contención del sistema (espacio → superficie
  * → línea). Acá hay ancho de sobra para la frase completa y su apoyo.
  */
-function AccesosEnLista() {
+function AccesosEnLista({ opciones }: { opciones: Opcion[] }) {
   return (
     <div className="hidden overflow-hidden rounded-lg bg-card ring-1 ring-border-subtle md:block">
       <ul>
-        {OPCIONES.map((opcion, indice) => (
+        {opciones.map((opcion, indice) => (
           <li key={opcion.ruta} className={cn(indice > 0 && "border-t border-border-subtle")}>
             <Link
               to={opcion.ruta}
@@ -445,6 +489,61 @@ function AccesosEnLista() {
         ))}
       </ul>
     </div>
+  );
+}
+
+/**
+ * El inicio una vez que llegaron los datos. Vive aparte para poder resolver acá
+ * el estado del caso y los accesos, que dependen de él: «Mis escrituras» solo
+ * aparece si hay más de una causa en curso.
+ */
+function ContenidoDelInicio({ datos }: { datos: DatosInicio }) {
+  const estado = resolverEstadoDelCaso(datos.etapa, datos.causas);
+  const opciones = opcionesDelPortal(estado);
+
+  return (
+    <>
+      <Destacados datos={datos} estado={estado} />
+
+      <section className="mt-10 md:mt-12">
+        <h2 className="type-page-title text-xl text-foreground md:text-3xl">
+          ¿Qué necesitas <em className="text-primary italic">hacer hoy</em>?
+        </h2>
+        <div className="mt-5">
+          <AccesosEnCuadricula opciones={opciones} />
+          <AccesosEnLista opciones={opciones} />
+        </div>
+      </section>
+
+      {/* El pie tenía las tres cosas en fila y al mismo peso: un aviso,
+              una acción y el copyright. Ahora va centrado y por rango: la
+              frase que tranquiliza y después la salida para cuando algo va
+              mal, que es lo único que alguien va a tocar acá. El copyright
+              salió: no le servía a nadie que entra a ver su caso. */}
+      <footer className="mt-12 border-t border-border-subtle pt-8 text-center md:mt-14">
+        <p className="type-supporting text-muted-foreground">
+          Tu información está protegida y es confidencial.
+        </p>
+
+        <p className="mt-3">
+          <a
+            href={datos.configuracion.urlFormularioReclamos}
+            target="_blank"
+            rel="noreferrer"
+            className="type-action-label inline-flex items-center gap-1.5 text-primary underline underline-offset-4 hover:text-primary-hover"
+          >
+            ¿Problemas con tu caso? Reclama Aquí
+            <ExternalLink className="size-3.5 shrink-0" aria-hidden />
+          </a>
+        </p>
+
+        {/* La única salida del teléfono: en el computador vive arriba,
+                en la barra. */}
+        <p className="mt-6 md:hidden">
+          <BotonSalir />
+        </p>
+      </footer>
+    </>
   );
 }
 
@@ -470,55 +569,7 @@ export function Inicio() {
           {fase === "cargando" ? <CargandoPagina /> : null}
           {fase === "error" ? <ErrorDeCarga onReintentar={recargar} /> : null}
 
-          {fase === "listo" && datos ? (
-            <>
-              <Destacados datos={datos} />
-
-              <section className="mt-10 md:mt-12">
-                <h2 className="type-page-title text-xl text-foreground md:text-3xl">
-                  ¿Qué necesitas <em className="text-primary italic">hacer hoy</em>?
-                </h2>
-                <div className="mt-5">
-                  <AccesosEnCuadricula />
-                  <AccesosEnLista />
-                </div>
-              </section>
-
-              {/* El pie tenía las tres cosas en fila y al mismo peso: un aviso,
-                  una acción y el copyright. Ahora van por rango. Primero la
-                  frase que tranquiliza, después la salida para cuando algo va
-                  mal —que es lo único que alguien va a tocar acá— y al final el
-                  chrome legal, en el cuerpo más chico. */}
-              {/* El pie tenía las tres cosas en fila y al mismo peso: un aviso,
-                  una acción y el copyright. Ahora va centrado y por rango: la
-                  frase que tranquiliza y después la salida para cuando algo va
-                  mal, que es lo único que alguien va a tocar acá. El copyright
-                  salió: no le servía a nadie que entra a ver su caso. */}
-              <footer className="mt-12 border-t border-border-subtle pt-8 text-center md:mt-14">
-                <p className="type-supporting text-muted-foreground">
-                  Tu información está protegida y es confidencial.
-                </p>
-
-                <p className="mt-3">
-                  <a
-                    href={datos.configuracion.urlFormularioReclamos}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="type-action-label inline-flex items-center gap-1.5 text-primary underline underline-offset-4 hover:text-primary-hover"
-                  >
-                    ¿Problemas con tu caso? Reclama Aquí
-                    <ExternalLink className="size-3.5 shrink-0" aria-hidden />
-                  </a>
-                </p>
-
-                {/* La única salida del teléfono: en el computador vive arriba,
-                    en la barra. */}
-                <p className="mt-6 md:hidden">
-                  <BotonSalir />
-                </p>
-              </footer>
-            </>
-          ) : null}
+          {fase === "listo" && datos ? <ContenidoDelInicio datos={datos} /> : null}
         </div>
       </main>
     </div>

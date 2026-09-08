@@ -347,6 +347,31 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   protección patrimonial) son **un ejemplo, no el catálogo definitivo**. No
   inviertas en afinar su contenido hasta que Lexy confirme la lista real.
 
+- 2026-09-08: **el estado del caso se calcula, no se lee de un campo**. La regla
+  vive en `src/features/portal/estado-del-caso.ts`, aparte de las pantallas:
+  - **Renegociación y Liquidación** avanzan por un embudo único; se muestra la
+    etapa en que está el cliente.
+  - **Litigios** puede tener varias causas abiertas (las «cajas» del sistema
+    interno, una por escritura o rol). La **caja madre se excluye** cuando hay
+    otras activas: mostrar su «no hay novedades» taparía el trabajo real. Si es
+    lo único que hay, sí se muestra.
+  - Entre varias causas manda **la que pide algo del cliente**, aunque sea la
+    menos avanzada; solo si ninguna pide nada gana la más avanzada.
+- 2026-09-08: con **más de una causa** el inicio muestra arriba el estado
+  principal y aparece un cuadrado **«Mis escrituras»** que lleva a la lista
+  completa, con el rol de cada causa y en qué va. Con una sola causa el acceso no
+  aparece: llevaría a una lista de un elemento.
+- 2026-09-08: **Protección Patrimonial es una tarjeta más** del carrusel, no una
+  línea dentro del estado del caso: avanza por su cuenta y con otros tiempos.
+  Solo se dibuja si el cliente tiene una gestión activa —sin datos no hay ni
+  placeholder— y **nunca en Renegociación**, que es incompatible.
+- 2026-09-08: **pendiente de contenido legal.** El copy de las etapas de Litigios
+  y de Protección Patrimonial está escrito como marcador de posición para poder
+  recorrer el flujo. Falta el texto real de **Admisibilidad** y **Término
+  probatorio**, que tiene que definir el equipo legal.
+- 2026-09-08: cuenta de prueba de Litigios con tres causas (una madre) y
+  Protección Patrimonial: `rodrigo.paredes@example.com` / `R17845221`.
+
 ## Preguntas abiertas
 
 - ¿Cuál es el catálogo real de servicios del portal?

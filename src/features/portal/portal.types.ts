@@ -77,8 +77,18 @@ export type Cuota = {
 export type DatosInicio = {
   cliente: Cliente;
   servicio: Servicio;
+  /** Etapa del embudo único. En Litigios llega igual, como respaldo. */
   etapa: Etapa | null;
+  /** Causas activas del cliente. Vacío en los servicios de embudo único. */
+  causas: CausaConEtapa[];
+  /** Protección Patrimonial, solo si el cliente la tiene y el servicio la admite. */
+  proteccion: Etapa | null;
   configuracion: ConfiguracionPortal;
+};
+
+/** «Mis escrituras»: la lista completa de causas, cuando hay más de una. */
+export type DatosMisEscrituras = {
+  causas: CausaConEtapa[];
 };
 
 export type DatosMiCaso = {
@@ -112,3 +122,28 @@ export const etapaEstaCompleta = (etapa: Etapa): boolean =>
     etapa.quePuedePasarDespues,
     etapa.plazoEsperado,
   ].every((texto) => texto.trim().length > 0);
+
+/**
+ * Una de las causas que el equipo lleva por un cliente de Litigios: una por
+ * escritura o rol. En el sistema interno son las «cajas».
+ */
+export type Causa = {
+  id: string;
+  clienteId: string;
+  /** Rol o número de escritura. La caja madre no tiene: no es un frente con avance propio. */
+  rol: string | null;
+  esCajaMadre: boolean;
+  activa: boolean;
+  etapaId: string;
+};
+
+/** Gestión de Protección Patrimonial, cuando el cliente la tiene contratada. */
+export type GestionPatrimonial = {
+  id: string;
+  clienteId: string;
+  activa: boolean;
+  etapaId: string;
+};
+
+/** Una causa junto con la etapa en que va: es lo que el portal muestra de ella. */
+export type CausaConEtapa = { causa: Causa; etapa: Etapa };

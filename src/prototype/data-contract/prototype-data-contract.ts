@@ -32,7 +32,12 @@ const desdeUsabilidad = (note: string) =>
     technicalValidation: { status: "pendingTi" as const, note },
   }) as const;
 
-const soloTecnico = { visible: false, editable: false, calculated: false, technical: true } as const;
+const soloTecnico = {
+  visible: false,
+  editable: false,
+  calculated: false,
+  technical: true,
+} as const;
 const soloVisible = {
   visible: true,
   editable: false,
@@ -104,10 +109,17 @@ export const prototypeDataContract = definePrototypeDataContract({
         },
         correo: {
           id: "correo",
-          productDescription: "Correo con el que la persona entra al portal. Es su nombre de usuario.",
+          productDescription:
+            "Correo con el que la persona entra al portal. Es su nombre de usuario.",
           dataType: "string",
           required: true,
-          usage: { visible: false, editable: false, calculated: false, technical: true, filterable: true },
+          usage: {
+            visible: false,
+            editable: false,
+            calculated: false,
+            technical: true,
+            filterable: true,
+          },
           usedIn: [PORTAL],
           origin: "lexyConfirmed",
           source: { kind: "unknown" },
@@ -119,7 +131,8 @@ export const prototypeDataContract = definePrototypeDataContract({
         },
         rut: {
           id: "rut",
-          productDescription: "RUT de la persona. El portal no lo muestra: lo usa para formar su clave.",
+          productDescription:
+            "RUT de la persona. El portal no lo muestra: lo usa para formar su clave.",
           dataType: "string",
           required: true,
           usage: { visible: false, editable: false, calculated: false, technical: true },
@@ -249,7 +262,10 @@ export const prototypeDataContract = definePrototypeDataContract({
           required: true,
           usage: { ...soloTecnico, filterable: true },
           usedIn: [PORTAL],
-          ...pendienteTi("Confirmar cómo se asocia el resultado a su servicio.", "productAssumption"),
+          ...pendienteTi(
+            "Confirmar cómo se asocia el resultado a su servicio.",
+            "productAssumption",
+          ),
         },
         orden: {
           id: "orden",
@@ -474,6 +490,174 @@ export const prototypeDataContract = definePrototypeDataContract({
       },
     },
 
+    causa: {
+      id: "causa",
+      productDescription:
+        "Cada una de las causas que el equipo lleva por un cliente de Litigios: una por escritura o rol. En el sistema interno son las «cajas».",
+      roleInExperience:
+        "Un cliente de Litigios puede tener varias a la vez, cada una avanzando por su cuenta. El portal las usa para decir en qué va su caso y, cuando hay más de una, para ofrecerle la lista completa.",
+      usedIn: [PORTAL],
+      ...pendienteTi(
+        "Confirmar de dónde salen las cajas y cómo se identifican hacia el cliente. Hoy el portal supone una por escritura o rol.",
+        "lexyConfirmed",
+      ),
+      states: [
+        {
+          id: "activa",
+          productDescription: "La causa está en curso.",
+          activationCondition: "El equipo la tiene abierta en el sistema interno.",
+          visualImpact: "Su etapa entra en el cálculo del estado que ve el cliente.",
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar qué marca una caja como cerrada y si el cliente debe seguir viéndola después.",
+            "lexyConfirmed",
+          ),
+        },
+        {
+          id: "cajaMadre",
+          productDescription:
+            "La causa es la caja de monitoreo del cliente, no un frente de trabajo con avance propio.",
+          activationCondition: "El equipo la creó como caja madre.",
+          visualImpact:
+            "Se excluye del estado cuando hay otras causas activas: si se mostrara, taparía el avance real con un «no hay novedades».",
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar cómo se distingue la caja madre en el sistema interno: \u00bfun tipo, una marca, o se deduce de que no tiene rol?",
+            "lexyConfirmed",
+          ),
+        },
+      ],
+      fields: {
+        id: {
+          id: "id",
+          productDescription: "Identificador de la causa.",
+          dataType: "identifier",
+          required: true,
+          usage: soloTecnico,
+          usedIn: [PORTAL],
+          ...pendienteTi("Confirmar el identificador de la caja.", "productAssumption"),
+        },
+        clienteId: {
+          id: "clienteId",
+          productDescription: "Cliente al que pertenece la causa.",
+          dataType: "identifier",
+          required: true,
+          usage: { ...soloTecnico, filterable: true },
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar cómo se asocia una caja a la persona del portal.",
+            "productAssumption",
+          ),
+        },
+        rol: {
+          id: "rol",
+          productDescription:
+            "Rol o número de escritura con que el cliente puede reconocer esta causa entre las suyas.",
+          dataType: "string",
+          required: false,
+          usage: soloVisible,
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar qué identificador entiende el cliente. Un rol de tribunal puede no significarle nada; quizás necesite además una referencia en palabras.",
+            "lexyConfirmed",
+          ),
+        },
+        esCajaMadre: {
+          id: "esCajaMadre",
+          productDescription:
+            "Si la causa es la caja de monitoreo y no un frente con avance propio.",
+          dataType: "boolean",
+          required: true,
+          usage: { ...soloTecnico, filterable: true },
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar la regla: hoy el portal excluye la caja madre cuando hay otras causas activas.",
+            "lexyConfirmed",
+          ),
+        },
+        activa: {
+          id: "activa",
+          productDescription: "Si la causa sigue en curso.",
+          dataType: "boolean",
+          required: true,
+          usage: { ...soloTecnico, filterable: true },
+          usedIn: [PORTAL],
+          ...pendienteTi("Confirmar qué cierra una caja.", "lexyConfirmed"),
+        },
+        etapaId: {
+          id: "etapaId",
+          productDescription: "Etapa del proceso en que va esta causa.",
+          dataType: "identifier",
+          required: true,
+          usage: soloTecnico,
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar si las etapas de Litigios son las mismas para todas las causas o dependen del tipo de juicio.",
+            "lexyConfirmed",
+          ),
+        },
+      },
+    },
+
+    gestionPatrimonial: {
+      id: "gestionPatrimonial",
+      productDescription:
+        "Gestión de Protección Patrimonial asociada a un cliente, cuando la tiene contratada junto con Litigios.",
+      roleInExperience:
+        "Avanza por su cuenta, con tiempos distintos a los de las causas. El portal la muestra como una tarjeta aparte y solo si existe: sin datos, no se dibuja nada.",
+      usedIn: [PORTAL],
+      ...pendienteTi(
+        "Confirmar d\u00f3nde vive hoy la gesti\u00f3n de Protecci\u00f3n Patrimonial y c\u00f3mo se sabe que un cliente la tiene.",
+        "lexyConfirmed",
+      ),
+      fields: {
+        id: {
+          id: "id",
+          productDescription: "Identificador de la gestión.",
+          dataType: "identifier",
+          required: true,
+          usage: soloTecnico,
+          usedIn: [PORTAL],
+          ...pendienteTi("Confirmar el identificador de la gestión.", "productAssumption"),
+        },
+        clienteId: {
+          id: "clienteId",
+          productDescription: "Cliente al que pertenece la gestión.",
+          dataType: "identifier",
+          required: true,
+          usage: { ...soloTecnico, filterable: true },
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar cómo se asocia la gestión a la persona del portal.",
+            "productAssumption",
+          ),
+        },
+        activa: {
+          id: "activa",
+          productDescription: "Si la gestión sigue en curso.",
+          dataType: "boolean",
+          required: true,
+          usage: { ...soloTecnico, filterable: true },
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar qué cierra una gestión de Protección Patrimonial.",
+            "lexyConfirmed",
+          ),
+        },
+        etapaId: {
+          id: "etapaId",
+          productDescription: "Etapa del proceso en que va la gestión.",
+          dataType: "identifier",
+          required: true,
+          usage: soloTecnico,
+          usedIn: [PORTAL],
+          ...desdeUsabilidad(
+            "La tarjeta de Protección Patrimonial necesita decir en qué va, no solo que existe. Confirmar qué etapas tiene el proceso y quién escribe su contenido.",
+          ),
+        },
+      },
+    },
+
     contacto: {
       id: "contacto",
       productDescription: "Persona de Lexy asignada al caso con la que el cliente puede hablar.",
@@ -523,7 +707,10 @@ export const prototypeDataContract = definePrototypeDataContract({
           usage: soloVisible,
           usedIn: [PORTAL],
           enumValues: ["ejecutiva", "abogado"],
-          ...pendienteTi("Confirmar si existen otros roles que el cliente pueda contactar.", "lexyConfirmed"),
+          ...pendienteTi(
+            "Confirmar si existen otros roles que el cliente pueda contactar.",
+            "lexyConfirmed",
+          ),
         },
         telefonoWhatsapp: {
           id: "telefonoWhatsapp",
@@ -575,7 +762,13 @@ export const prototypeDataContract = definePrototypeDataContract({
           productDescription: "Número de la cuota dentro del plan de pago.",
           dataType: "number",
           required: true,
-          usage: { visible: true, editable: false, calculated: false, technical: false, sortable: true },
+          usage: {
+            visible: true,
+            editable: false,
+            calculated: false,
+            technical: false,
+            sortable: true,
+          },
           usedIn: [PORTAL],
           ...pendienteTi(
             "Confirmar si conviene mostrar también el total de cuotas del plan («cuota 18 de 24»).",
@@ -645,11 +838,15 @@ export const prototypeDataContract = definePrototypeDataContract({
           required: true,
           usage: soloTecnico,
           usedIn: [PORTAL],
-          ...pendienteTi("Confirmar si habrá una sola configuración o una por servicio.", "productAssumption"),
+          ...pendienteTi(
+            "Confirmar si habrá una sola configuración o una por servicio.",
+            "productAssumption",
+          ),
         },
         correoSoporte: {
           id: "correoSoporte",
-          productDescription: "Correo al que el cliente puede escribir si no logra resolver por WhatsApp.",
+          productDescription:
+            "Correo al que el cliente puede escribir si no logra resolver por WhatsApp.",
           dataType: "string",
           required: true,
           usage: soloVisible,
@@ -658,7 +855,8 @@ export const prototypeDataContract = definePrototypeDataContract({
         },
         urlFormularioReclamos: {
           id: "urlFormularioReclamos",
-          productDescription: "Enlace al formulario externo donde el cliente puede dejar un reclamo.",
+          productDescription:
+            "Enlace al formulario externo donde el cliente puede dejar un reclamo.",
           dataType: "string",
           required: true,
           usage: soloVisible,
@@ -670,7 +868,8 @@ export const prototypeDataContract = definePrototypeDataContract({
         },
         urlPagoEnLinea: {
           id: "urlPagoEnLinea",
-          productDescription: "Enlace a la plataforma externa donde el cliente paga su cuota con tarjeta.",
+          productDescription:
+            "Enlace a la plataforma externa donde el cliente paga su cuota con tarjeta.",
           dataType: "string",
           required: true,
           usage: soloVisible,
@@ -721,6 +920,47 @@ export const prototypeDataContract = definePrototypeDataContract({
   },
 
   relations: [
+    {
+      id: "clienteTieneCausas",
+      fromEntity: "cliente",
+      toEntity: "causa",
+      cardinality: "oneToMany",
+      productDescription:
+        "Un cliente de Litigios puede tener varias causas en curso, una por escritura o rol.",
+      requiredBy: [PORTAL],
+      resolution: "queried",
+      ...pendienteTi(
+        "Confirmar si hay un tope de causas por cliente y qué pasa cuando todas se cierran.",
+        "lexyConfirmed",
+      ),
+    },
+    {
+      id: "causaEstaEnEtapa",
+      fromEntity: "causa",
+      toEntity: "etapa",
+      cardinality: "oneToOne",
+      productDescription: "Cada causa está en una etapa a la vez.",
+      requiredBy: [PORTAL],
+      resolution: "queried",
+      ...pendienteTi(
+        "Confirmar quién mueve una causa de etapa y si el cliente debería enterarse del cambio.",
+        "lexyConfirmed",
+      ),
+    },
+    {
+      id: "clienteTieneGestionPatrimonial",
+      fromEntity: "cliente",
+      toEntity: "gestionPatrimonial",
+      cardinality: "oneToOne",
+      productDescription:
+        "Un cliente puede tener una gestión de Protección Patrimonial asociada, o ninguna.",
+      requiredBy: [PORTAL],
+      resolution: "queried",
+      ...pendienteTi(
+        "Confirmar si Protección Patrimonial puede ir sola o siempre acompaña a Litigios.",
+        "lexyConfirmed",
+      ),
+    },
     {
       id: "clienteContrataServicio",
       fromEntity: "cliente",
