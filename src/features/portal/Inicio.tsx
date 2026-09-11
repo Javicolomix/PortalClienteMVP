@@ -137,7 +137,10 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
             <BotonSalir className="-mr-2 text-white hover:bg-white/10 hover:text-white" />
           </div>
 
-          <h1 className="mt-4 type-page-title text-xl text-balance text-white">
+          {/* En una sola línea, siempre. Partido en dos —«Buenas tardes,» arriba
+              y el nombre abajo— el saludo deja de leerse como un saludo y el
+              nombre queda colgando, que es justo lo personal de la pantalla. */}
+          <h1 className="mt-4 type-page-title text-xl whitespace-nowrap text-white">
             {saludo}
             {nombre ? (
               <>
@@ -151,7 +154,7 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
 
         <div className="hidden max-w-xl md:block">
           <Rotulo tono="text-brand-lavender">Portal de cliente</Rotulo>
-          <h1 className="mt-3 type-page-title text-white">
+          <h1 className="mt-3 type-page-title whitespace-nowrap text-white">
             {saludo}
             {nombre ? (
               <>
@@ -252,14 +255,12 @@ function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
           en mitad de un nombre —«…Protección» arriba, «Patrimonial» abajo—, que
           hace leer dos veces para entender que es un solo servicio.
 
-          El nombre **reserva siempre dos líneas** (`min-h` de 2,7 em, que es su
-          propio interlineado por dos). Sin eso la tarjeta cambiaba de alto según
-          el servicio de cada persona: baja en «Renegociación de deudas», alta en
-          el compuesto. Es la misma pieza en todas las cuentas y tiene que medir
-          lo mismo — además de que su solape con la franja navy está calculado
-          contra un alto fijo. La medida va en `em` y no en píxeles para que siga
-          valiendo si cambia el cuerpo de la letra. */}
-      <p className="mt-2 min-h-[2.7em] type-subsection-title text-base leading-[1.35] tracking-[0.06em] text-balance text-brand-navy uppercase md:text-lg">
+          El nombre **no reserva una segunda línea**. Se probó reservarla para
+          que la tarjeta midiera lo mismo en todas las cuentas, y el remedio era
+          peor: con un nombre de una línea quedaba medio bloque de lila vacío
+          debajo. La consistencia de alto entre cuentas no la ve nadie —cada
+          persona entra a la suya— y el vacío lo ve todo el mundo. */}
+      <p className="mt-2 type-subsection-title text-base leading-[1.35] tracking-[0.06em] text-balance text-brand-navy uppercase md:text-base">
         {nombres.map((nombre, indice) => (
           <span key={nombre} className="block">
             {indice < nombres.length - 1 ? `${nombre} con` : nombre}

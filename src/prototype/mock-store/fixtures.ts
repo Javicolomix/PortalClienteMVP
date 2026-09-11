@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 21,
+  datasetVersion: 22,
   entities: {
     cliente: [
       {
@@ -77,6 +77,14 @@ export const fixtures: Fixtures = {
         rut: "8.442.315-6",
         servicioId: "srv-renegociacion",
         etapaActualId: "etp-reneg-05",
+      },
+      {
+        id: "cli-010",
+        nombre: "Andrea",
+        correo: "andrea.lagos@example.com",
+        rut: "17.664.209-1",
+        servicioId: "srv-liquidacion",
+        etapaActualId: "etp-liq-02",
       },
       {
         id: "cli-009",
@@ -173,6 +181,15 @@ export const fixtures: Fixtures = {
         identificador: "C-3390-2025",
         acreedor: "Banco de Chile",
         etapaId: "etp-lit-02",
+      },
+      {
+        id: "caj-031",
+        clienteId: "cli-003",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-8842-2026",
+        acreedor: "Banco BICE",
+        etapaId: "etp-lit-04",
       },
       {
         id: "caj-007",
@@ -273,6 +290,14 @@ export const fixtures: Fixtures = {
         etapaId: "etp-pp-01",
       },
       {
+        id: "caj-032",
+        clienteId: "cli-006",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Declaración de bien familiar",
+        etapaId: "etp-pp-02",
+      },
+      {
         id: "caj-026",
         clienteId: "cli-006",
         tipo: "proteccionPatrimonial",
@@ -347,6 +372,42 @@ export const fixtures: Fixtures = {
       {
         id: "caj-022",
         clienteId: "cli-008",
+        tipo: "defensaEnJuicio",
+        estado: "monitoreo",
+        identificador: "",
+        etapaId: "etp-lit-00",
+      },
+
+      // Andrea: liquidación con una escritura encima y ninguna causa. Lo
+      // concursal manda y la escritura se le suma abajo, sin quitarle el estado
+      // de su caso.
+      {
+        id: "caj-033",
+        clienteId: "cli-010",
+        tipo: "liquidacion",
+        estado: "activa",
+        identificador: "",
+        etapaId: "etp-liq-02",
+      },
+      {
+        id: "caj-034",
+        clienteId: "cli-010",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Declaración de bien familiar",
+        etapaId: "etp-pp-03",
+      },
+      {
+        id: "caj-035",
+        clienteId: "cli-010",
+        tipo: "proteccionPatrimonial",
+        estado: "madre",
+        identificador: "",
+        etapaId: "etp-pp-01",
+      },
+      {
+        id: "caj-036",
+        clienteId: "cli-010",
         tipo: "defensaEnJuicio",
         estado: "monitoreo",
         identificador: "",
@@ -735,6 +796,22 @@ export const fixtures: Fixtures = {
         nivelUrgencia: "tranquilidad",
       },
       {
+        id: "etp-lit-04",
+        servicioId: "srv-defensa-juicio",
+        orden: 5,
+        visibleParaCliente: true,
+        nombreParaCliente: "Falta que firmes un documento",
+        mensajePrincipal: "Necesitamos tu firma para presentar el escrito dentro del plazo.",
+        queHaceLexy:
+          "El escrito ya está redactado y revisado. Solo falta tu firma para presentarlo.",
+        queNecesitamosDelCliente:
+          "Firmar el poder que te envió tu ejecutiva. Sin eso no podemos actuar por ti.",
+        quePuedePasarDespues:
+          "Con tu firma presentamos dentro de plazo y el juicio sigue su curso.",
+        plazoEsperado: "El tribunal fijó una fecha límite. Tu ejecutiva te dice cuál es.",
+        nivelUrgencia: "urgente",
+      },
+      {
         id: "etp-pp-01",
         servicioId: "srv-proteccion-patrimonial",
         orden: 1,
@@ -881,6 +958,20 @@ export const fixtures: Fixtures = {
         telefonoWhatsapp: "+56 9 5530 9174",
       },
       {
+        id: "con-019",
+        clienteId: "cli-010",
+        nombre: "Camila Rivera",
+        rol: "ejecutiva",
+        telefonoWhatsapp: "+56 9 6721 4488",
+      },
+      {
+        id: "con-020",
+        clienteId: "cli-010",
+        nombre: "Andrés Peña",
+        rol: "abogado",
+        telefonoWhatsapp: "+56 9 7302 6641",
+      },
+      {
         id: "con-017",
         clienteId: "cli-009",
         nombre: "Camila Rivera",
@@ -991,6 +1082,14 @@ export const fixtures: Fixtures = {
         numero: 2,
         fechaVencimiento: "2026-10-10",
         monto: 87400,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-110",
+        clienteId: "cli-010",
+        numero: 5,
+        fechaVencimiento: "2026-10-05",
+        monto: 58900,
         estado: "pendiente",
       },
       {
