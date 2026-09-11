@@ -259,7 +259,7 @@ function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
           lo mismo — además de que su solape con la franja navy está calculado
           contra un alto fijo. La medida va en `em` y no en píxeles para que siga
           valiendo si cambia el cuerpo de la letra. */}
-      <p className="mt-2 min-h-[2.7em] type-subsection-title text-lg leading-[1.35] tracking-tight text-balance text-brand-navy md:text-xl">
+      <p className="mt-2 min-h-[2.7em] type-subsection-title text-base leading-[1.35] tracking-[0.06em] text-balance text-brand-navy uppercase md:text-lg">
         {nombres.map((nombre, indice) => (
           <span key={nombre} className="block">
             {indice < nombres.length - 1 ? `${nombre} con` : nombre}
