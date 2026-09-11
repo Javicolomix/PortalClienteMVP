@@ -2,7 +2,6 @@ import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link } from "react-router";
 
-import { BotonSalir } from "@/features/auth";
 import { Button } from "@/shared/components/base/Button";
 import {
   Empty,
@@ -15,9 +14,15 @@ import { HeaderBar } from "@/shared/components/base/HeaderBar";
 import { Skeleton } from "@/shared/components/base/Skeleton";
 
 /**
- * Shell de las pantallas de detalle: una idea por pantalla y una sola salida
- * hacia atrás. La marca vive en la barra superior; el contenido queda plano y
- * legible, que es lo que la persona vino a leer.
+ * Shell de las pantallas de detalle: una idea por pantalla y **una sola salida**,
+ * que es «Volver al inicio». La marca vive en la barra superior; el contenido
+ * queda plano y legible, que es lo que la persona vino a leer.
+ *
+ * La barra no lleva «Salir». Con las dos, la esquina de arriba ofrecía dos
+ * salidas a la vez —una que retrocede y otra que cierra la sesión— y en un
+ * teléfono están a un centímetro de distancia: quien viene a ver su cuota puede
+ * cerrar sesión sin querer. Cerrar sesión se hace desde el inicio, que es de
+ * donde se entró.
  */
 export function PaginaDelPortal({
   titulo,
@@ -30,7 +35,7 @@ export function PaginaDelPortal({
 }) {
   return (
     <div className="min-h-screen bg-surface-subtle">
-      <HeaderBar actions={<BotonSalir />} />
+      <HeaderBar />
 
       <main className="mx-auto w-full max-w-2xl px-4 py-8 md:px-6 md:py-12">
         <Button asChild variant="ghost" size="sm" className="-ml-3 mb-6">
@@ -40,7 +45,9 @@ export function PaginaDelPortal({
           </Link>
         </Button>
 
-        <h1 className="type-page-title text-foreground">{titulo}</h1>
+        {/* Misma escala que el acceso y que el saludo del inicio: los títulos
+            de portada bajan en el teléfono. */}
+        <h1 className="type-page-title text-2xl text-foreground md:text-3xl">{titulo}</h1>
         {descripcion ? <p className="mt-3 type-body text-muted-foreground">{descripcion}</p> : null}
 
         <div className="mt-8">{children}</div>

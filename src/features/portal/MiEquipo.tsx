@@ -5,13 +5,9 @@ import { useCarga } from "@/shared/hooks/useCarga";
 import { cn } from "@/shared/lib/utils/cn";
 
 import { CargandoPagina, ErrorDeCarga, PaginaDelPortal } from "./PaginaDelPortal";
-import type { DatosMiEquipo, RolContacto } from "./portal.types";
+import type { DatosMiEquipo } from "./portal.types";
 import { cargarMiEquipo } from "./portal-service";
-
-const ETIQUETA_ROL = {
-  ejecutiva: "Tu ejecutiva",
-  abogado: "Tu abogado",
-} as const satisfies Record<RolContacto, string>;
+import { enlaceWhatsapp, ETIQUETA_ROL } from "./whatsapp";
 
 /**
  * El primer contacto lleva el botón sólido y el resto delineado: una sola acción
@@ -23,14 +19,6 @@ const ETIQUETA_ROL = {
  * quien sea. No hace falta un caso aparte para «hay un solo contacto».
  */
 const estiloDelBoton = (indice: number) => (indice === 0 ? "default" : "outline");
-
-const enlaceWhatsapp = (telefono: string, nombreCliente: string) => {
-  const numero = telefono.replace(/\D/g, "");
-  const mensaje = encodeURIComponent(
-    `Hola, soy ${nombreCliente}. Tengo una consulta sobre mi caso.`,
-  );
-  return `https://wa.me/${numero}?text=${mensaje}`;
-};
 
 function Contactos({ datos }: { datos: DatosMiEquipo }) {
   return (

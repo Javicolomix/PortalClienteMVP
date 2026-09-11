@@ -1,6 +1,6 @@
-import { ArrowRight, ChevronRight, ExternalLink } from "lucide-react";
+import { ChevronDown, ChevronRight, ExternalLink } from "lucide-react";
 import type { ReactNode } from "react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router";
 
 import { BotonSalir } from "@/features/auth";
@@ -10,10 +10,12 @@ import { Logo } from "@/shared/components/base/Logo";
 import { useCarga } from "@/shared/hooks/useCarga";
 import { cn } from "@/shared/lib/utils/cn";
 
-import { ICONOS } from "./iconos";
-import { NIVELES } from "./nivel-urgencia";
+import { BotonWhatsapp } from "./BotonWhatsapp";
+import { muestraBloque, nombreDelServicioPrincipal } from "./composicion";
+import { iconoPorClave, ICONOS } from "./iconos";
+import { FilaDesplegable, ListaDeCajas, TituloDeBloque } from "./ListaDeCajas";
 import { CargandoPagina, ErrorDeCarga } from "./PaginaDelPortal";
-import type { DatosInicio } from "./portal.types";
+import type { DatosInicio, Etapa, ServicioConResultados } from "./portal.types";
 import { cargarInicio } from "./portal-service";
 import { saludoSegunHora } from "./saludo";
 
@@ -34,31 +36,24 @@ function Rotulo({ children, tono }: { children: ReactNode; tono?: string }) {
 }
 
 /**
- * El icono de un acceso, dentro de su pastilla.
+ * El icono de un acceso. Va **suelto, en navy y sin pastilla detrás**.
  *
- * La pastilla no es decoración: los cuatro iconos son de lucide y tienen pesos
- * ópticos muy distintos —la balanza es ancha y llena, el globo de mensaje es una
- * mancha redonda, la tarjeta es un rectángulo—, y sueltos no se leen como un
- * conjunto sino como cuatro dibujos sin relación. La pastilla les da a todos el
- * mismo cuadro y ahí sí forman una fila ordenada.
+ * La pastilla lila existía para darles a los cuatro iconos el mismo cuadro
+ * óptico, pero el remedio pesaba más que la enfermedad: cuatro manchas moradas
+ * en fila se leían antes que los nombres de los accesos, y el icono adentro
+ * quedaba del tamaño de un adorno. Suelto y grande, el icono es lo que
+ * distingue un acceso de otro de un vistazo.
  *
- * Va en el lavanda rebajado de las tarjetas de arriba, no en el lila casi blanco
- * del tema: con ese, el icono quedaba del tamaño de un adorno.
+ * El navy es el mismo de los títulos de los bloques desplegables: en esta
+ * pantalla el único color con significado es el del nivel de urgencia.
  */
-function ChipIcono({ Icono, grande }: { Icono: Icono; grande?: boolean }) {
+function IconoDeAcceso({ Icono, grande }: { Icono: Icono; grande?: boolean }) {
   return (
-    <span
-      className={cn(
-        "flex shrink-0 items-center justify-center rounded-xl bg-[#ded9fc]",
-        grande ? "size-10" : "size-9",
-      )}
-    >
-      <Icono
-        className={cn("text-brand-navy", grande ? "size-5" : "size-4")}
-        strokeWidth={1.75}
-        aria-hidden
-      />
-    </span>
+    <Icono
+      className={cn("shrink-0 text-brand-navy", grande ? "size-7" : "size-5")}
+      strokeWidth={2}
+      aria-hidden
+    />
   );
 }
 
@@ -76,30 +71,47 @@ function NombreSubrayado({ children }: { children: ReactNode }) {
 }
 
 /**
+ * La bajada del saludo. La escribió el diseñador y va literal: es la promesa
+ * completa del portal en una línea, y por eso reemplazó a las dos frases que
+ * había antes —una enumeraba las secciones, que ya están más abajo, y la otra
+ * ofrecía ayuda, que ya la ofrece el botón de WhatsApp.
+ */
+const BAJADA = "Todo lo que debes saber de tu servicio a un solo click.";
+
+/**
  * El saludo, en una sola franja de marca **de borde a borde de la pantalla**,
- * con su contenido y las tarjetas de abajo contenidos dentro. Que la franja sea
- * más ancha que las tarjetas es lo que las deja «metidas» en el header en vez de
- * medir lo mismo que él; antes, en el computador, franja y tarjetas llegaban
+ * con su contenido y la tarjeta del servicio contenidos dentro. Que la franja
+ * sea más ancha que la tarjeta es lo que la deja «metida» en el header en vez de
+ * medir lo mismo que él; antes, en el computador, franja y tarjeta llegaban
  * exactamente al mismo borde y el solape no se leía como tal.
  *
- * Cierra en un arco ancho —media circunferencia, no una esquina redondeada— y
- * sigue por debajo de las tarjetas. El `-mb-20` es la mitad de ese abrazo y vive
- * acá, junto al `pb-28` que le deja el sitio: son un solo gesto y separarlos deja
- * el navy asomando o tapado.
+ * **Cierra en un arco ancho** —media circunferencia, no una esquina redondeada—
+ * que sigue por debajo de la tarjeta del servicio. Con la tarjeta encima lo que
+ * se ve son los dos costados de la curva, y ahí es donde tiene que notarse.
+
  *
- * En el teléfono se queda con el isotipo y el saludo, nada más: el rótulo del
- * portal y la bajada empujarían hacia abajo lo que la persona vino a ver. En el
- * computador hay aire para la apertura completa.
+ * El solape se queda: el `-mb-12` es la mitad del alto de la tarjeta del
+ * servicio y vive acá, junto al `pb-20` que le deja el sitio. Son un solo gesto
+ * y separarlos deja el navy asomando o tapado; el valor hay que revisarlo si esa
+ * tarjeta cambia de porte.
+ *
+ * La bajada es una línea y la misma en los dos tamaños. Antes eran dos frases y
+ * en el teléfono no aparecían: empujaban hacia abajo lo que la persona vino a
+ * ver. Con una línea sí cabe, y el saludo sin bajada dejaba el isotipo y el
+ * nombre solos contra una franja de navy demasiado alta.
+ *
+ * El teléfono se queda sin el rótulo «Portal de cliente»: ahí sí sobra.
  */
 function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
   return (
     <header
-      className="relative isolate -mb-20 overflow-hidden bg-brand-navy pt-6 pb-28 [--arco:3rem] md:pt-10 md:[--arco:2.5rem]"
+      className="relative isolate -mb-12 overflow-hidden bg-brand-navy pt-5 pb-20 [--arco:3rem] md:pt-7 md:pb-24 md:[--arco:2.5rem]"
       style={{
         // Radio elíptico: el horizontal es media pantalla, así los dos arcos se
         // encuentran al medio y el borde queda como un solo arco continuo. El
-        // vertical es profundo a propósito: lo único que asoma de la curva son
-        // los costados de las tarjetas, así que ahí tiene que notarse.
+        // vertical es profundo a propósito: con la tarjeta del servicio encima,
+        // lo único que asoma de la curva son los costados, y ahí tiene que
+        // notarse.
         borderBottomLeftRadius: "50% var(--arco)",
         borderBottomRightRadius: "50% var(--arco)",
       }}
@@ -113,11 +125,19 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
 
       {/* El mismo riel que el contenido de abajo: por eso el texto del saludo y
           las tarjetas quedan alineados aunque la franja se pase de largo. */}
-      <div className="mx-auto w-full max-w-4xl px-4 md:px-6">
-        <div className="flex items-center gap-3 md:hidden">
-          <Logo brand="lexy" surface="dark" layout="isotipe" className="h-9 w-auto shrink-0" />
+      <div className="mx-auto w-full max-w-3xl px-4 md:px-6">
+        <div className="md:hidden">
+          {/* La fila de chrome del teléfono: la marca a la izquierda y la salida
+              a la derecha, que es donde se la busca. Antes «Salir» vivía al pie,
+              al final de todo, y para cerrar sesión había que recorrer la página
+              entera. */}
+          <div className="flex items-center justify-between gap-3">
+            <Logo brand="lexy" surface="dark" layout="isotipe" className="h-9 w-auto shrink-0" />
 
-          <h1 className="type-page-title text-xl text-balance text-white">
+            <BotonSalir className="-mr-2 text-white hover:bg-white/10 hover:text-white" />
+          </div>
+
+          <h1 className="mt-4 type-page-title text-xl text-balance text-white">
             {saludo}
             {nombre ? (
               <>
@@ -125,6 +145,8 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
               </>
             ) : null}
           </h1>
+
+          <p className="mt-2 type-supporting text-balance text-white/70">{BAJADA}</p>
         </div>
 
         <div className="hidden max-w-xl md:block">
@@ -137,10 +159,7 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
               </>
             ) : null}
           </h1>
-          <p className="mt-4 type-body text-white/70">
-            Revisa el servicio contratado, el estado de tu caso o tus pagos. ¿Tienes dudas? Estamos
-            a un mensaje de distancia.
-          </p>
+          <p className="mt-3 type-body text-white/70">{BAJADA}</p>
         </div>
       </div>
     </header>
@@ -148,269 +167,486 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
 }
 
 /**
- * Las dos tarjetas de arriba: icono, rótulo, nombre y «Ver más». Las
- * proporciones las fijó el diseñador —radio 14, 22/20 de padding, 6 px entre
- * rótulo y nombre, 14 de separación entre las dos— y son las que las dejan
- * bajas: antes se estiraban hasta media pantalla del teléfono sin decir más.
+ * **Bloque A — Mi servicio.** Dice qué contrató la persona, y nada más: no se
+ * despliega, no lleva a ninguna parte, no tiene chevron ni cursor de enlace.
  *
- * Las dos son claras —lavanda de marca y blanco— y **eso es lo que hace que
- * funcione el solape**: caen sobre el navy del saludo, que las cruza por detrás,
- * y son ellas las que destacan. Se probó rellenar «Mi servicio» de navy y de
- * índigo, y las dos veces desapareció justo la mitad que tenía que verse.
+ * Es **lo primero y lo más grande** de la página después del saludo, porque es
+ * la respuesta a la primera pregunta que trae alguien que entra: qué contraté.
+ * El nombre del servicio va en cuerpo de titular, no de ítem.
  *
- * El estado apretado es sólido y encoge un pelo, nunca translúcido. Además se
- * apaga el resaltado que el navegador del teléfono pinta encima al tocar: es un
- * velo gris que no es del diseño y que ensuciaba el lavanda.
+ * Que sea grande y aun así no compita con el estado del caso es posible porque
+ * las dos cosas dejaron de ser el mismo objeto: A es una tarjeta y B es una
+ * sección con título y filas. Antes eran dos tarjetas casi iguales pero no del
+ * todo —otro color, otro ancho, una con chevron y la otra no—, y un par así se
+ * lee como un error de armado. Achicar A fue el primer intento de arreglarlo;
+ * lo que en realidad lo arregló fue que B pasara a ser otra cosa, y por eso A
+ * pudo volver a pesar lo que le corresponde.
+ *
+ * En el computador **se encoge al largo de su nombre**, entre 352 px y 576 px:
+ * no llega a los dos márgenes. Un cuadro que toca los dos bordes se lee como una
+ * franja del encabezado y no como una tarjeta apoyada encima, y ese apoyo es lo
+ * que amarra la franja navy con el contenido. Los topes existen para que un
+ * nombre corto no deje una cajita y el compuesto no se estire hasta el borde: se
+ * parte en dos líneas antes.
+ *
+ * En el teléfono va a todo el ancho, que ahí es lo único razonable.
+ *
+ * **La medida es la de la referencia del diseñador**, que es también la de su
+ * especificación original: rótulo en versalitas
+ * y nombre navy `#0B013C` en Geist, 20 px. Los dos colores van escritos a mano
+ * porque el tema no los cubre —su lavanda de baja intensidad es más frío y su
+ * gris de texto de apoyo, más claro—; si el sistema los incorpora, se cambian
+ * acá y no en la pantalla.
+ *
+ * Antes de llegar acá se recorrieron las dos familias del sistema en varios
+ * pesos: negrita, versalitas, display. Todas empujaban en la dirección
+ * equivocada. **La elegancia de esta tarjeta no está en la letra sino en lo que
+ * le falta**: no tiene icono, no tiene borde y el rótulo se apaga a gris.
+ *
+ * La balanza vuelve, **junto al rótulo y no junto al nombre**: en el gris del
+ * rótulo y por debajo de su altura, acompaña sin competir. Le devuelve identidad
+ * a una tarjeta que sin ella era un rectángulo lila con dos líneas de texto, y
+ * no es un elemento nuevo — es la misma balanza que usa el acceso «Consultar mi
+ * servicio». Repetir algo que ya existe en el sistema no es lo mismo que agregar
+ * un adorno.
+ *
+ * **El rótulo nunca puede pesar más que el nombre.** Con los dos en versalitas
+ * la diferencia de cuerpo se nota poco, y un icono de 16 px al lado de un texto
+ * de 12 hacía que la línea del rótulo midiera más de alto que la del nombre: la
+ * etiqueta se leía primero y el dato después. Por eso el rótulo bajó a 11 px y
+ * la balanza a 14, con el interletrado más abierto para que siga siendo cómodo
+ * de leer.
+ *
+ * El nombre va en **versalitas**, con el interletrado abierto y **chico**: 16 px
+ * en el teléfono, 18 en el computador. Las mayúsculas llenan toda la altura de
+ * la línea y pesan bastante más que su cuerpo, así que el número de píxeles no
+ * dice cuánto van a ocupar: a 24 px se convertían en un muro, y en el nombre
+ * compuesto, en dos.
+ *
+ * El interletrado va abierto porque es lo que hace legible una versalita; en
+ * caja baja, en cambio, deja las palabras deshilachadas. Caja y interletrado se
+ * mueven juntos, no son dos decisiones.
+ *
+ * El peso de la tarjeta, entonces, no lo carga el grosor de la letra sino el
+ * lila un paso más profundo que `accent`, el hairline que le define el canto y
+ * una sombra corta. Con la esquina más redonda y la sombra larga y difusa, un
+ * cuadro lila claro flotando se leía blando.
+ *
+ * Cae sobre el navy del saludo: ese solape es lo que hace que la pantalla se lea
+ * como una sola pieza.
  */
-function TarjetaDestacada({
-  rotulo,
-  Icono,
-  tono,
-  titulo,
-  estado,
-  ruta,
-  lavanda,
-}: {
-  rotulo: string;
-  Icono: Icono;
-  tono?: string;
-  titulo: string;
-  estado?: ReactNode;
-  ruta: string;
-  lavanda?: boolean;
-}) {
+function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
   return (
-    <Link
-      to={ruta}
-      className={cn(
-        "flex h-full flex-col rounded-xl px-5 py-4",
-        "transition-[background-color,transform] duration-150 ease-out",
-        "[-webkit-tap-highlight-color:transparent] active:scale-[0.985]",
-        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
-        lavanda
-          ? // Lavanda de marca rebajado con blanco. El tema solo trae el lavanda
-            // pleno (#9d90fc), que acá pesaba demasiado, y el lila casi blanco de
-            // `accent`, que no se leía como color. Los tres pasos viven acá.
-            "bg-[#ded9fc] hover:bg-[#d2ccfa] active:bg-[#c6bff7]"
-          : "bg-card ring-1 ring-border-subtle hover:bg-surface-subtle active:bg-surface-muted",
-      )}
-      style={{
-        boxShadow: lavanda ? "0 8px 20px rgb(11 1 60 / 0.12)" : "0 8px 20px rgb(11 1 60 / 0.08)",
-      }}
+    <section
+      className="w-full rounded-xl bg-[#d9d5f7] px-6 py-5 md:w-fit md:min-w-[24rem] md:max-w-2xl md:px-9 md:py-6"
+      style={{ boxShadow: "0 8px 24px rgb(11 1 60 / 0.10)" }}
     >
-      {/* El icono va en la misma línea que el rótulo, no encima: apilado le
-          sumaba una fila entera de alto a una tarjeta que solo dice dos cosas. */}
-      <span className="flex items-center gap-2">
-        <Icono
-          className={cn("size-4 shrink-0", tono ?? (lavanda ? "text-brand-navy" : "text-primary"))}
-          strokeWidth={1.75}
-          aria-hidden
-        />
-        <Rotulo tono={lavanda ? "text-brand-navy/70" : undefined}>{rotulo}</Rotulo>
-      </span>
+      <p className="flex items-center gap-1.5 type-meta text-[11px] font-medium tracking-[0.1em] text-[#4a4478] uppercase">
+        <ICONOS.balanza className="size-3.5 shrink-0" strokeWidth={1.75} aria-hidden />
+        Mi servicio
+      </p>
 
-      <span
-        className={cn(
-          "mt-1.5 block type-subsection-title font-medium text-balance",
-          lavanda ? "text-brand-navy" : "text-foreground",
-        )}
-      >
-        {titulo}
-      </span>
+      {/* Con el nombre compuesto, cada servicio va en su propia línea y el «con»
+          cierra la primera: «Defensa en juicio con» / «Protección Patrimonial».
+          Suelto, el navegador lo parte donde le alcance el ancho y el corte cae
+          en mitad de un nombre —«…Protección» arriba, «Patrimonial» abajo—, que
+          hace leer dos veces para entender que es un solo servicio.
 
-      {estado}
-
-      <span
-        className={cn(
-          "mt-auto flex items-center gap-1 pt-3 type-action-label",
-          lavanda ? "text-brand-navy" : "text-primary",
-        )}
-      >
-        Ver más
-        <ArrowRight className="size-4 shrink-0" aria-hidden />
-      </span>
-    </Link>
+          El nombre **reserva siempre dos líneas** (`min-h` de 2,7 em, que es su
+          propio interlineado por dos). Sin eso la tarjeta cambiaba de alto según
+          el servicio de cada persona: baja en «Renegociación de deudas», alta en
+          el compuesto. Es la misma pieza en todas las cuentas y tiene que medir
+          lo mismo — además de que su solape con la franja navy está calculado
+          contra un alto fijo. La medida va en `em` y no en píxeles para que siga
+          valiendo si cambia el cuerpo de la letra. */}
+      <p className="mt-2 min-h-[2.7em] type-subsection-title text-lg leading-[1.35] tracking-tight text-balance text-brand-navy md:text-xl">
+        {nombres.map((nombre, indice) => (
+          <span key={nombre} className="block">
+            {indice < nombres.length - 1 ? `${nombre} con` : nombre}
+          </span>
+        ))}
+      </p>
+    </section>
   );
 }
 
 /**
- * Los puntos del carrusel. El borde asomado de la tarjeta siguiente ya invitaba
- * a arrastrar, pero solo una vez que la persona lo mira: los puntos lo dicen
- * antes, de un vistazo, y ocupan seis píxeles de alto.
+ * **Bloque B — Estado de mi caso.** El estado de un caso único.
  *
- * El punto activo se estira en vez de solo pintarse: dice a la vez cuántas hay y
- * en cuál estás. Van `aria-hidden` porque no son un control — el contenido se
- * alcanza con las propias tarjetas.
+ * Es **la misma pieza que un juicio o una escritura**: título de bloque con su
+ * icono sobrio y, debajo, una fila que se despliega en el lugar. Los tres
+ * responden la misma pregunta con el mismo contenido, así que se ven igual;
+ * antes esta era una tarjeta aparte, parecida pero no idéntica, y esa mitad de
+ * diferencia era justamente lo que se leía mal.
+ *
+ * Su fila tiene **la misma anatomía que las de los juicios y las escrituras**:
+ * rótulo chico arriba, etapa abajo, etiqueta de urgencia y chevron. En las listas
+ * el rótulo dice de cuál de todas se trata —el ROL, el tipo de escritura— y acá
+ * dice de qué servicio es el caso, que responde la misma pregunta cuando hay uno
+ * solo. Sin él, las dos filas del inicio tenían distinto número de líneas y se
+ * leían como piezas de dos sistemas distintos.
+ *
+ * No se repite con la tarjeta de arriba: allá el servicio es el titular de la
+ * página, en versalitas; acá es un rótulo gris de doce píxeles que ubica la fila.
+ *
+ * Al desplegarse trae **todo** lo que escribió el capitán —la bajada de la
+ * etapa, las tres respuestas y «qué puede pasar después»—, y no la versión
+ * breve de las listas. Desde que «Revisar estado de mi caso» salió de los
+ * accesos, este es el único lugar donde se lee la etapa entera, y no puede
+ * quedarse contenido afuera sin ninguna pantalla que lo muestre.
  */
-function PuntosDelCarrusel({ total, activa }: { total: number; activa: number }) {
+function BloqueDelCaso({ etapa, servicio }: { etapa: Etapa | null; servicio: string }) {
   return (
-    <div className="mt-3 flex justify-center gap-1.5 md:hidden" aria-hidden>
-      {Array.from({ length: total }, (_, indice) => (
-        <span
-          key={indice}
-          className={cn(
-            "h-1.5 rounded-full transition-[width,background-color] duration-200",
-            indice === activa ? "w-5 bg-primary" : "w-1.5 bg-border-strong",
-          )}
+    <section className="mt-10 md:mt-12">
+      <TituloDeBloque Icono={ICONOS.etapa}>Estado de mi caso</TituloDeBloque>
+
+      <div className="mt-3">
+        <FilaDesplegable
+          id="mi-caso"
+          sobretitulo={servicio}
+          titulo={etapa ? etapa.nombreParaCliente : "Tu caso está avanzando"}
+          etapa={etapa}
+          completo
         />
-      ))}
-    </div>
-  );
-}
-
-/**
- * Las dos tarjetas que dicen dónde está parada la persona.
- *
- * En el teléfono no se apilan: se deslizan de lado. Apiladas ocupaban casi toda
- * la pantalla y empujaban los accesos fuera de la vista, así que la persona
- * llegaba al inicio y no veía qué podía hacer. Deslizándose, las dos caben en la
- * altura de una y «¿qué necesitas hacer hoy?» queda a un golpe de vista.
- *
- * La primera tarjeta cae sobre el navy del saludo: ese solape es lo que hace que
- * la pantalla se lea como una sola pieza. Desde `md` vuelven a ser dos columnas,
- * donde caben sin competir.
- */
-function Destacados({ datos }: { datos: DatosInicio }) {
-  const etapaVisible = datos.etapa?.visibleParaCliente ? datos.etapa : null;
-  const nivel = etapaVisible ? NIVELES[etapaVisible.nivelUrgencia] : null;
-
-  const pista = useRef<HTMLDivElement>(null);
-  const [activa, setActiva] = useState(0);
-
-  // La posición se mide contra el ancho de una tarjeta, no contra un valor fijo:
-  // así sigue funcionando si mañana entra una tercera.
-  const alDeslizar = () => {
-    const carril = pista.current;
-    const primera = carril?.firstElementChild as HTMLElement | null;
-    if (!carril || !primera) return;
-    setActiva(Math.round(carril.scrollLeft / primera.offsetWidth));
-  };
-
-  return (
-    <>
-      <div
-        ref={pista}
-        onScroll={alDeslizar}
-        className={cn(
-          "-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-3.5 overflow-x-auto px-4 pb-1",
-          "md:mx-0 md:grid md:grid-cols-2 md:gap-3.5 md:overflow-visible md:px-0 md:pb-0",
-        )}
-      >
-        <div className="w-[86%] shrink-0 snap-start md:w-auto">
-          <TarjetaDestacada
-            lavanda
-            rotulo="Mi servicio"
-            Icono={ICONOS.balanza}
-            titulo={datos.servicio.nombre}
-            ruta="/mi-servicio"
-          />
-        </div>
-
-        <div className="w-[86%] shrink-0 snap-start md:w-auto">
-          <TarjetaDestacada
-            rotulo="Estado de mi caso"
-            Icono={ICONOS.etapa}
-            tono={nivel?.color}
-            titulo={etapaVisible ? etapaVisible.nombreParaCliente : "Tu caso está avanzando"}
-            estado={
-              nivel ? (
-                <span
-                  className={cn(
-                    "mt-2 flex items-center gap-1.5 type-supporting font-medium",
-                    nivel.color,
-                  )}
-                >
-                  <nivel.Icono className="size-4 shrink-0" aria-hidden />
-                  {nivel.resumen}
-                </span>
-              ) : undefined
-            }
-            ruta="/mi-caso"
-          />
-        </div>
       </div>
-
-      <PuntosDelCarrusel total={2} activa={activa} />
-    </>
+    </section>
   );
 }
 
 type Opcion = {
-  ruta: string;
+  /** Identifica la opción en la lista y en el acordeón. */
+  clave: string;
   /** Frase completa, para la lista del computador. */
   titulo: string;
   /** Dos o tres palabras, para el cuadrado del teléfono. Siempre empieza con verbo. */
   corto: string;
   apoyo: string;
   Icono: Icono;
+  /** A dónde lleva. Ausente en la opción que, en vez de llevar, despliega. */
+  ruta?: string;
+  /** Sale del portal: se abre en otra pestaña y se dice antes de tocarlo. */
+  externo?: boolean;
+  /** Lo que se abre en el lugar. Presente solo en la opción que no navega. */
+  despliega?: ReactNode;
 };
 
 /**
- * Los iconos de los accesos van todos en el índigo de marca. El único color con
- * significado en esta pantalla es el del estado del caso, y ese vive arriba en
- * su tarjeta: repetirlo acá le quitaría fuerza.
+ * Lo que explica «Consultar mi servicio» al desplegarse: **dos cosas**, el
+ * objetivo y los beneficios. Dos rótulos, no dos frases: el objetivo va completo,
+ * con la explicación que escribió el equipo, no resumido a una línea. Se probó
+ * dejarlo en el resumen de una frase y se perdía casi todo lo que la persona
+ * necesita para entender qué contrató — que es exactamente lo que este acceso
+ * viene a responder.
  *
- * La lista es el índice completo del portal, así que incluye el servicio y el
- * caso aunque también tengan tarjeta arriba. Agregar un acceso nuevo es agregar
- * una fila acá: las dos presentaciones salen de la misma lista.
+ * **El texto va a medida de lectura, no a lo ancho del panel.** En el computador
+ * el panel mide 900 px y una línea de ese largo hace perder el renglón al volver:
+ * el ojo no encuentra dónde sigue. 65 caracteres es el ancho con que se lee un
+ * párrafo sin esfuerzo, y es el que usan las pantallas de detalle del portal.
+ *
+ * Los beneficios van como lista con su icono al costado, no como tarjetas
+ * blancas: el panel ya es un contenedor, y meterle tarjetas adentro es una caja
+ * dentro de otra caja dentro de otra.
+ *
+ * Con el nombre compuesto se explican los dos servicios, porque los dos se
+ * contrataron. La advertencia va una sola vez al cierre: es la misma para todo
+ * lo que hace Lexy y repetida se lee como letra chica.
  */
-const OPCIONES: Opcion[] = [
+function RotuloDeSeccion({ children }: { children: ReactNode }) {
+  return (
+    <p className="type-meta font-medium tracking-widest text-muted-foreground uppercase">
+      {children}
+    </p>
+  );
+}
+
+/**
+ * Lo que explica «Consultar mi servicio» al desplegarse: **el objetivo y los
+ * beneficios**, y cada uno con la forma que le corresponde.
+ *
+ * El objetivo es un párrafo: se lee de corrido, así que va sobre el gris del
+ * panel, sin caja, a medida de lectura y en cuerpo de texto. Los beneficios son
+ * cosas distintas que se comparan, así que van en tarjetas —una superficie por
+ * cosa— en dos columnas desde `md` y apiladas en el teléfono.
+ *
+ * **Se probó como láminas que se deslizaban de lado y se volvió atrás.** En el
+ * computador las dos se veían completas al mismo tiempo, así que el gesto no
+ * llevaba a ninguna parte y los puntitos no contaban nada; un carrusel que en la
+ * mitad de las pantallas no hace nada es una mecánica inventada. Acortando los
+ * textos, las dos cosas caben apiladas también en el teléfono.
+ *
+ * Con el nombre compuesto se explican los dos servicios, porque los dos se
+ * contrataron. La advertencia va una sola vez al cierre: es la misma para todo
+ * lo que hace Lexy y repetida se lee como letra chica.
+ */
+function ExplicacionDelServicio({ servicios }: { servicios: ServicioConResultados[] }) {
+  const varios = servicios.length > 1;
+
+  return (
+    <div className="space-y-4">
+      {servicios.map(({ servicio, resultados }) => (
+        <div key={servicio.id}>
+          {varios ? (
+            <h4 className="mb-2.5 type-item-title text-foreground">{servicio.nombre}</h4>
+          ) : null}
+
+          {/* Las dos cosas viven en **una sola superficie**, separadas por un
+              hairline. El objetivo estaba suelto sobre el gris del panel, justo
+              encima de un bloque blanco que se llevaba toda la luz: quedaba de
+              antesala de los beneficios en vez de ser la mitad del contenido.
+              Dentro de la misma pieza, las dos pesan lo que dice su tipografía
+              y no lo que dice su fondo — y no hace falta teñir nada. */}
+          <div className="overflow-hidden rounded-lg bg-card ring-1 ring-border-subtle">
+            <div className="px-4 py-4">
+              <RotuloDeSeccion>Objetivo del servicio</RotuloDeSeccion>
+              <p className="mt-2 max-w-[62ch] type-body leading-relaxed whitespace-pre-line text-foreground">
+                {servicio.queEs}
+              </p>
+            </div>
+
+            <div className="border-t border-border-subtle bg-surface-subtle px-4 py-2.5">
+              <RotuloDeSeccion>Beneficios que puedes obtener</RotuloDeSeccion>
+            </div>
+
+            <ul>
+              {resultados.map((resultado, fila) => {
+                const Icono = iconoPorClave(resultado.icono);
+
+                return (
+                  <li
+                    key={resultado.id}
+                    className={cn(
+                      "flex gap-3 px-4 py-3.5",
+                      fila > 0 && "border-t border-border-subtle",
+                    )}
+                  >
+                    <Icono
+                      className="mt-0.5 size-[18px] shrink-0 text-brand-navy"
+                      strokeWidth={1.75}
+                      aria-hidden
+                    />
+                    <span className="min-w-0">
+                      <span className="type-supporting block font-medium text-foreground">
+                        {resultado.titulo}
+                      </span>
+                      <span className="type-supporting mt-0.5 block leading-relaxed text-muted-foreground">
+                        {resultado.texto}
+                      </span>
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+      ))}
+
+      <p className="type-meta text-muted-foreground">
+        Cada caso es distinto: el resultado depende de tu situación y de lo que se acuerde durante
+        el proceso.
+      </p>
+    </div>
+  );
+}
+
+/**
+ * Los iconos de los accesos van todos en el navy de marca. El único color con
+ * significado en esta pantalla es el del estado del caso, y ese vive arriba en
+ * su bloque: repetirlo acá le quitaría fuerza.
+ *
+ * «Conversar con mi equipo» ya no está acá: escribirle a alguien no es una tarea
+ * más entre otras, así que salió a un botón flotante que se ve desde cualquier
+ * punto de la pantalla.
+ *
+ * **«Consultar mi servicio» no lleva a ninguna parte: se despliega acá mismo.**
+ * Es la única de la lista que se comporta así, y tiene sentido que sea esa: la
+ * explicación del servicio es lectura, no un trámite, y sacar a la persona del
+ * inicio para leer tres párrafos y volver es hacerle perder el hilo. Las otras
+ * tres sí llevan a otro lado porque ahí hay algo que hacer —pagar, felicitar,
+ * reclamar—, no algo que leer.
+ *
+ * Las dos últimas salen del portal. Van al final y en ese orden a propósito:
+ * primero el agradecimiento y después el reclamo, porque son las dos salidas de
+ * quien ya terminó de mirar su caso y no queremos que la última palabra de la
+ * pantalla sea «algo salió mal».
+ *
+ * La lista se arma con los datos a la mano porque las direcciones de afuera y la
+ * explicación del servicio son datos del portal, no constantes.
+ */
+const opciones = (datos: DatosInicio): Opcion[] => [
   {
-    ruta: "/mi-servicio",
-    titulo: "Saber sobre mi servicio",
-    corto: "Ver mi servicio",
+    clave: "servicio",
+    titulo: "Consultar mi servicio",
+    corto: "Consultar mi servicio",
     apoyo: "Qué hacemos por ti y a qué resultado apuntamos",
     Icono: ICONOS.balanza,
+    despliega: <ExplicacionDelServicio servicios={datos.serviciosPrincipales} />,
   },
   {
-    ruta: "/mi-caso",
-    titulo: "Revisar estado de mi caso",
-    corto: "Revisar mi caso",
-    apoyo: "Qué estamos haciendo y qué viene después",
-    Icono: ICONOS.etapa,
-  },
-  {
-    ruta: "/mi-equipo",
-    titulo: "Conversar con mi equipo",
-    corto: "Escribir a mi equipo",
-    apoyo: "Escríbele por WhatsApp a tu ejecutiva o a tu abogado",
-    Icono: ICONOS.mensaje,
-  },
-  {
+    clave: "pagos",
     ruta: "/mis-pagos",
-    titulo: "Revisar y pagar mi cuota",
-    corto: "Pagar mi cuota",
+    titulo: "Pagar mis honorarios",
+    corto: "Pagar mis honorarios",
     apoyo: "Tu próxima cuota y cómo pagarla",
     Icono: ICONOS.pago,
+  },
+  {
+    clave: "felicitar",
+    ruta: datos.configuracion.urlResenasGoogle,
+    externo: true,
+    titulo: "Felicitar a mi equipo",
+    corto: "Felicitar al equipo",
+    apoyo: "Déjanos una reseña en Google si te ayudamos",
+    Icono: ICONOS.felicitacion,
+  },
+  {
+    clave: "reclamo",
+    ruta: datos.configuracion.urlFormularioReclamos,
+    externo: true,
+    titulo: "Ingresar un reclamo",
+    corto: "Ingresar un reclamo",
+    apoyo: "Cuéntanos qué salió mal para poder arreglarlo",
+    Icono: ICONOS.reclamo,
   },
 ];
 
 /**
+ * El envoltorio de un acceso, que cambia según lo que el acceso haga: los de
+ * adentro del portal navegan sin recargar, los de afuera se abren en otra
+ * pestaña —y lo dicen antes, con el icono de enlace externo— y el que despliega
+ * es un botón que abre su panel en el lugar.
+ */
+function EnlaceDeAcceso({
+  opcion,
+  abierta,
+  alDesplegar,
+  className,
+  children,
+}: {
+  opcion: Opcion;
+  abierta: boolean;
+  alDesplegar: () => void;
+  className: string;
+  children: ReactNode;
+}) {
+  if (opcion.despliega) {
+    return (
+      <button
+        type="button"
+        onClick={alDesplegar}
+        aria-expanded={abierta}
+        aria-controls={`acceso-${opcion.clave}`}
+        className={cn(className, "text-left")}
+      >
+        {children}
+      </button>
+    );
+  }
+
+  if (opcion.externo) {
+    return (
+      <a href={opcion.ruta} target="_blank" rel="noreferrer" className={className}>
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <Link to={opcion.ruta ?? "/"} className={className}>
+      {children}
+    </Link>
+  );
+}
+
+const CLASES_DEL_CUADRADO =
+  "relative flex h-full w-full flex-col gap-3 rounded-xl bg-card p-4 ring-1 ring-border-subtle transition-[background-color,transform] duration-150 ease-out [-webkit-tap-highlight-color:transparent] hover:bg-surface-subtle active:scale-[0.98] active:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
+
+/**
  * Accesos del teléfono: cuadrados que se tocan, en dos columnas.
  *
- * El icono va suelto y grande, sin la pastilla lila detrás. La pastilla lo
- * encerraba en 36 px y lo dejaba del tamaño de un adorno; suelto a 28 px y en el
- * índigo de marca, **el icono es lo que se ve primero** y el nombre lo confirma.
- * Es también lo que distingue un cuadrado de otro de un vistazo, sin leer.
+ * El icono va suelto y grande, sin pastilla detrás: es lo que distingue un
+ * cuadrado de otro de un vistazo, sin leer. El texto de apoyo no viaja acá: en
+ * un cuadrado sobra, y el nombre del acceso ya dice a dónde lleva.
  *
- * `auto-rows-fr` iguala las filas, así los cuatro miden exactamente lo mismo
- * aunque un nombre ocupe dos líneas y otro una. El texto de apoyo no viaja acá:
- * en un cuadrado sobra, y el nombre del acceso ya dice a dónde lleva.
+ * El panel del acceso desplegable ocupa **las dos columnas**, justo debajo de su
+ * cuadrado. Abrirlo dentro del cuadrado dejaría un texto largo en media pantalla
+ * de ancho, y la explicación del servicio es para leerla.
  */
-function AccesosEnCuadricula() {
+function AccesosEnCuadricula({ opciones }: { opciones: Opcion[] }) {
+  const [abierta, setAbierta] = useState<string | null>(null);
+
   return (
-    <ul className="grid auto-rows-fr grid-cols-2 gap-3 md:hidden">
-      {OPCIONES.map((opcion) => (
-        <li key={opcion.ruta}>
-          <Link
-            to={opcion.ruta}
-            className="flex h-full flex-col gap-3 rounded-xl bg-card p-4 ring-1 ring-border-subtle transition-[background-color,transform] duration-150 ease-out [-webkit-tap-highlight-color:transparent] hover:bg-surface-subtle active:scale-[0.98] active:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-          >
-            <ChipIcono Icono={opcion.Icono} grande />
-            <span className="type-item-title text-balance text-foreground">{opcion.corto}</span>
-          </Link>
-        </li>
-      ))}
+    <ul className="grid grid-cols-2 gap-3 md:hidden">
+      {opciones.map((opcion) => {
+        const abierto = abierta === opcion.clave;
+
+        // El que se despliega se abre **en una sola pieza**: la tarjeta pasa a
+        // las dos columnas y el panel queda dentro de ella, con el mismo margen
+        // que su texto. Cerrado se ve igual que sus hermanos; abierto no queda
+        // un cuadrado chico arriba y un panel ancho suelto debajo, que era lo
+        // que se leía como dos cosas distintas.
+        if (opcion.despliega) {
+          return (
+            <li key={opcion.clave} className={cn(abierto && "col-span-2")}>
+              <div className="h-full overflow-hidden rounded-xl bg-card ring-1 ring-border-subtle">
+                <button
+                  type="button"
+                  onClick={() => setAbierta(abierto ? null : opcion.clave)}
+                  aria-expanded={abierto}
+                  aria-controls={`acceso-${opcion.clave}`}
+                  className="relative flex w-full flex-col gap-3 p-4 text-left transition-colors [-webkit-tap-highlight-color:transparent] hover:bg-surface-subtle active:bg-surface-muted focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring"
+                >
+                  <IconoDeAcceso Icono={opcion.Icono} grande />
+
+                  <span className="type-item-title text-balance text-foreground">
+                    {abierto ? opcion.titulo : opcion.corto}
+                  </span>
+
+                  <ChevronDown
+                    className={cn(
+                      "absolute top-4 right-4 size-4 text-foreground-faint transition-transform duration-200 motion-reduce:transition-none",
+                      abierto && "rotate-180",
+                    )}
+                    aria-hidden
+                  />
+                </button>
+
+                {abierto ? (
+                  <div
+                    id={`acceso-${opcion.clave}`}
+                    className="border-t border-border-subtle bg-surface-subtle px-4 pt-4 pb-5"
+                  >
+                    {opcion.despliega}
+                  </div>
+                ) : null}
+              </div>
+            </li>
+          );
+        }
+
+        return (
+          <li key={opcion.clave}>
+            <EnlaceDeAcceso
+              opcion={opcion}
+              abierta={false}
+              alDesplegar={() => {}}
+              className={CLASES_DEL_CUADRADO}
+            >
+              <IconoDeAcceso Icono={opcion.Icono} grande />
+              <span className="type-item-title text-balance text-foreground">{opcion.corto}</span>
+
+              {opcion.externo ? (
+                <>
+                  <ExternalLink
+                    className="absolute top-3 right-3 size-3.5 text-foreground-faint"
+                    aria-hidden
+                  />
+                  <span className="sr-only">Se abre fuera del portal</span>
+                </>
+              ) : null}
+            </EnlaceDeAcceso>
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -420,17 +656,23 @@ function AccesosEnCuadricula() {
  * no tarjetas sueltas — la regla de contención del sistema (espacio → superficie
  * → línea). Acá hay ancho de sobra para la frase completa y su apoyo.
  */
-function AccesosEnLista() {
+function AccesosEnLista({ opciones }: { opciones: Opcion[] }) {
+  const [abierta, setAbierta] = useState<string | null>(null);
+
   return (
     <div className="hidden overflow-hidden rounded-lg bg-card ring-1 ring-border-subtle md:block">
       <ul>
-        {OPCIONES.map((opcion, indice) => (
-          <li key={opcion.ruta} className={cn(indice > 0 && "border-t border-border-subtle")}>
-            <Link
-              to={opcion.ruta}
-              className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-surface-subtle active:bg-surface-muted focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring"
+        {opciones.map((opcion, indice) => (
+          <li key={opcion.clave} className={cn(indice > 0 && "border-t border-border-subtle")}>
+            <EnlaceDeAcceso
+              opcion={opcion}
+              abierta={abierta === opcion.clave}
+              alDesplegar={() =>
+                setAbierta((previa) => (previa === opcion.clave ? null : opcion.clave))
+              }
+              className="flex w-full items-center gap-4 px-5 py-4 transition-colors hover:bg-surface-subtle active:bg-surface-muted focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring"
             >
-              <ChipIcono Icono={opcion.Icono} />
+              <IconoDeAcceso Icono={opcion.Icono} />
 
               <span className="min-w-0 flex-1">
                 <span className="type-item-title block text-foreground">{opcion.titulo}</span>
@@ -439,8 +681,32 @@ function AccesosEnLista() {
                 </span>
               </span>
 
-              <ChevronRight className="size-5 shrink-0 text-foreground-faint" aria-hidden />
-            </Link>
+              {opcion.despliega ? (
+                <ChevronDown
+                  className={cn(
+                    "size-5 shrink-0 text-foreground-faint transition-transform duration-200 motion-reduce:transition-none",
+                    abierta === opcion.clave && "rotate-180",
+                  )}
+                  aria-hidden
+                />
+              ) : opcion.externo ? (
+                <>
+                  <span className="sr-only">Se abre fuera del portal</span>
+                  <ExternalLink className="size-4 shrink-0 text-foreground-faint" aria-hidden />
+                </>
+              ) : (
+                <ChevronRight className="size-5 shrink-0 text-foreground-faint" aria-hidden />
+              )}
+            </EnlaceDeAcceso>
+
+            {opcion.despliega && abierta === opcion.clave ? (
+              <div
+                id={`acceso-${opcion.clave}`}
+                className="border-t border-border-subtle bg-surface-subtle px-5 pt-4 pb-5"
+              >
+                {opcion.despliega}
+              </div>
+            ) : null}
           </li>
         ))}
       </ul>
@@ -455,8 +721,8 @@ export function Inicio() {
 
   return (
     <div className="min-h-screen bg-surface-subtle">
-      {/* En el teléfono la barra sobra: el saludo ya trae el isotipo, y «Salir»
-          baja al pie, que es donde se termina de leer la pantalla. */}
+      {/* En el teléfono la barra sobra: el saludo ya trae el isotipo y «Salir»,
+          que están dentro de la franja navy. */}
       <HeaderBar className="hidden md:flex" actions={<BotonSalir />} />
 
       <Saludo saludo={saludo} nombre={nombre} />
@@ -465,58 +731,86 @@ export function Inicio() {
           posicionado se pinta sobre uno que no lo está aunque venga antes en el
           orden. Sin esto el navy tapaba la mitad de arriba de las tarjetas en
           vez de pasarles por detrás. */}
-      <main className="relative z-10 mx-auto w-full max-w-4xl px-4 pb-10 md:px-6 md:pb-14">
+      {/* El `pb` le deja sitio al botón flotante y a su rótulo, para que no
+          queden encima de lo último que hay que leer.
+
+          El riel es `max-w-3xl`, que con la base tipográfica del producto son
+          816 px. El ancho grande (`max-w-4xl`) se eligió
+          cuando el inicio era un tablero de dos columnas, y dejó de serlo cuando
+          «Mi servicio» y el estado del caso se apilaron. Con una sola columna,
+          896 px dejaban cada fila con el identificador a la izquierda y el
+          chevron a treinta centímetros a la derecha, con el medio vacío. Es el
+          mismo riel que usa el saludo, para que el nombre y la tarjeta queden
+          alineados. */}
+      <main className="relative z-10 mx-auto w-full max-w-3xl px-4 pb-28 md:px-6 md:pb-24">
         <div>
           {fase === "cargando" ? <CargandoPagina /> : null}
           {fase === "error" ? <ErrorDeCarga onReintentar={recargar} /> : null}
 
           {fase === "listo" && datos ? (
             <>
-              <Destacados datos={datos} />
+              {/* Arriba, sola, la etiqueta de qué contrató. Después los bloques
+                  desplegables, todos con la misma piel y en el orden de la
+                  composición: primero el que reemplaza al caso, después el que
+                  se le suma. Cada caja va por su propia etapa, así que los
+                  juicios y las escrituras se listan por separado. */}
+              <TarjetaDelServicio
+                nombres={datos.serviciosPrincipales.map((item) => item.servicio.nombre)}
+              />
+
+              {muestraBloque(datos.composicion, "caso") ? (
+                <BloqueDelCaso
+                  etapa={datos.etapa?.visibleParaCliente ? datos.etapa : null}
+                  servicio={nombreDelServicioPrincipal(
+                    datos.serviciosPrincipales.map((item) => item.servicio),
+                  )}
+                />
+              ) : null}
+
+              <ListaDeCajas titulo="Mis juicios" Icono={ICONOS.tribunal} items={datos.juicios} />
+              <ListaDeCajas
+                titulo="Mis escrituras"
+                Icono={ICONOS.documento}
+                items={datos.escrituras}
+                // Solo cuando las escrituras son el servicio principal: ahí el
+                // bloque está aunque no haya ninguna en marcha todavía. Como
+                // aditivo de una renegociación, si no hay nada no aparece.
+                vacio={
+                  muestraBloque(datos.composicion, "escrituras")
+                    ? "Todavía no hay ninguna escritura en marcha. Cuando empecemos con la primera, la vas a ver acá con la etapa en que va."
+                    : undefined
+                }
+              />
 
               <section className="mt-10 md:mt-12">
-                <h2 className="type-page-title text-xl text-foreground md:text-3xl">
+                {/* Bajó de 30 a 24 px en el computador: con el nombre del
+                    servicio como pieza más grande de la página, una pregunta
+                    más grande que él invertía la jerarquía. */}
+                <h2 className="type-page-title text-xl text-foreground md:text-2xl">
                   ¿Qué necesitas <em className="text-primary italic">hacer hoy</em>?
                 </h2>
                 <div className="mt-5">
-                  <AccesosEnCuadricula />
-                  <AccesosEnLista />
+                  <AccesosEnCuadricula opciones={opciones(datos)} />
+                  <AccesosEnLista opciones={opciones(datos)} />
                 </div>
               </section>
 
-              {/* El pie tenía las tres cosas en fila y al mismo peso: un aviso,
-                  una acción y el copyright. Ahora van por rango. Primero la
-                  frase que tranquiliza, después la salida para cuando algo va
-                  mal —que es lo único que alguien va a tocar acá— y al final el
-                  chrome legal, en el cuerpo más chico. */}
-              {/* El pie tenía las tres cosas en fila y al mismo peso: un aviso,
-                  una acción y el copyright. Ahora va centrado y por rango: la
-                  frase que tranquiliza y después la salida para cuando algo va
-                  mal, que es lo único que alguien va a tocar acá. El copyright
-                  salió: no le servía a nadie que entra a ver su caso. */}
+              {/* El reclamo subió a los accesos, como una opción más de «qué
+                  necesitas hacer hoy». Acá abajo repetido serían dos caminos al
+                  mismo formulario en una misma pantalla, y el de arriba es el
+                  que la persona va a encontrar. Queda el pie con lo que sí es
+                  de pie: la frase que tranquiliza y la salida del teléfono. */}
               <footer className="mt-12 border-t border-border-subtle pt-8 text-center md:mt-14">
                 <p className="type-supporting text-muted-foreground">
                   Tu información está protegida y es confidencial.
                 </p>
-
-                <p className="mt-3">
-                  <a
-                    href={datos.configuracion.urlFormularioReclamos}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="type-action-label inline-flex items-center gap-1.5 text-primary underline underline-offset-4 hover:text-primary-hover"
-                  >
-                    ¿Problemas con tu caso? Reclama Aquí
-                    <ExternalLink className="size-3.5 shrink-0" aria-hidden />
-                  </a>
-                </p>
-
-                {/* La única salida del teléfono: en el computador vive arriba,
-                    en la barra. */}
-                <p className="mt-6 md:hidden">
-                  <BotonSalir />
-                </p>
               </footer>
+
+              <BotonWhatsapp
+                contactos={datos.contactos}
+                nombreCliente={datos.cliente.nombre}
+                correoSoporte={datos.configuracion.correoSoporte}
+              />
             </>
           ) : null}
         </div>

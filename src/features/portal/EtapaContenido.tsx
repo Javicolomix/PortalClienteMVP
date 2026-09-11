@@ -66,14 +66,15 @@ export function EtapaContenido({ etapa }: { etapa: Etapa }) {
       </div>
 
       {/* Cierre: la señal de si hay que actuar o no cierra la lectura, después
-          de que el cliente ya sabe qué le toca. Va en gris y sin caja: el color
-          de la pantalla lo carga entero el bloque de la etapa, y una caja más
-          acá abajo se leería como una quinta tarjeta. Sigue siendo el único
-          lugar donde el portal dice si hay algo pendiente — lo dice el texto,
-          con el icono acompañando; nunca dependió del color para entenderse. */}
-      <p className="flex items-start gap-2 border-t border-border-subtle pt-5 type-supporting text-muted-foreground">
+          de que el cliente ya sabe qué le toca. Sin caja —una más acá abajo se
+          leería como una quinta tarjeta— pero en el color de su nivel, el mismo
+          de la pastilla que la persona vio en el inicio. Lo dice el texto, con
+          el icono acompañando; nunca dependió del color para entenderse. */}
+      <p
+        className={`flex items-start gap-2 border-t border-border-subtle pt-5 type-supporting font-medium ${nivel.color}`}
+      >
         <Icono className="mt-0.5 size-4 shrink-0" aria-hidden />
-        {nivel.mensaje}
+        {nivel.frase}
       </p>
     </div>
   );

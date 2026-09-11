@@ -1,46 +1,68 @@
-import { AlertCircle, CheckCircle2, Info } from "lucide-react";
+import { AlertCircle, Bell, CheckCircle2 } from "lucide-react";
 
 import type { NivelUrgencia } from "./portal.types";
 
 /**
- * El nivel de urgencia es lo que le dice al cliente si tiene que actuar o puede
- * quedarse tranquilo. Un solo tono por etapa: `mensaje` para cuando hay espacio
- * de sobra, `resumen` para la tarjeta del inicio.
+ * El nivel de urgencia es lo único de la actualización que le dice al cliente
+ * **qué hacer con lo que acaba de leer**. El título describe qué pasa
+ * —«Esperando el atraso en tus deudas»— y el nivel dice si tiene que actuar o
+ * puede quedarse tranquilo.
  *
- * El color (`tinte`, `color`) lo usa solo el inicio, donde la fila del caso es
- * la única con color propio y ahí el verde significa algo. En «Estado de mi
- * caso» el mensaje va en gris: esa pantalla tiene un solo acento y es el bloque
- * de la etapa.
+ * Se cuenta en **dos tiempos**, y esa es la decisión de fondo:
+ *
+ * - **`etiqueta`** es lo que se ve con la fila cerrada: un punto de color y una
+ *   palabra, sin caja.
+ *   Con dos o tres causas abiertas, la pregunta es «cuál de todas me pide algo»
+ *   y eso se responde comparando de un vistazo — una frase en cada fila obliga a
+ *   leerlas todas para comparar.
+ * - **`frase`** es el refuerzo verbal que aparece al desplegar, cerrando el
+ *   detalle. Ahí ya no hay nada que comparar y sí hay espacio para decirlo
+ *   completo, después de que la persona leyó qué está pasando.
+ *
+ * Las tres frases y las tres etiquetas son **estándar y cerradas**: no las
+ * escribe el equipo caso a caso, se eligen. Un nivel redactado libremente deja
+ * de ser una señal comparable —dos etapas «urgentes» dirían cosas distintas— y
+ * esto solo funciona si en toda la aplicación significa siempre lo mismo.
+ *
+ * Los colores son tokens del sistema y van en la rampa que se lee sola: **verde
+ * → ámbar → rojo**. Cada nivel lleva dos: `tono` es el del punto, que va en el
+ * color pleno porque es un relleno; `color` es el del texto, que va en la
+ * variante `-strong` de verde y ámbar, porque el pleno sobre blanco no llega al
+ * contraste que necesita una letra.
+ *
+ * El color nunca es la única señal: la pastilla dice la palabra y el refuerzo la
+ * frase, las dos se entienden leídas.
  */
 export const NIVELES = {
   tranquilidad: {
-    mensaje: "Tu caso está avanzando. Por ahora no hay nada urgente.",
-    resumen: "No necesitas hacer nada",
+    etiqueta: "Tranquilo",
+    frase: "No necesitas hacer nada por ahora.",
     Icono: CheckCircle2,
-    tinte: "bg-success/10",
     color: "text-success-strong",
+    tono: "success",
   },
   atencion: {
-    mensaje: "Hay algo que tenemos que revisar contigo.",
-    resumen: "Hay algo que revisar",
-    Icono: Info,
-    tinte: "bg-info/10",
-    color: "text-info",
+    etiqueta: "Atento",
+    frase: "Puede que necesitemos alguna gestión de tu parte.",
+    Icono: Bell,
+    color: "text-warning-strong",
+    tono: "warning",
   },
   urgente: {
-    mensaje: "Necesitamos algo tuyo pronto.",
-    resumen: "Necesitamos algo tuyo",
+    etiqueta: "Urgente",
+    frase: "Necesitamos tu máxima atención y colaboración.",
     Icono: AlertCircle,
-    tinte: "bg-warning/10",
-    color: "text-warning-strong",
+    color: "text-destructive",
+    tono: "danger",
   },
 } as const satisfies Record<
   NivelUrgencia,
   {
-    mensaje: string;
-    resumen: string;
-    Icono: typeof Info;
-    tinte: string;
+    etiqueta: string;
+    frase: string;
+    Icono: typeof Bell;
     color: string;
+    /** El tono del punto de `StatusDot`, con los colores de estado del sistema. */
+    tono: "success" | "warning" | "danger";
   }
 >;

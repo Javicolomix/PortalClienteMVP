@@ -13,6 +13,14 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
     tailwindcss(),
   ],
+  server: {
+    // Escucha en toda la red local, para poder abrir la vista previa desde el
+    // teléfono, y acepta el Host de los túneles que se usan cuando la wifi tiene
+    // aislamiento de clientes y el teléfono no alcanza al computador.
+    // Es configuración de desarrollo: el build no la usa.
+    host: true,
+    allowedHosts: [".trycloudflare.com", ".loca.lt", ".ngrok-free.app"],
+  },
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),

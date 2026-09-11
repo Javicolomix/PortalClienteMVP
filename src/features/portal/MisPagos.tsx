@@ -52,46 +52,28 @@ function useCopiar() {
 
 type DatoBancario = { etiqueta: string; valor: string };
 
+/**
+ * El correo va con los otros cuatro y no solo en la frase de abajo: el
+ * formulario del banco lo pide para avisar la transferencia, así que en la
+ * práctica es un dato de la cuenta más.
+ */
 const datosParaTransferir = (configuracion: ConfiguracionPortal): DatoBancario[] => [
   { etiqueta: "Titular", valor: configuracion.titularCuenta },
   { etiqueta: "Banco", valor: configuracion.banco },
   { etiqueta: "Cuenta corriente", valor: configuracion.numeroCuenta },
   { etiqueta: "RUT", valor: configuracion.rutTitular },
+  { etiqueta: "Correo electrónico", valor: configuracion.correoSoporte },
 ];
 
 /**
- * Una fila del bloque. El botón de copiar quedó reducido a su icono: el botón
- * grande de abajo es el que resuelve el caso normal —llevarse los cuatro datos
- * de una vez— y cuatro botones con la palabra «Copiar» repetida competían con
- * él y con los datos mismos.
- */
-function FilaDeDato({ dato }: { dato: DatoBancario }) {
-  const { copiado, copiar } = useCopiar();
-
-  return (
-    <div className="flex items-center justify-between gap-3 py-3">
-      <span className="min-w-0">
-        <span className="block type-meta text-muted-foreground">{dato.etiqueta}</span>
-        <span className="block type-data break-words text-foreground">{dato.valor}</span>
-      </span>
-
-      <Button
-        variant="ghost"
-        size="sm"
-        className="shrink-0"
-        onClick={() => copiar(dato.valor)}
-        aria-label={`Copiar ${dato.etiqueta.toLowerCase()}`}
-      >
-        {copiado ? <Check aria-hidden /> : <Copy aria-hidden />}
-      </Button>
-    </div>
-  );
-}
-
-/**
- * Los cuatro datos y **un solo botón que se los lleva todos**, con salto de línea
- * y su etiqueta delante, listos para pegar. Es lo que hace la persona en la
- * práctica: abre el banco y necesita los cuatro, no uno.
+ * Los datos y **un solo botón que se los lleva todos**, con salto de línea y su
+ * etiqueta delante, listos para pegar. Es lo que hace la persona en la práctica:
+ * abre el banco y necesita todos, no uno.
+ *
+ * Cada fila tenía además su propio icono de copiar, y se fueron. Servían para
+ * pegar un dato suelto en el campo del banco, pero eran cinco controles casi
+ * invisibles al costado de los datos, compitiendo con el botón que sí resuelve
+ * el caso normal. Con uno solo abajo no hay que elegir cuál apretar.
  */
 function DatosParaTransferir({ configuracion }: { configuracion: ConfiguracionPortal }) {
   const datos = datosParaTransferir(configuracion);
@@ -101,11 +83,14 @@ function DatosParaTransferir({ configuracion }: { configuracion: ConfiguracionPo
 
   return (
     <div className="mt-3 rounded-lg bg-surface-subtle p-4">
-      <div className="divide-y divide-border-subtle">
+      <dl className="divide-y divide-border-subtle">
         {datos.map((dato) => (
-          <FilaDeDato key={dato.etiqueta} dato={dato} />
+          <div key={dato.etiqueta} className="py-3">
+            <dt className="type-meta text-muted-foreground">{dato.etiqueta}</dt>
+            <dd className="type-data break-words text-foreground">{dato.valor}</dd>
+          </div>
         ))}
-      </div>
+      </dl>
 
       <Button variant="outline" className="mt-3 w-full" onClick={copiarTodo}>
         {copiado ? (

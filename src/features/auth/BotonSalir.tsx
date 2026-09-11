@@ -16,8 +16,12 @@ import { Despedida } from "./TransicionDeMarca";
  * porque cerrar la sesión hace que `RutaProtegida` navegue por su cuenta, y esa
  * navegación pisaba el aviso: se veían los dos gestos, apagar y volver a
  * encender.
+ *
+ * Acepta `className` porque vive en dos superficies: la barra blanca del
+ * computador, donde el fantasma del sistema funciona tal cual, y el encabezado
+ * navy del teléfono, donde hay que aclararlo para que se vea.
  */
-export function BotonSalir() {
+export function BotonSalir({ className }: { className?: string }) {
   const navegar = useNavigate();
   const [despidiendo, setDespidiendo] = useState(false);
 
@@ -31,6 +35,7 @@ export function BotonSalir() {
       <Button
         variant="ghost"
         size="sm"
+        className={className}
         disabled={despidiendo}
         loading={despidiendo}
         loadingLabel="Saliendo…"

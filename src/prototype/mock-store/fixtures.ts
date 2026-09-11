@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 13,
+  datasetVersion: 21,
   entities: {
     cliente: [
       {
@@ -30,32 +30,385 @@ export const fixtures: Fixtures = {
         servicioId: "srv-renegociacion",
         etapaActualId: "etp-reneg-02",
       },
+      {
+        id: "cli-003",
+        nombre: "Ignacio",
+        correo: "ignacio.bravo@example.com",
+        rut: "12.345.678-5",
+        servicioId: "srv-defensa-juicio",
+        etapaActualId: "etp-lit-01",
+      },
+      {
+        id: "cli-004",
+        nombre: "Rosa",
+        correo: "rosa.mella@example.com",
+        rut: "9.876.543-3",
+        servicioId: "srv-proteccion-patrimonial",
+        etapaActualId: "etp-pp-02",
+      },
+      {
+        id: "cli-005",
+        nombre: "Marcela",
+        correo: "marcela.ibanez@example.com",
+        rut: "14.552.081-2",
+        servicioId: "srv-defensa-juicio",
+        etapaActualId: "etp-lit-00",
+      },
+      {
+        id: "cli-006",
+        nombre: "Patricio",
+        correo: "patricio.vergara@example.com",
+        rut: "11.203.764-9",
+        servicioId: "srv-defensa-juicio",
+        etapaActualId: "etp-lit-01",
+      },
+      {
+        id: "cli-007",
+        nombre: "Soledad",
+        correo: "soledad.munoz@example.com",
+        rut: "13.907.442-K",
+        servicioId: "srv-liquidacion",
+        etapaActualId: "etp-liq-03",
+      },
+      {
+        id: "cli-008",
+        nombre: "Héctor",
+        correo: "hector.salas@example.com",
+        rut: "8.442.315-6",
+        servicioId: "srv-renegociacion",
+        etapaActualId: "etp-reneg-05",
+      },
+      {
+        id: "cli-009",
+        nombre: "Ximena",
+        correo: "ximena.torres@example.com",
+        rut: "10.338.771-4",
+        servicioId: "srv-proteccion-patrimonial",
+        etapaActualId: "etp-pp-01",
+      },
+    ],
+
+    // Cada caja es un caso abierto en Streak. El inicio se arma con estas, no
+    // con el servicio: por eso una misma persona puede ver el estado de su
+    // renegociación y además la lista de sus juicios.
+    caja: [
+      // Juan: renegociación y nada más. La caja de monitoreo la tiene igual que
+      // todos, y se ignora: no es un juicio, es la vigilancia por defecto.
+      {
+        id: "caj-001",
+        clienteId: "cli-001",
+        tipo: "renegociacion",
+        estado: "activa",
+        identificador: "",
+        etapaId: "etp-reneg-02",
+      },
+      {
+        id: "caj-010",
+        clienteId: "cli-001",
+        tipo: "defensaEnJuicio",
+        estado: "monitoreo",
+        identificador: "",
+        etapaId: "etp-lit-00",
+      },
+
+      // Javiera: renegociación con un juicio y una escritura encima.
+      {
+        id: "caj-002",
+        clienteId: "cli-002",
+        tipo: "renegociacion",
+        estado: "activa",
+        identificador: "",
+        etapaId: "etp-reneg-02",
+      },
+      {
+        id: "caj-003",
+        clienteId: "cli-002",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-4821-2026",
+        acreedor: "Banco Estado",
+        etapaId: "etp-lit-02",
+      },
+      {
+        id: "caj-004",
+        clienteId: "cli-002",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Declaración de bien familiar",
+        etapaId: "etp-pp-02",
+      },
+      {
+        id: "caj-024",
+        clienteId: "cli-002",
+        tipo: "proteccionPatrimonial",
+        estado: "madre",
+        identificador: "",
+        etapaId: "etp-pp-01",
+      },
+      {
+        id: "caj-011",
+        clienteId: "cli-002",
+        tipo: "defensaEnJuicio",
+        estado: "monitoreo",
+        identificador: "",
+        etapaId: "etp-lit-00",
+      },
+
+      // Ignacio: defensa en juicio con dos causas reales. La de monitoreo no
+      // entra en la lista: no es un juicio suyo.
+      {
+        id: "caj-005",
+        clienteId: "cli-003",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-1207-2026",
+        acreedor: "Coopeuch",
+        etapaId: "etp-lit-01",
+      },
+      {
+        id: "caj-006",
+        clienteId: "cli-003",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-3390-2025",
+        acreedor: "Banco de Chile",
+        etapaId: "etp-lit-02",
+      },
+      {
+        id: "caj-007",
+        clienteId: "cli-003",
+        tipo: "defensaEnJuicio",
+        estado: "monitoreo",
+        identificador: "",
+        etapaId: "etp-lit-00",
+      },
+
+      // Rosa: protección patrimonial con dos escrituras en marcha. Tiene caja en
+      // juicio ejecutivo, pero es solo monitoreo: por eso su servicio principal
+      // sigue siendo protección patrimonial.
+      {
+        id: "caj-008",
+        clienteId: "cli-004",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Compraventa de inmueble",
+        etapaId: "etp-pp-02",
+      },
+      {
+        id: "caj-009",
+        clienteId: "cli-004",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Constitución de sociedad",
+        etapaId: "etp-pp-03",
+      },
+      // Su tercera escritura es del mismo tipo que la primera: en Streak no hay
+      // con qué distinguirlas, y van en etapas distintas. Es un caso real, no un
+      // dato repetido por error — se muestran las dos y lo que las diferencia es
+      // en qué va cada una.
+      {
+        id: "caj-023",
+        clienteId: "cli-004",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Compraventa de inmueble",
+        etapaId: "etp-pp-01",
+      },
+      {
+        id: "caj-025",
+        clienteId: "cli-004",
+        tipo: "proteccionPatrimonial",
+        estado: "madre",
+        identificador: "",
+        etapaId: "etp-pp-01",
+      },
+      {
+        id: "caj-012",
+        clienteId: "cli-004",
+        tipo: "defensaEnJuicio",
+        estado: "monitoreo",
+        identificador: "",
+        etapaId: "etp-lit-00",
+      },
+
+      // Marcela: solo monitoreo y nada más. Es la única situación en que la caja
+      // de monitoreo cuenta: su servicio es la vigilancia, y el estado del caso
+      // es lo que se lo cuenta.
+      {
+        id: "caj-013",
+        clienteId: "cli-005",
+        tipo: "defensaEnJuicio",
+        estado: "monitoreo",
+        identificador: "",
+        etapaId: "etp-lit-00",
+      },
+
+      // Patricio: dos causas reales y una escritura. Servicio principal
+      // compuesto — «defensa en juicio con protección patrimonial»— y los dos
+      // bloques al mismo nivel, sin estado del caso.
+      {
+        id: "caj-014",
+        clienteId: "cli-006",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-2044-2026",
+        acreedor: "Banco Santander",
+        etapaId: "etp-lit-01",
+      },
+      {
+        id: "caj-015",
+        clienteId: "cli-006",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-7719-2025",
+        acreedor: "Caja Los Andes",
+        etapaId: "etp-lit-02",
+      },
+      {
+        id: "caj-016",
+        clienteId: "cli-006",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Usufructo vitalicio",
+        etapaId: "etp-pp-01",
+      },
+      {
+        id: "caj-026",
+        clienteId: "cli-006",
+        tipo: "proteccionPatrimonial",
+        estado: "madre",
+        identificador: "",
+        etapaId: "etp-pp-01",
+      },
+      {
+        id: "caj-017",
+        clienteId: "cli-006",
+        tipo: "defensaEnJuicio",
+        estado: "monitoreo",
+        identificador: "",
+        etapaId: "etp-lit-00",
+      },
+
+      // Soledad: liquidación con una causa real encima. El servicio principal
+      // sigue siendo la liquidación —lo concursal manda— y el juicio se le suma
+      // abajo: es la estrategia concursal-táctica. El monitoreo no cuenta.
+      {
+        id: "caj-018",
+        clienteId: "cli-007",
+        tipo: "liquidacion",
+        estado: "activa",
+        identificador: "",
+        etapaId: "etp-liq-03",
+      },
+      {
+        id: "caj-030",
+        clienteId: "cli-007",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-5514-2026",
+        acreedor: "Banco Falabella",
+        etapaId: "etp-lit-01",
+      },
+      {
+        id: "caj-019",
+        clienteId: "cli-007",
+        tipo: "defensaEnJuicio",
+        estado: "monitoreo",
+        identificador: "",
+        etapaId: "etp-lit-00",
+      },
+
+      // Héctor: renegociación con una escritura encima y ninguna causa. La
+      // escritura se suma abajo sin quitarle el estado de su caso.
+      {
+        id: "caj-020",
+        clienteId: "cli-008",
+        tipo: "renegociacion",
+        estado: "activa",
+        identificador: "",
+        etapaId: "etp-reneg-05",
+      },
+      {
+        id: "caj-021",
+        clienteId: "cli-008",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Mandato general de administración",
+        etapaId: "etp-pp-03",
+      },
+      {
+        id: "caj-027",
+        clienteId: "cli-008",
+        tipo: "proteccionPatrimonial",
+        estado: "madre",
+        identificador: "",
+        etapaId: "etp-pp-01",
+      },
+      {
+        id: "caj-022",
+        clienteId: "cli-008",
+        tipo: "defensaEnJuicio",
+        estado: "monitoreo",
+        identificador: "",
+        etapaId: "etp-lit-00",
+      },
+
+      // Ximena: contrató protección patrimonial y todavía no arranca ninguna
+      // escritura. Solo tiene la caja madre, así que su bloque de escrituras
+      // está —es su servicio— pero vacío, diciéndolo.
+      {
+        id: "caj-028",
+        clienteId: "cli-009",
+        tipo: "proteccionPatrimonial",
+        estado: "madre",
+        identificador: "",
+        etapaId: "etp-pp-01",
+      },
+      {
+        id: "caj-029",
+        clienteId: "cli-009",
+        tipo: "defensaEnJuicio",
+        estado: "monitoreo",
+        identificador: "",
+        etapaId: "etp-lit-00",
+      },
     ],
 
     servicio: [
       {
         id: "srv-renegociacion",
+        tipo: "renegociacion",
         nombre: "Renegociación de deudas",
         resumen:
           "Buscamos un acuerdo con tus acreedores para que pagues tus deudas en cuotas que sí puedas cumplir.",
         queEs:
-          "La Renegociación es un procedimiento voluntario y administrativo que tiene por finalidad la repactación de las deudas de la persona estableciendo nuevas condiciones de pago con los acreedores.\n\nSu objetivo es que la persona deudora llegue a un acuerdo con todos los acreedores, obteniendo mejores condiciones de pago, las cuales vayan acorde a sus ingresos, para que de esta manera pueda resolver su problema de sobreendeudamiento y restaurar tu estabilidad financiera.",
+          "La renegociación es un procedimiento para acordar con tus acreedores nuevas condiciones de pago, acordes a tus ingresos, y salir del sobreendeudamiento.",
       },
       {
         id: "srv-liquidacion",
+        tipo: "liquidacion",
         nombre: "Liquidación de deudas",
         resumen:
           "Cuando ya no es posible pagar, buscamos que un tribunal extinga tus deudas para que puedas partir de nuevo.",
         queEs:
-          "La liquidación es un procedimiento ante un tribunal para personas cuyas deudas ya no se pueden pagar, ni siquiera en cuotas. Un liquidador designado por el tribunal ordena tus bienes, los reparte entre tus acreedores según lo que dice la ley, y al terminar el procedimiento el saldo que quedó impago se extingue.\n\nHay bienes que la ley protege y que no entran en la liquidación. Antes de partir te explicamos exactamente qué pasa con lo tuyo, para que decidas con la información completa.",
+          "La liquidación es un procedimiento ante un tribunal para cuando las deudas ya no se pueden pagar. Un liquidador ordena tus bienes, los reparte según la ley, y el saldo que queda impago se extingue.",
       },
       {
-        id: "srv-litigios",
-        nombre: "Litigios y Protección Patrimonial",
-        resumen:
-          "Te representamos ante el tribunal y ordenamos tu patrimonio para dejarlo resguardado.",
+        id: "srv-defensa-juicio",
+        tipo: "defensaEnJuicio",
+        nombre: "Defensa en juicio",
+        resumen: "Te representamos ante el tribunal en cada causa que tengas abierta.",
         queEs:
-          "Este servicio cubre dos frentes que suelen ir juntos. En los litigios llevamos tu caso ante el tribunal: preparamos la demanda o la defensa, presentamos las pruebas y te representamos en cada audiencia.\n\nEn la protección patrimonial revisamos qué tienes a tu nombre, qué riesgos corre y cómo ordenarlo para dejarlo resguardado dentro de lo que permite la ley.\n\nUn juicio tiene tiempos que fija el tribunal y no nosotros. Por eso, más que darte una fecha de término, te vamos contando en qué va y qué se viene en cada etapa.",
+          "En una defensa en juicio llevamos tu caso ante el tribunal: preparamos los escritos, presentamos las pruebas y te representamos en cada audiencia. Si tienes más de una causa, cada una avanza por su cuenta.",
+      },
+      {
+        id: "srv-proteccion-patrimonial",
+        tipo: "proteccionPatrimonial",
+        nombre: "Protección Patrimonial",
+        resumen:
+          "Ordenamos y resguardamos lo que tienes a tu nombre dentro de lo que permite la ley.",
+        queEs:
+          "En la protección patrimonial revisamos qué tienes a tu nombre y cómo ordenarlo para dejarlo resguardado dentro de lo que permite la ley. El trabajo se concreta en escrituras, y cada una avanza por su cuenta.",
       },
     ],
 
@@ -120,7 +473,7 @@ export const fixtures: Fixtures = {
 
       {
         id: "res-lit-01",
-        servicioId: "srv-litigios",
+        servicioId: "srv-defensa-juicio",
         orden: 1,
         titulo: "Un abogado en cada audiencia",
         texto:
@@ -129,7 +482,7 @@ export const fixtures: Fixtures = {
       },
       {
         id: "res-lit-02",
-        servicioId: "srv-litigios",
+        servicioId: "srv-defensa-juicio",
         orden: 2,
         titulo: "Respuesta dentro de plazo",
         texto: "Responder una demanda en tu contra dentro de los plazos legales.",
@@ -137,7 +490,7 @@ export const fixtures: Fixtures = {
       },
       {
         id: "res-lit-03",
-        servicioId: "srv-litigios",
+        servicioId: "srv-defensa-juicio",
         orden: 3,
         titulo: "Tu juicio en palabras simples",
         texto: "Entender en qué va tu juicio sin tener que leer el expediente.",
@@ -145,10 +498,27 @@ export const fixtures: Fixtures = {
       },
       {
         id: "res-lit-04",
-        servicioId: "srv-litigios",
-        orden: 4,
+        servicioId: "srv-proteccion-patrimonial",
+        orden: 1,
         titulo: "Bienes expuestos y protegidos",
         texto: "Saber qué bienes tuyos están expuestos y cuáles protege la ley.",
+        icono: "casa",
+      },
+      {
+        id: "res-pp-02",
+        servicioId: "srv-proteccion-patrimonial",
+        orden: 2,
+        titulo: "Tu patrimonio ordenado",
+        texto:
+          "Dejar por escrito quién es dueño de qué, para que no quede en discusión más adelante.",
+        icono: "documento",
+      },
+      {
+        id: "res-pp-03",
+        servicioId: "srv-proteccion-patrimonial",
+        orden: 3,
+        titulo: "Tu casa resguardada",
+        texto: "Revisar si tu vivienda puede acogerse a las protecciones que contempla la ley.",
         icono: "casa",
       },
     ],
@@ -160,15 +530,12 @@ export const fixtures: Fixtures = {
         orden: 1,
         visibleParaCliente: true,
         nombreParaCliente: "Revisamos tus antecedentes",
-        mensajePrincipal:
-          "Recibimos tus documentos y estamos revisando si tu caso cumple los requisitos para renegociar. Es el paso previo a preparar tu solicitud.",
-        queHaceLexy:
-          "Estamos revisando tus deudas una por una: con quién están, hace cuánto están impagas y cuánto suman. Con eso confirmamos que tu caso cumple lo que la ley exige para entrar a renegociación.",
+        mensajePrincipal: "Estamos revisando si tu caso cumple los requisitos para renegociar.",
+        queHaceLexy: "Revisamos tus deudas una por una: con quién están y cuánto suman.",
         queNecesitamosDelCliente:
-          "Por ahora nada. Si al revisar nos falta algún documento, tu ejecutiva te lo pide por WhatsApp.",
-        quePuedePasarDespues:
-          "Si tus deudas cumplen los requisitos, pasamos a preparar tu solicitud. Si todavía no los cumplen, te explicamos qué falta y desde cuándo podrías entrar.",
-        plazoEsperado: "Entre 5 y 10 días hábiles desde que recibimos todos tus documentos.",
+          "Nada por ahora. Si falta algún documento, tu ejecutiva te lo pide.",
+        quePuedePasarDespues: "Si cumples los requisitos, preparamos tu solicitud.",
+        plazoEsperado: "Entre 5 y 10 días hábiles.",
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -178,15 +545,13 @@ export const fixtures: Fixtures = {
         visibleParaCliente: true,
         nombreParaCliente: "Esperando el atraso en tus deudas",
         mensajePrincipal:
-          "Estamos esperando que tus deudas cumplan el período de atraso necesario para poder presentar tu solicitud de renegociación.",
-        queHaceLexy:
-          "Tu abogado ya revisó tu caso y confirmó que todavía no se cumplen los días de atraso requeridos para acceder a la renegociación. Mientras tanto, monitorearemos el estado de tus deudas para identificar cuándo sea posible avanzar.",
+          "Tus deudas todavía no cumplen el atraso que la ley exige para renegociar.",
+        queHaceLexy: "Vigilamos tus deudas para avisarte apenas se pueda avanzar.",
         queNecesitamosDelCliente:
-          "Sigue las indicaciones de tu consentimiento informado sobre las deudas que debes dejar de pagar. Si tienes pagos automáticos asociados a esas deudas, recuerda desactivarlos para evitar que se interrumpa la morosidad.",
+          "Deja de pagar las deudas que acordamos y desactiva sus pagos automáticos.",
         quePuedePasarDespues:
-          "Cuando se acerque la fecha estimada, tu abogado revisará nuevamente el caso. Si ya cumples los requisitos, tu ejecutiva legal te solicitará los documentos necesarios para presentar la solicitud.",
-        plazoEsperado:
-          "El avance depende de que tus deudas alcancen los días de atraso exigidos. Te enviamos la fecha aproximada por correo electrónico al firmar tu consentimiento informado. De todos modos, te informaremos cuando corresponda realizar una nueva revisión.",
+          "Cuando se cumpla el plazo, te pedimos los documentos para presentar.",
+        plazoEsperado: "Depende de tus deudas. Te avisamos cuando toque revisar de nuevo.",
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -195,16 +560,12 @@ export const fixtures: Fixtures = {
         orden: 3,
         visibleParaCliente: true,
         nombreParaCliente: "Preparamos tu solicitud",
-        mensajePrincipal:
-          "Tus deudas ya cumplen el atraso necesario. Estamos armando la solicitud que vamos a presentar ante la Superintendencia.",
-        queHaceLexy:
-          "Estamos ordenando el detalle de tus deudas, tus ingresos y tus gastos, y redactando la propuesta de pago que vamos a llevar a la mesa.",
+        mensajePrincipal: "Estamos armando la solicitud que vamos a presentar.",
+        queHaceLexy: "Ordenamos tus deudas, ingresos y gastos, y redactamos la propuesta de pago.",
         queNecesitamosDelCliente:
-          "Necesitamos tus últimas 3 liquidaciones de sueldo y tu certificado de deudas del Boletín Comercial. Tu ejecutiva te explica por WhatsApp cómo enviárnoslos.",
-        quePuedePasarDespues:
-          "Con tus documentos completos presentamos la solicitud. La Superintendencia tiene que revisarla y declararla admisible para que el proceso parta formalmente.",
-        plazoEsperado:
-          "Presentamos dentro de los 5 días hábiles siguientes a recibir tus documentos.",
+          "Tus últimas 3 liquidaciones de sueldo y tu certificado de deudas.",
+        quePuedePasarDespues: "Con tus documentos completos, presentamos la solicitud.",
+        plazoEsperado: "5 días hábiles desde que recibimos tus documentos.",
         nivelUrgencia: "atencion",
       },
       {
@@ -213,12 +574,11 @@ export const fixtures: Fixtures = {
         orden: 4,
         visibleParaCliente: false,
         nombreParaCliente: "Revisión final antes de presentar",
-        mensajePrincipal: "Estamos dando una última revisada a tu solicitud antes de presentarla.",
-        queHaceLexy:
-          "Un abogado del equipo revisa que la solicitud y los antecedentes estén completos y bien presentados.",
+        mensajePrincipal: "Revisamos tu solicitud antes de presentarla.",
+        queHaceLexy: "Un abogado comprueba que esté todo completo.",
         queNecesitamosDelCliente: "Nada. Es una revisión interna nuestra.",
         quePuedePasarDespues: "Presentamos tu solicitud ante la Superintendencia.",
-        plazoEsperado: "Entre 2 y 3 días hábiles.",
+        plazoEsperado: "2 o 3 días hábiles.",
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -227,16 +587,12 @@ export const fixtures: Fixtures = {
         orden: 5,
         visibleParaCliente: true,
         nombreParaCliente: "Tu solicitud está en la Superintendencia",
-        mensajePrincipal:
-          "Presentamos tu solicitud. Ahora la Superintendencia de Insolvencia y Reemprendimiento la está revisando para declararla admisible.",
-        queHaceLexy:
-          "Estamos atentos a lo que resuelva la Superintendencia y respondemos cualquier observación que nos haga.",
+        mensajePrincipal: "Presentamos tu solicitud y la Superintendencia la está revisando.",
+        queHaceLexy: "Seguimos la revisión y respondemos cualquier observación.",
         queNecesitamosDelCliente:
-          "Desde que tu solicitud es admisible no puedes tomar deudas nuevas ni pagarle a un acreedor antes que a otro: eso puede echar abajo el proceso. Si tienes dudas sobre un pago, pregúntale a tu ejecutiva antes de hacerlo.",
-        quePuedePasarDespues:
-          "Si la solicitud se declara admisible, la Superintendencia cita a la primera audiencia y tus acreedores quedan impedidos de cobrarte mientras dure el proceso. Si observa algo, lo corregimos y volvemos a presentar.",
-        plazoEsperado:
-          "La Superintendencia suele responder dentro de 5 a 10 días hábiles. Ese plazo lo maneja ella, no nosotros.",
+          "No tomes deudas nuevas ni le pagues a un acreedor antes que a otro.",
+        quePuedePasarDespues: "Si la declaran admisible, tus acreedores no pueden cobrarte.",
+        plazoEsperado: "Entre 5 y 10 días hábiles. Ese plazo lo maneja la Superintendencia.",
         nivelUrgencia: "atencion",
       },
       {
@@ -245,14 +601,11 @@ export const fixtures: Fixtures = {
         orden: 6,
         visibleParaCliente: true,
         nombreParaCliente: "Audiencia para fijar cuánto debes",
-        mensajePrincipal:
-          "La Superintendencia citó a la audiencia donde queda establecido de manera oficial cuánto debes y a quién.",
-        queHaceLexy:
-          "Vamos a la audiencia por ti. Revisamos que lo que declara cada acreedor calce con tus antecedentes y objetamos lo que no corresponda.",
+        mensajePrincipal: "En esta audiencia queda establecido cuánto debes y a quién.",
+        queHaceLexy: "Vamos por ti y objetamos lo que no corresponda.",
         queNecesitamosDelCliente:
-          "Avísanos si recibes una carta o un correo de algún acreedor con un monto distinto al que revisamos contigo. Esa información nos sirve para la audiencia.",
-        quePuedePasarDespues:
-          "Una vez fijado el monto total, la Superintendencia cita a la audiencia de renegociación, donde se discute la propuesta de pago.",
+          "Avísanos si un acreedor te informa un monto distinto al que revisamos.",
+        quePuedePasarDespues: "Fijado el monto, se cita a la audiencia de renegociación.",
         plazoEsperado: "La fecha la fija la Superintendencia. Te la avisamos apenas la tengamos.",
         nivelUrgencia: "atencion",
       },
@@ -262,15 +615,11 @@ export const fixtures: Fixtures = {
         orden: 7,
         visibleParaCliente: true,
         nombreParaCliente: "Audiencia de renegociación",
-        mensajePrincipal:
-          "Es la audiencia donde se discute con tus acreedores el acuerdo para pagar tus deudas. Es la instancia que define cómo termina tu proceso.",
-        queHaceLexy:
-          "Presentamos y defendemos tu propuesta de pago frente a tus acreedores, y negociamos las condiciones para que la cuota sea posible con tus ingresos reales.",
-        queNecesitamosDelCliente:
-          "Necesitamos que estés disponible el día de la audiencia, por si hay que consultarte algo en el momento. Tu ejecutiva te confirma la hora y cómo conectarte.",
-        quePuedePasarDespues:
-          "Si tus acreedores aceptan la propuesta, se firma el acuerdo y empiezas a pagar según lo pactado. Si no hay acuerdo, el proceso puede pasar a liquidación: te explicamos qué significa antes de que ocurra.",
-        plazoEsperado: "La fecha la fija la Superintendencia. Te avisamos apenas esté.",
+        mensajePrincipal: "Es la audiencia donde se discute el acuerdo con tus acreedores.",
+        queHaceLexy: "Defendemos tu propuesta y negociamos una cuota posible con tus ingresos.",
+        queNecesitamosDelCliente: "Que estés disponible ese día por si hay que consultarte algo.",
+        quePuedePasarDespues: "Si aceptan, se firma el acuerdo y empiezas a pagar lo pactado.",
+        plazoEsperado: "La fecha la fija la Superintendencia.",
         nivelUrgencia: "urgente",
       },
 
@@ -280,15 +629,12 @@ export const fixtures: Fixtures = {
         orden: 1,
         visibleParaCliente: true,
         nombreParaCliente: "Revisamos si la liquidación te conviene",
-        mensajePrincipal:
-          "Estamos estudiando tu situación para confirmar que liquidar es el mejor camino para ti, y no una renegociación.",
+        mensajePrincipal: "Estamos confirmando si liquidar es el mejor camino para ti.",
         queHaceLexy:
-          "Comparamos cuánto debes con lo que podrías llegar a pagar y con los bienes que tienes. Con eso definimos si te conviene renegociar o liquidar.",
-        queNecesitamosDelCliente:
-          "Por ahora nada. Si necesitamos algún documento más, tu ejecutiva te lo pide.",
-        quePuedePasarDespues:
-          "Si la liquidación es el camino, preparamos tu solicitud para el tribunal. Si te conviene renegociar, te lo explicamos y cambiamos de ruta.",
-        plazoEsperado: "Entre 5 y 10 días hábiles desde que tenemos todos tus antecedentes.",
+          "Comparamos cuánto debes con lo que podrías pagar y con los bienes que tienes.",
+        queNecesitamosDelCliente: "Nada por ahora. Si necesitamos otro documento, te lo pedimos.",
+        quePuedePasarDespues: "Si liquidar es el camino, preparamos tu solicitud para el tribunal.",
+        plazoEsperado: "Entre 5 y 10 días hábiles.",
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -297,16 +643,12 @@ export const fixtures: Fixtures = {
         orden: 2,
         visibleParaCliente: true,
         nombreParaCliente: "Preparamos tu solicitud",
-        mensajePrincipal:
-          "Estamos armando la presentación que va al tribunal para pedir la liquidación de tus deudas.",
-        queHaceLexy:
-          "Redactamos la solicitud y ordenamos el listado de tus deudas, tus bienes y tus ingresos como lo exige el tribunal.",
+        mensajePrincipal: "Estamos preparando la solicitud para el tribunal.",
+        queHaceLexy: "Ordenamos el detalle de tus deudas y de tus bienes.",
         queNecesitamosDelCliente:
-          "Necesitamos tu declaración de bienes firmada y el listado de tus acreedores. Tu ejecutiva te acompaña a completarlos.",
-        quePuedePasarDespues:
-          "Con todo completo presentamos al tribunal, que revisa y dicta la resolución de liquidación.",
-        plazoEsperado:
-          "Presentamos dentro de los 5 días hábiles siguientes a recibir tus documentos.",
+          "Tu certificado de deudas y los papeles de los bienes a tu nombre.",
+        quePuedePasarDespues: "Con todo listo presentamos y el tribunal revisa tu solicitud.",
+        plazoEsperado: "5 días hábiles desde que recibimos tus documentos.",
         nivelUrgencia: "atencion",
       },
       {
@@ -315,14 +657,12 @@ export const fixtures: Fixtures = {
         orden: 3,
         visibleParaCliente: true,
         nombreParaCliente: "Tu caso está en el tribunal",
-        mensajePrincipal:
-          "Presentamos tu solicitud. El tribunal la está revisando para dictar la resolución que abre tu liquidación.",
+        mensajePrincipal: "Tu solicitud está en el tribunal, esperando resolución.",
         queHaceLexy: "Seguimos el expediente y respondemos lo que el tribunal pida.",
         queNecesitamosDelCliente:
-          "Nada por ahora. Si te llega una notificación del tribunal, mándasela a tu ejecutiva apenas la recibas.",
-        quePuedePasarDespues:
-          "Cuando el tribunal dicte la resolución, tus acreedores dejan de poder cobrarte directamente y se designa un liquidador que se hace cargo de tus bienes.",
-        plazoEsperado: "Los plazos los maneja el tribunal. Te avisamos apenas haya novedades.",
+          "Nada por ahora. Si te llega una notificación, avísale a tu ejecutiva.",
+        quePuedePasarDespues: "Si el tribunal acoge la solicitud, designa a un liquidador.",
+        plazoEsperado: "Los plazos los fija el tribunal. Te avisamos cada avance.",
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -331,57 +671,60 @@ export const fixtures: Fixtures = {
         orden: 4,
         visibleParaCliente: true,
         nombreParaCliente: "Ya hay un liquidador a cargo",
-        mensajePrincipal:
-          "El tribunal abrió tu liquidación y designó a un liquidador, que es quien va a ordenar y repartir tus bienes entre tus acreedores.",
-        queHaceLexy:
-          "Te representamos frente al liquidador y revisamos que solo se considere lo que corresponde por ley. Hay bienes que no se pueden liquidar y los defendemos.",
-        queNecesitamosDelCliente:
-          "El liquidador te va a pedir información y documentos. Respóndele siempre con copia a tu ejecutiva, así lo revisamos antes de que entregues algo.",
-        quePuedePasarDespues:
-          "Cuando el liquidador termine de repartir, el tribunal dicta el término del procedimiento y el saldo impago de tus deudas se extingue.",
-        plazoEsperado: "Depende de cuántos bienes y acreedores haya. Suele tomar varios meses.",
+        mensajePrincipal: "El tribunal designó un liquidador para tu caso.",
+        queHaceLexy: "Acompañamos el proceso y revisamos cada paso del liquidador.",
+        queNecesitamosDelCliente: "Responder al liquidador cuando te pida información.",
+        quePuedePasarDespues: "Al terminar, el saldo que quede impago se extingue.",
+        plazoEsperado: "Depende de cuántos bienes y acreedores haya. Suele tomar meses.",
         nivelUrgencia: "atencion",
       },
 
       {
-        id: "etp-lit-01",
-        servicioId: "srv-litigios",
+        id: "etp-lit-00",
+        servicioId: "srv-defensa-juicio",
         orden: 1,
         visibleParaCliente: true,
-        nombreParaCliente: "Estudiamos tu caso",
-        mensajePrincipal:
-          "Estamos revisando tus antecedentes para definir con qué argumentos y con qué pruebas conviene ir a tribunales.",
-        queHaceLexy:
-          "Un abogado está leyendo tus documentos, revisando los plazos que corren y armando la estrategia que le conviene a tu caso.",
+        nombreParaCliente: "Vigilando si te demandan",
+        mensajePrincipal: "Hoy no tienes ninguna demanda en tu contra.",
+        queHaceLexy: "Revisamos los tribunales buscando juicios de cobranza a tu nombre.",
         queNecesitamosDelCliente:
-          "Si tienes contratos, correos o mensajes relacionados con el caso, mándaselos a tu ejecutiva aunque te parezcan poco importantes.",
+          "Si te llega un papel del tribunal, mándale una foto a tu ejecutiva ese mismo día.",
         quePuedePasarDespues:
-          "Con la estrategia definida, preparamos la demanda o la defensa y la presentamos ante el tribunal.",
-        plazoEsperado: "Entre 10 y 15 días hábiles desde que tenemos todos tus antecedentes.",
+          "Si aparece una demanda, la vas a ver acá y un abogado toma la defensa.",
+        plazoEsperado: "Es permanente, mientras tengas tu servicio activo.",
+        nivelUrgencia: "tranquilidad",
+      },
+      {
+        id: "etp-lit-01",
+        servicioId: "srv-defensa-juicio",
+        orden: 2,
+        visibleParaCliente: true,
+        nombreParaCliente: "Estudiamos tu caso",
+        mensajePrincipal: "Estamos revisando tus antecedentes para definir la estrategia.",
+        queHaceLexy: "Un abogado lee tus documentos y revisa los plazos que corren.",
+        queNecesitamosDelCliente: "Mándale a tu ejecutiva cualquier contrato o mensaje del caso.",
+        quePuedePasarDespues: "Con la estrategia lista, presentamos tu defensa ante el tribunal.",
+        plazoEsperado: "Entre 10 y 15 días hábiles.",
         nivelUrgencia: "atencion",
       },
       {
         id: "etp-lit-02",
-        servicioId: "srv-litigios",
-        orden: 2,
+        servicioId: "srv-defensa-juicio",
+        orden: 3,
         visibleParaCliente: true,
         nombreParaCliente: "Presentamos tu caso al tribunal",
-        mensajePrincipal:
-          "Ya presentamos tu escrito ante el tribunal. Desde ahora el caso avanza según los plazos que fija el propio tribunal.",
-        queHaceLexy:
-          "Revisamos el expediente periódicamente y respondemos cada trámite dentro de plazo para que el caso no se detenga.",
+        mensajePrincipal: "Ya presentamos tu escrito. Ahora los plazos los fija el tribunal.",
+        queHaceLexy: "Revisamos el expediente y respondemos cada trámite dentro de plazo.",
         queNecesitamosDelCliente:
-          "Nada por ahora. Si te notifican algo en tu domicilio o por correo, avísale a tu ejecutiva el mismo día.",
-        quePuedePasarDespues:
-          "El tribunal notifica a la otra parte y fija la primera audiencia. Te avisamos cuando tengamos fecha.",
-        plazoEsperado:
-          "Los tiempos los fija el tribunal y varían mucho de un caso a otro. No podemos comprometer una fecha.",
+          "Si te notifican algo en tu domicilio, avísale a tu ejecutiva ese mismo día.",
+        quePuedePasarDespues: "El tribunal notifica a la otra parte y fija la primera audiencia.",
+        plazoEsperado: "Los fija el tribunal y varían mucho. No podemos comprometer una fecha.",
         nivelUrgencia: "tranquilidad",
       },
       {
         id: "etp-lit-03",
-        servicioId: "srv-litigios",
-        orden: 3,
+        servicioId: "srv-defensa-juicio",
+        orden: 4,
         visibleParaCliente: false,
         nombreParaCliente: "Esperando respuesta del tribunal",
         mensajePrincipal: "",
@@ -390,6 +733,47 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues: "",
         plazoEsperado: "",
         nivelUrgencia: "tranquilidad",
+      },
+      {
+        id: "etp-pp-01",
+        servicioId: "srv-proteccion-patrimonial",
+        orden: 1,
+        visibleParaCliente: true,
+        nombreParaCliente: "Estudiamos qué tienes a tu nombre",
+        mensajePrincipal: "Estamos revisando qué bienes están a tu nombre.",
+        queHaceLexy: "Pedimos los certificados de tus propiedades y vehículos.",
+        queNecesitamosDelCliente: "Cuéntanos si tienes bienes que no aparezcan en los registros.",
+        quePuedePasarDespues: "Con el catastro listo te explicamos qué se puede proteger.",
+        plazoEsperado: "Entre 10 y 15 días hábiles.",
+        nivelUrgencia: "atencion",
+      },
+      {
+        id: "etp-pp-02",
+        servicioId: "srv-proteccion-patrimonial",
+        orden: 2,
+        visibleParaCliente: true,
+        nombreParaCliente: "Redactando la escritura",
+        mensajePrincipal: "Estamos escribiendo el documento que vas a firmar ante notario.",
+        queHaceLexy: "Un abogado redacta el texto y revisa cada cláusula.",
+        queNecesitamosDelCliente: "Nada por ahora. Te mandamos el borrador antes de firmar.",
+        quePuedePasarDespues: "Si estás de acuerdo con el borrador, coordinamos la firma.",
+        plazoEsperado: "Entre 5 y 8 días hábiles.",
+        nivelUrgencia: "tranquilidad",
+      },
+      {
+        id: "etp-pp-03",
+        servicioId: "srv-proteccion-patrimonial",
+        orden: 3,
+        visibleParaCliente: true,
+        nombreParaCliente: "Esperando la firma ante notario",
+        mensajePrincipal: "El documento está listo. Falta que lo firmes ante notario.",
+        queHaceLexy: "Dejamos la escritura en la notaría y un abogado te acompaña.",
+        queNecesitamosDelCliente:
+          "Ir a firmar con tu cédula vigente. Tu ejecutiva te confirma el día.",
+        quePuedePasarDespues:
+          "Firmada la escritura, la inscribimos y el resguardo queda constituido.",
+        plazoEsperado: "Depende de la hora que tengas para ir a la notaría.",
+        nivelUrgencia: "urgente",
       },
     ],
 
@@ -421,6 +805,94 @@ export const fixtures: Fixtures = {
         nombre: "Matías Fuenzalida",
         rol: "abogado",
         telefonoWhatsapp: "+56 9 5530 9174",
+      },
+      // Ignacio tiene asignado solo a su abogado: con dos causas andando, quien
+      // le contesta es él. El botón flotante le abre WhatsApp directo.
+      {
+        id: "con-006",
+        clienteId: "cli-003",
+        nombre: "Andrés Peña",
+        rol: "abogado",
+        telefonoWhatsapp: "+56 9 7302 6641",
+      },
+      {
+        id: "con-007",
+        clienteId: "cli-004",
+        nombre: "Daniela Soto",
+        rol: "ejecutiva",
+        telefonoWhatsapp: "+56 9 4418 2036",
+      },
+      {
+        id: "con-008",
+        clienteId: "cli-004",
+        nombre: "Andrés Peña",
+        rol: "abogado",
+        telefonoWhatsapp: "+56 9 7302 6641",
+      },
+      // Marcela tiene asignada solo a su ejecutiva: todavía no la demanda nadie,
+      // así que no hay abogado a cargo de ninguna causa.
+      {
+        id: "con-009",
+        clienteId: "cli-005",
+        nombre: "Camila Rivera",
+        rol: "ejecutiva",
+        telefonoWhatsapp: "+56 9 6721 4488",
+      },
+      {
+        id: "con-011",
+        clienteId: "cli-006",
+        nombre: "Daniela Soto",
+        rol: "ejecutiva",
+        telefonoWhatsapp: "+56 9 4418 2036",
+      },
+      {
+        id: "con-012",
+        clienteId: "cli-006",
+        nombre: "Andrés Peña",
+        rol: "abogado",
+        telefonoWhatsapp: "+56 9 7302 6641",
+      },
+      {
+        id: "con-013",
+        clienteId: "cli-007",
+        nombre: "Camila Rivera",
+        rol: "ejecutiva",
+        telefonoWhatsapp: "+56 9 6721 4488",
+      },
+      {
+        id: "con-014",
+        clienteId: "cli-007",
+        nombre: "Matías Fuenzalida",
+        rol: "abogado",
+        telefonoWhatsapp: "+56 9 5530 9174",
+      },
+      {
+        id: "con-015",
+        clienteId: "cli-008",
+        nombre: "Daniela Soto",
+        rol: "ejecutiva",
+        telefonoWhatsapp: "+56 9 4418 2036",
+      },
+      {
+        id: "con-016",
+        clienteId: "cli-008",
+        nombre: "Matías Fuenzalida",
+        rol: "abogado",
+        telefonoWhatsapp: "+56 9 5530 9174",
+      },
+      {
+        id: "con-017",
+        clienteId: "cli-009",
+        nombre: "Camila Rivera",
+        rol: "ejecutiva",
+        telefonoWhatsapp: "+56 9 6721 4488",
+      },
+      {
+        id: "con-018",
+        clienteId: "cli-009",
+        nombre: "Andrés Peña",
+        rol: "abogado",
+        telefonoWhatsapp: "+56 9 7302 6641",
       },
     ],
 
@@ -473,6 +945,62 @@ export const fixtures: Fixtures = {
         monto: 12900,
         estado: "pendiente",
       },
+      {
+        id: "cuo-101",
+        clienteId: "cli-003",
+        numero: 4,
+        fechaVencimiento: "2026-09-22",
+        monto: 74900,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-102",
+        clienteId: "cli-004",
+        numero: 2,
+        fechaVencimiento: "2026-09-30",
+        monto: 121000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-105",
+        clienteId: "cli-005",
+        numero: 6,
+        fechaVencimiento: "2026-09-18",
+        monto: 19900,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-106",
+        clienteId: "cli-006",
+        numero: 3,
+        fechaVencimiento: "2026-10-02",
+        monto: 148000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-107",
+        clienteId: "cli-007",
+        numero: 9,
+        fechaVencimiento: "2026-09-25",
+        monto: 63500,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-108",
+        clienteId: "cli-008",
+        numero: 2,
+        fechaVencimiento: "2026-10-10",
+        monto: 87400,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-109",
+        clienteId: "cli-009",
+        numero: 1,
+        fechaVencimiento: "2026-09-28",
+        monto: 96000,
+        estado: "pendiente",
+      },
     ],
 
     configuracionPortal: [
@@ -480,14 +1008,21 @@ export const fixtures: Fixtures = {
         id: "cfg-001",
         correoSoporte: "soporte@defensoriadeudor.cl",
         urlFormularioReclamos: "https://defensoriasalud.typeform.com/reclamos-lexy",
+        // El enlace corto de reseña que entrega Google desde la ficha del
+        // negocio. Reemplaza a la URL de búsqueda larga que se usaba antes, que
+        // traía parámetros de la sesión del navegador de quien la copió y abría
+        // la ficha entera en vez del formulario.
+        urlResenasGoogle: "https://g.page/r/CZfUgMb0w7hAEBM/review",
         urlPagoEnLinea:
           "https://market.apio.cl/defensoria-deudor/login?redirect=%2Fdefensoria-deudor%2Fuserpanel%2Fcharges",
-        // Cuenta sintética. La real la pone Desarrollo desde el backend, que es
-        // de donde tiene que venir: un dato bancario no se escribe en el código.
-        titularCuenta: "Servicios Legales Demo SpA",
+        // La cuenta de recaudación real, que la entregó el diseñador. No es un
+        // dato personal: es la cuenta a la que se le transfiere y está para
+        // mostrarse. En producción igual tiene que venir del backend — si
+        // Finanzas la cambia, nadie debería tener que tocar el código.
+        titularCuenta: "Asesorías Jurídicas Moller y Abadie Limitada",
         banco: "Banco de Chile",
-        numeroCuenta: "12-345-67890-01",
-        rutTitular: "76.543.210-3",
+        numeroCuenta: "00-162-36534-09",
+        rutTitular: "77.727.144-K",
       },
     ],
   },

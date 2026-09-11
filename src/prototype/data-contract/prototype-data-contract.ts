@@ -92,13 +92,14 @@ export const prototypeDataContract = definePrototypeDataContract({
         },
         servicioId: {
           id: "servicioId",
-          productDescription: "Servicio que la persona tiene contratado.",
+          productDescription:
+            "Servicio que figura contratado en la ficha. Quedó como respaldo: el servicio que el portal muestra sale de las cajas de la persona, no de acá. Solo se usa para quien todavía no tiene ninguna caja abierta.",
           dataType: "identifier",
           required: true,
           usage: soloTecnico,
           usedIn: [PORTAL],
           ...pendienteTi(
-            "Confirmar cómo se sabe qué servicio contrató la persona y qué pasa si tiene más de uno.",
+            "Confirmar si este campo sigue teniendo dueño ahora que el servicio se deduce de las cajas, o si se puede retirar del contrato.",
             "lexyConfirmed",
           ),
         },
@@ -167,7 +168,7 @@ export const prototypeDataContract = definePrototypeDataContract({
     servicio: {
       id: "servicio",
       productDescription:
-        "Servicio que Lexy presta: renegociación, liquidación o litigios. Trae la explicación que el cliente lee para entender qué contrató.",
+        "Servicio que Lexy presta: renegociación, liquidación, defensa en juicio o protección patrimonial. Trae la explicación que el cliente lee para entender qué contrató.",
       roleInExperience:
         "Explica al cliente en qué consiste su servicio, y agrupa las etapas que el capitán configura en el panel.",
       usedIn: [PORTAL, PANEL],
@@ -184,6 +185,19 @@ export const prototypeDataContract = definePrototypeDataContract({
           usage: soloTecnico,
           usedIn: [PORTAL, PANEL],
           ...pendienteTi("Confirmar el identificador de cada servicio.", "lexyConfirmed"),
+        },
+        tipo: {
+          id: "tipo",
+          productDescription:
+            "Cuál de los cuatro servicios es: «renegociacion», «liquidacion», «defensaEnJuicio» o «proteccionPatrimonial». El portal se arma distinto según cuál sea el servicio principal de la persona, así que necesita el tipo como dato y no puede deducirlo del nombre.",
+          dataType: "string",
+          required: true,
+          usage: { ...soloTecnico, filterable: true },
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar la lista cerrada de tipos y cómo se identifica cada uno en el origen. Si Lexy agrega un quinto servicio, hay que decidir con qué bloques se arma su inicio antes de publicarlo.",
+            "lexyConfirmed",
+          ),
         },
         nombre: {
           id: "nombre",
@@ -222,6 +236,103 @@ export const prototypeDataContract = definePrototypeDataContract({
       },
     },
 
+    caja: {
+      id: "caja",
+      productDescription:
+        "Cada caso abierto que la persona tiene con Lexy: lo que en Streak es una tarjeta. Una misma persona puede tener varias a la vez —su servicio principal, más juicios y más escrituras— y cada una avanza por su propia etapa.",
+      roleInExperience:
+        "Es lo que decide cómo se arma el inicio: con el conjunto de cajas de la persona se resuelve primero cuál es su servicio principal, y de ahí si ve el estado de un caso único, la lista de sus juicios, la de sus escrituras, o una combinación. El servicio principal ya no se lee de la ficha del cliente: se deduce de las cajas.",
+      usedIn: [PORTAL],
+      ...pendienteTi(
+        "LO MÁS IMPORTANTE DE RESOLVER: hoy no existe forma de saber qué cajas tiene una persona. Hay que definir cómo se listan las tarjetas de Streak asociadas a un mismo cliente y con qué campo se las agrupa. Cuál es «la principal» ya no hace falta preguntarlo: sale de las reglas del portal (renegociación o liquidación primero; si no, causas reales; si no, escrituras; si no, monitoreo).",
+        "productAssumption",
+      ),
+      fields: {
+        id: {
+          id: "id",
+          productDescription: "Identificador de la caja.",
+          dataType: "identifier",
+          required: true,
+          usage: soloTecnico,
+          usedIn: [PORTAL],
+          ...pendienteTi("Confirmar el identificador de la tarjeta en Streak.", "productAssumption"),
+        },
+        clienteId: {
+          id: "clienteId",
+          productDescription: "Persona dueña de esta caja.",
+          dataType: "identifier",
+          required: true,
+          usage: { ...soloTecnico, filterable: true },
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar con qué campo se asocian a una misma persona todas sus tarjetas de Streak. Sin esto el portal no puede juntar los casos de alguien.",
+            "productAssumption",
+          ),
+        },
+        tipo: {
+          id: "tipo",
+          productDescription:
+            "En qué embudo de Streak vive esta caja, con los mismos cuatro valores que `servicio.tipo`: renegociación, liquidación, juicio ejecutivo (`defensaEnJuicio`) y escrituras públicas (`proteccionPatrimonial`).",
+          dataType: "string",
+          required: true,
+          usage: { ...soloTecnico, filterable: true },
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar el nombre exacto de cada uno de los cuatro embudos de Streak y cómo se leen desde la tarjeta.",
+            "productAssumption",
+          ),
+        },
+        estado: {
+          id: "estado",
+          productDescription:
+            "«activa» o «monitoreo», y solo tiene sentido en el embudo de juicio ejecutivo. Monitoreo es la vigilancia por defecto que Lexy le abre a toda persona, la contrate o no: NO es un juicio real. Por eso no entra en la lista de causas y no cuenta al resolver el servicio principal. La única excepción: cuando es la única caja que la persona tiene, su servicio principal es defensa en juicio y el estado del caso cuenta esa vigilancia.",
+          dataType: "string",
+          required: true,
+          usage: { ...soloTecnico, filterable: true },
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar cómo se reconoce en Streak que una tarjeta de juicio ejecutivo es la de monitoreo y no una causa real. Toda la determinación del servicio principal depende de esto.",
+            "productAssumption",
+          ),
+        },
+        identificador: {
+          id: "identificador",
+          productDescription:
+            "Cómo reconoce la persona esta caja entre varias: en juicio ejecutivo es el ROL de la causa («C-4821-2026»); en escrituras públicas, el tipo de escritura («Declaración de bien familiar»). Va vacío en las cajas que no se listan.",
+          dataType: "string",
+          required: false,
+          usage: soloVisible,
+          usedIn: [PORTAL],
+          ...desdeUsabilidad(
+            "Con dos juicios abiertos, la persona necesita distinguir cuál es cuál. El ROL y el tipo de escritura son los campos que el diseñador fijó como identificador; falta confirmar que los dos existan y estén siempre completos en Streak, y qué se muestra si dos escrituras son del mismo tipo.",
+          ),
+        },
+        acreedor: {
+          id: "acreedor",
+          productDescription:
+            "Quién demandó, solo en las cajas del embudo de juicio ejecutivo: «Banco Estado», «Coopeuch». Se muestra junto al ROL y no en su lugar — el rol identifica el expediente, el acreedor es lo que la persona reconoce.",
+          dataType: "string",
+          required: false,
+          usage: soloVisible,
+          usedIn: [PORTAL],
+          ...desdeUsabilidad(
+            "Con dos causas abiertas, el ROL solo no le dice nada a nadie: lo que la persona reconoce es a quién le debe. Falta confirmar de qué campo de Streak sale el acreedor y si viene siempre completo.",
+          ),
+        },
+        etapaId: {
+          id: "etapaId",
+          productDescription: "Etapa en que va esta caja. Cada una avanza por su cuenta.",
+          dataType: "identifier",
+          required: true,
+          usage: { ...soloTecnico, filterable: true },
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar cómo se sabe la etapa de cada tarjeta por separado. Hoy el contrato tiene la etapa en el cliente (`cliente.etapaActualId`), que solo funciona si la persona tiene un caso; con varias cajas ese campo queda corto.",
+            "productAssumption",
+          ),
+        },
+      },
+    },
     resultadoServicio: {
       id: "resultadoServicio",
       productDescription: "Cada resultado concreto que la persona puede lograr con su servicio.",
@@ -478,11 +589,11 @@ export const prototypeDataContract = definePrototypeDataContract({
       id: "contacto",
       productDescription: "Persona de Lexy asignada al caso con la que el cliente puede hablar.",
       roleInExperience:
-        "Le pone nombre y cara al equipo: el cliente sabe a quién le escribe, no a un buzón anónimo.",
+        "Le pone nombre y cara al equipo: el cliente sabe a quién le escribe, no a un buzón anónimo. Es también lo que decide a dónde lleva el botón flotante de WhatsApp: con un solo contacto asignado abre la conversación directa con esa persona; con los dos, lleva a «Mi equipo» para que elija.",
       usedIn: [PORTAL],
       ...pendienteTi(
-        "Confirmar de dónde salen la ejecutiva y el abogado asignados a un caso.",
-        "lexyConfirmed",
+        "LO QUE FALTA: **quién de los dos ve el cliente lo configura el capitán por etapa**, en un panel de administración —solo abogado, solo ejecutiva o los dos—, así que puede cambiar durante el mismo caso a medida que avanza. Hay que definir dónde vive esa configuración y cómo llega al portal, que muestra lo que le llega y no elige. Además: en «defensa en juicio con protección patrimonial» tienen que venir la ejecutiva legal y/o el abogado de litigios de esa persona, nunca un contacto genérico de Lexy.",
+        "productAssumption",
       ),
       fields: {
         id: {
@@ -665,6 +776,19 @@ export const prototypeDataContract = definePrototypeDataContract({
           usedIn: [PORTAL],
           ...pendienteTi(
             "El enlace de Typeform viene del encargo. Confirmar si se mantiene estable o si cambia por campaña.",
+            "lexyConfirmed",
+          ),
+        },
+        urlResenasGoogle: {
+          id: "urlResenasGoogle",
+          productDescription:
+            "Enlace a la ficha de Google de Lexy Deudor, abierta en el formulario de reseña. Es a donde lleva «Felicitar a mi equipo».",
+          dataType: "string",
+          required: true,
+          usage: soloVisible,
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Es el enlace corto de reseña que entrega Google desde la ficha del negocio (`g.page/r/…/review`), no una URL de búsqueda. Confirmar que la ficha a la que apunta es la vigente de Lexy Deudor y quién avisa si el negocio se reclama de nuevo, porque en ese caso el código cambia.",
             "lexyConfirmed",
           ),
         },

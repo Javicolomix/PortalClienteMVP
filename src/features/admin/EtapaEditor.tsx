@@ -2,7 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
-import { CasoEnTrabajoInterno, type Etapa, EtapaContenido } from "@/features/portal";
+import {
+  CasoEnTrabajoInterno,
+  type Etapa,
+  EtapaContenido,
+  NIVELES as NIVELES_DEL_CLIENTE,
+} from "@/features/portal";
 import { Button } from "@/shared/components/base/Button";
 import {
   Form,
@@ -18,7 +23,9 @@ import { Label } from "@/shared/components/base/Label";
 import { RadioGroup, RadioGroupItem } from "@/shared/components/base/RadioGroup";
 import { Switch } from "@/shared/components/base/Switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/base/Tabs";
+import { Tag } from "@/shared/components/base/Tag";
 import { Textarea } from "@/shared/components/base/Textarea";
+import { cn } from "@/shared/lib/utils/cn";
 
 /**
  * Se puede guardar una etapa a medio escribir, pero no publicarla vacía: si el
@@ -56,23 +63,49 @@ const esquemaEtapa = z
 
 type ValoresEtapa = z.infer<typeof esquemaEtapa>;
 
+/**
+ * Los tres niveles, con el nombre que usa el equipo y la ayuda que dice cuándo
+ * corresponde cada uno.
+ *
+ * La frase que va a leer el cliente **no se escribe acá ni en ningún lado**: es
+ * fija por nivel y vive en `nivel-urgencia.ts`, junto a su icono y su color. Por
+ * eso se muestra al elegir, en vez de dejar que el capitán la imagine: lo que
+ * elige no es un tono, es un texto concreto que la persona va a leer.
+ */
 const NIVELES = [
   {
     valor: "tranquilidad",
-    titulo: "Tranquilidad",
-    ayuda: "El cliente solo tiene que esperar. Es el tono por defecto.",
+    titulo: "Tranquilo",
+    ayuda: "El cliente solo necesita entender el avance.",
   },
   {
     valor: "atencion",
-    titulo: "Atención",
-    ayuda: "Hay algo que revisar o cuidar, sin apuro inmediato.",
+    titulo: "Atento",
+    ayuda: "Puede venir una acción o respuesta del cliente.",
   },
   {
     valor: "urgente",
     titulo: "Urgente",
-    ayuda: "El cliente tiene que actuar pronto. Úsalo solo cuando de verdad corresponda.",
+    ayuda: "Hay una acción necesaria para no frenar el proceso.",
   },
 ] as const;
+
+/**
+ * Lo que el cliente va a leer con ese nivel, tal cual y con su color. El capitán
+ * no elige un tono abstracto: elige un texto concreto que alguien va a leer.
+ */
+function FraseDelCliente({ nivel }: { nivel: keyof typeof NIVELES_DEL_CLIENTE }) {
+  const { etiqueta, frase, color, tono } = NIVELES_DEL_CLIENTE[nivel];
+
+  return (
+    <p className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 type-meta">
+      <Tag tone={tono} size="xs" shape="rounded">
+        {etiqueta}
+      </Tag>
+      <span className={cn("font-medium", color)}>«{frase}»</span>
+    </p>
+  );
+}
 
 const CAMPOS_LARGOS = [
   {
@@ -216,7 +249,9 @@ export function EtapaEditor({
                 <FormItem>
                   <FormLabel>Nivel de urgencia</FormLabel>
                   <FormDescription>
-                    Define el tono con que el cliente lee la etapa y si tiene que actuar.
+                    Define la pastilla que el cliente ve junto a la etapa y la frase que lee al
+                    desplegarla. Las dos son fijas por nivel y no se pueden editar: así significan
+                    lo mismo en todos los casos.
                   </FormDescription>
                   <FormControl>
                     <RadioGroup
@@ -234,6 +269,8 @@ export function EtapaEditor({
                           <div className="grid gap-0.5">
                             <Label htmlFor={`nivel-${nivel.valor}`}>{nivel.titulo}</Label>
                             <p className="type-meta text-muted-foreground">{nivel.ayuda}</p>
+
+                            <FraseDelCliente nivel={nivel.valor} />
                           </div>
                         </div>
                       ))}

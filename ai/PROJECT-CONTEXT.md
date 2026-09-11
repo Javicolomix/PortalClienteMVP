@@ -300,8 +300,17 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   («PORTAL DE CLIENTE», «TU SERVICIO», «ACCESOS RÁPIDOS»), siguiendo la
   referencia del diseñador. «TU SERVICIO» nombra el contenido de su tarjeta; los
   otros dos son decorativos y se pueden quitar sin perder nada.
-- 2026-09-07: el inicio usa `max-w-4xl` porque es un tablero de dos columnas;
-  las pantallas de detalle siguen en `max-w-2xl`, que es medida de lectura.
+- 2026-09-10: el inicio usa **`max-w-3xl`**, que con la base tipográfica del
+  producto (17 px) son 816 px. El ancho grande (`max-w-4xl`) se
+  eligió el 2026-09-07 porque el inicio era un tablero de dos columnas, y dejó de
+  serlo cuando «Mi servicio» y el estado del caso se apilaron: con una sola
+  columna, 896 px dejaban cada fila con el identificador a la izquierda y el
+  chevron muy lejos a la derecha, con el medio vacío. Se bajó a 768 y quedó corto
+  —demasiado lienzo gris a los lados—, y 884 quedó ancho de nuevo. El valor final
+  está entre los tres; si se vuelve a mover, conviene saber que ya se probaron
+  768, 832, 884 y 896. El saludo comparte el mismo
+  riel, para que el nombre y la tarjeta queden alineados. Las pantallas de
+  detalle siguen en `max-w-2xl`, que es medida de lectura.
 - 2026-09-07: **sin «última actualización»** en el inicio. Se probó y se sacó; el
   campo `cliente.etapaActualizadaEn` salió también del contrato para no dejarle a
   Desarrollo un dato que ninguna pantalla usa. Aparece en una referencia visual
@@ -340,6 +349,498 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
 - 2026-09-03: los textos nunca prometen resultado ni fecha. La lista de
   resultados del servicio va acompañada siempre de la advertencia de que cada
   caso es distinto.
+
+- 2026-09-09: **son cuatro servicios, no tres.** «Litigios y Protección
+  Patrimonial» se partió en **«Defensa en juicio»** y **«Protección
+  Patrimonial»**, que son cosas distintas y se muestran distinto: un juicio es
+  una causa con rol y el otro son escrituras. Cada uno se llevó su explicación,
+  sus resultados y sus etapas.
+- 2026-09-09: **el inicio no es una pantalla por servicio: son cuatro bloques que
+  se componen.** Servicio (siempre) · estado del caso · mis juicios · estado de
+  mis escrituras. Las reglas: el bloque del servicio principal **reemplaza** al
+  estado del caso; el de un servicio secundario **se suma** debajo sin quitar
+  nada; y una caja en **monitoreo se omite** si la persona tiene alguna activa.
+  Viven en `src/features/portal/composicion.ts`, en una función pura y sin JSX,
+  para poder corregir las reglas sin abrir un componente.
+- 2026-09-09: **la unidad de datos es la «caja»**, que es la tarjeta de Streak.
+  Una persona puede tener varias y cada una va por su propia etapa. Es lo que
+  hace posible el sistema de bloques. **Lo más importante que Desarrollo tiene
+  que resolver ahora:** hoy no hay forma de saber qué cajas tiene una persona
+  —con qué campo se agrupan las tarjetas de Streak de un mismo cliente, y qué
+  etapas de Streak cuentan como «monitoreo»—. Está en el contrato como
+  `caja`, todo marcado pendiente.
+- 2026-09-09: `cliente.etapaActualId` **queda corto** y sobrevive solo para el
+  bloque del caso único. Con varias cajas la etapa vive en cada caja.
+- 2026-09-09: hay **ocho cuentas de prueba**, una por situación de la tabla de
+  decisión. Reemplaza la idea de tener las cuentas en el mismo servicio y la
+  misma etapa: lo que hay que poder comparar son las composiciones.
+
+  | Cuenta | Correo / clave | Cajas | Servicio principal | Bloques |
+  | --- | --- | --- | --- | --- |
+  | Juan | `juan.cardenas@example.com` / `J16482937` | Renegociación + monitoreo | Renegociación | A + B |
+  | Soledad | `soledad.munoz@example.com` / `S13907442` | Liquidación + 1 causa + monitoreo | Liquidación | A + B + C |
+  | Marcela | `marcela.ibanez@example.com` / `M14552081` | Solo monitoreo | Defensa en juicio | A + B |
+  | Ignacio | `ignacio.bravo@example.com` / `I12345678` | 2 causas + monitoreo | Defensa en juicio | A + C |
+  | Rosa | `rosa.mella@example.com` / `R9876543` | 3 escrituras (dos del mismo tipo) + madre + monitoreo | Protección Patrimonial | A + D |
+  | Ximena | `ximena.torres@example.com` / `X10338771` | Solo caja madre + monitoreo | Protección Patrimonial | A + D vacío |
+  | Patricio | `patricio.vergara@example.com` / `P11203764` | 2 causas + 1 escritura + madre + monitoreo | Defensa en juicio con Protección Patrimonial | A + C + D |
+  | Héctor | `hector.salas@example.com` / `H8442315` | Renegociación + 1 escritura + madre + monitoreo | Renegociación | A + B + D |
+  | Javiera | `javiera.rojas@example.com` / `J15204336` | Renegociación + 1 causa + 1 escritura + madre + monitoreo | Renegociación | A + B + C + D |
+
+  Para el botón de WhatsApp: **Marcela** tiene solo ejecutiva y **Ignacio** solo
+  abogado (los dos abren WhatsApp directo); las otras siete tienen los dos y
+  pasan por «Mi equipo».
+
+- 2026-09-09: los juicios y las escrituras **se despliegan en el inicio**, no
+  llevan a otra pantalla. Con dos o tres causas abiertas la pregunta no es «cómo
+  va esta» sino «cuál de todas me pide algo», y eso se responde comparando, no
+  navegando. Es la única excepción a «cada opción es una página propia»: al
+  desplegarse muestran las mismas tarjetas que «Estado de mi caso», sin «qué
+  puede pasar después», que es lectura de fondo y no ayuda a comparar.
+- 2026-09-09: **«Conversar con mi equipo» salió de la lista de accesos** y es un
+  **botón flotante de WhatsApp** abajo a la derecha (46 px en el teléfono, 52 en
+  el computador, verde oficial `#25D366`). Escribirle a alguien no es una tarea
+  más entre otras: es la salida de emergencia y tiene que verse desde cualquier
+  punto de la pantalla.
+- 2026-09-09: **el destino del botón de WhatsApp lo deciden los contactos
+  asignados, no el botón.** A una persona pueden venirle asignados el abogado y
+  la ejecutiva, o solo uno de los dos —y cuál de los dos puede depender de la
+  etapa—. El portal muestra lo que le llega: **con un solo contacto abre WhatsApp
+  directo** con esa persona y el mensaje ya escrito; **con los dos lleva a
+  `/mi-equipo`**, donde elige y encuentra el correo de soporte. Sin contactos se
+  queda igual y lleva a `/mi-equipo`: un botón de emergencia no puede desaparecer
+  justo cuando no hay a quién escribirle. La regla de a quién se le muestra a
+  quién vive del lado de Lexy, no del portal; está anotada en el contrato como
+  pendiente. Cuentas para recorrerlo: Marcela (solo ejecutiva), Ignacio (solo
+  abogado), el resto con los dos.
+- 2026-09-09: **«Revisar mi caso» desaparece de los accesos** cuando el bloque
+  del caso fue reemplazado por la lista de juicios o la de escrituras: esa
+  información ya está más arriba en la misma pantalla. «Mi servicio» y «Mis
+  pagos» son transversales y están siempre.
+- 2026-09-09: las medidas de la especificación (`#FAFAFA`, `#D1D1D1`, textos de
+  10-11 px) **se tradujeron al sistema Lexy** en vez de escribirse a mano:
+  superficie `card`, borde `border-subtle`, radio `lg` —que ya son 10 px, igual
+  que pedía la especificación— y la escala tipográfica del tema. Los 10-11 px del
+  mockup se dejaron fuera a propósito: esta pantalla la lee alguien asustado y
+  con el teléfono en la mano. El único color escrito a mano es el verde de
+  WhatsApp, que es de WhatsApp y no del sistema.
+
+- 2026-09-09: **Paso 0 — el servicio principal se deduce de las cajas, no de la
+  ficha del cliente.** El orden: renegociación o liquidación gana siempre (los
+  juicios y las escrituras se le suman abajo); si no hay, las causas reales dan
+  «defensa en juicio», y si además hay escrituras, el nombre compuesto **«Defensa
+  en juicio con Protección Patrimonial»**, con C arriba y D abajo, las dos al
+  mismo nivel; si solo hay escrituras, protección patrimonial; y si no hay nada
+  más que monitoreo, defensa en juicio con el estado del caso. `cliente.servicioId`
+  quedó de respaldo, solo para quien no tiene ninguna caja abierta.
+- 2026-09-09: **la caja de monitoreo no es un juicio.** Lexy se la abre a toda
+  persona en el embudo de juicio ejecutivo, la contrate o no, así que no entra en
+  la lista de causas ni cuenta para decidir el servicio principal. Se evalúa una
+  sola vez: cuando es lo único que la persona tiene. Reemplaza a la regla
+  anterior de «monitoreo se esconde si hay algo activo», que dejaba la puerta
+  abierta a mostrarlo como una causa más. Todas las cuentas de prueba tienen la
+  suya, para que la regla se vea funcionando.
+- 2026-09-09: el identificador de cada ítem es **el ROL en los juicios y el tipo
+  de escritura en las escrituras**, que son los campos de Streak. Las escrituras
+  dejaron de llamarse «Escritura de la casa de Ñuñoa» y pasaron a su tipo
+  («Declaración de bien familiar», «Usufructo vitalicio»).
+- 2026-09-09: **dos escrituras del mismo tipo se muestran las dos, con el título
+  repetido.** No hay en Streak con qué distinguirlas y no se va a inventar una
+  diferencia: numerarlas («1 de 2») sería un orden que cambia solo si mañana
+  entra una tercera. Lo que las separa es la etapa, que va justo debajo del
+  título y es además lo que la persona vino a mirar —«cuál de todas me pide
+  algo»—. Rosa tiene el caso cargado, con dos «Compraventa de inmueble» en
+  etapas distintas. Las listas de juicios y escrituras van **ordenadas por
+  identificador** justamente por esto: las del mismo tipo quedan juntas —separadas
+  por una tercera parecerían un dato repetido por error— y el orden no cambia
+  entre una visita y otra.
+- 2026-09-09: **«Mi servicio» (bloque A) dejó de ser interactivo.** Ni enlace, ni
+  chevron, ni «Ver más»: es texto informativo y nada más. Una tarjeta que parece
+  tocarse y no hace nada gasta la primera atención de alguien que entra asustado,
+  y la explicación se alcanza igual desde «Saber sobre mi servicio», que está
+  siempre en los accesos. Bajó de lavanda pleno a `accent`: ya no tiene que pedir
+  que la toquen.
+- 2026-09-09: **«Estado de mi caso» (bloque B) se despliega en el lugar**, como
+  los juicios y las escrituras: los tres bloques desplegables responden la misma
+  pregunta y ahora tienen el mismo gesto. El nivel de urgencia se sigue viendo
+  con la tarjeta cerrada. La pantalla completa `/mi-caso` se queda, con «qué
+  puede pasar después», y sigue llegándose desde los accesos.
+- 2026-09-09: **se fue el carrusel del teléfono.** Existía porque las dos
+  tarjetas eran altas y apiladas empujaban los accesos fuera de la pantalla;
+  ahora que A es solo rótulo y nombre y B llega cerrada, las dos apiladas miden
+  menos que una de las de antes. Y un panel que se abre dentro de un carril que
+  se arrastra de lado es un mal sitio para leer. Desde `md` siguen en paralelo,
+  alineadas arriba para que al desplegarse crezca solo el caso. Reemplaza a la
+  decisión del 2026-09-08 sobre las tarjetas deslizándose y sus puntitos.
+- 2026-09-09: **«Mi servicio» explica el servicio principal, no el contratado.**
+  Con el nombre compuesto explica los dos, uno debajo del otro, cada uno con su
+  «qué se puede lograr»; la advertencia de que cada caso es distinto va una sola
+  vez al cierre. Si el bloque A los nombra juntos, la pantalla que lo explica no
+  puede contar solo la mitad.
+
+- 2026-09-09: **«Mi servicio» es un cuadro solo arriba, siempre, y el estado del
+  caso viene a continuación** — nunca al lado. Se fue la grilla de dos columnas
+  del computador: con B desplegable, el panel abierto ocupaba media pantalla y
+  dejaba la otra columna vacía.
+- 2026-09-09: **«Mi servicio» es la pieza principal del inicio y se ve como
+  tal**: el nombre del servicio en cuerpo de titular (20 px en el teléfono, 24 en
+  el computador), la tarjeta más grande y la primera de la página. Es la
+  respuesta a la primera pregunta de quien entra. **No se estira de borde a
+  borde**: se encoge al largo de su nombre, porque un cuadro que llega a los dos
+  márgenes se lee como una franja del encabezado y no como una tarjeta apoyada
+  encima.
+  El problema que había —dos tarjetas casi iguales pero no del todo, otro color,
+  otro ancho, una con chevron y la otra no— **no se arregló achicando A**, que
+  fue el primer intento y la dejaba sin peso; se arregló haciendo que **B dejara
+  de ser una tarjeta** y pasara a ser una sección con título y filas. Resuelto
+  eso, A pudo volver a pesar lo que le corresponde.
+  El solape con el navy (`-mb-12`) sale del alto de esta tarjeta: si cambia de
+  porte hay que revisarlo, porque de más queda entera dentro de la franja y de
+  menos se despega.
+- 2026-09-09: **B, C y D son literalmente la misma pieza.** «Estado de mi caso»
+  dejó de ser una tarjeta aparte y pasó a ser lo que ya eran los juicios y las
+  escrituras: título de bloque con su icono, y debajo filas que se despliegan en
+  el lugar (`FilaDesplegable` en `ListaDeCajas.tsx`). Los tres responden la misma
+  pregunta con el mismo contenido del capitán; siendo lo mismo, se ven iguales.
+  Lo único propio de B es la segunda línea: ahí va el **nivel de urgencia** en
+  vez del nombre de la etapa, porque con un caso solo el nombre ya está de título
+  y lo que falta es si hay algo que hacer.
+- 2026-09-09: **los tres bloques desplegables llevan icono en el título, en navy
+  y sin pastilla**: hito para el caso, tribunal para los juicios, documento para
+  las escrituras. Dejan reconocer de qué es cada sección sin leer el título.
+- 2026-09-09: **se fue la pastilla lila de los iconos de los accesos.** Existía
+  para darles a todos el mismo cuadro óptico, pero cuatro manchas moradas en fila
+  se leían antes que los nombres, y el icono adentro quedaba del tamaño de un
+  adorno. Van sueltos y en navy, el mismo de los títulos de bloque. Reemplaza a
+  la decisión del 2026-09-03 de los iconos del inicio en índigo de marca: en esta
+  pantalla **el único color con significado es el del nivel de urgencia**, y si
+  los iconos estructurales también se tiñen, ese deja de decir nada.
+- 2026-09-09: en el embudo de escrituras hay una **caja madre** —la que dice que
+  contrató protección patrimonial— y las **cajas obreras**, que son las gestiones.
+  La madre no se lista: no es una escritura, y mostrarla sería anunciar una
+  gestión que no existe. Sí cuenta para saber que el servicio está contratado.
+- 2026-09-09: **el bloque de escrituras está aunque no haya ninguna en marcha**,
+  cuando protección patrimonial es el servicio principal: ahí ese bloque *es* el
+  servicio, y en blanco diría que el portal está roto. Dice que todavía no hay
+  ninguna y que aparecerá cuando empiece la primera. Como bloque aditivo de una
+  renegociación, en cambio, si no hay nada que listar no aparece. Ximena tiene el
+  caso cargado.
+- 2026-09-09: **si el bloque B se muestra o no depende del servicio principal, no
+  de si las listas quedaron vacías.** Se probó lo segundo y le ponía un «estado
+  de mi caso» genérico a quien contrató escrituras y todavía no arranca ninguna.
+  En protección patrimonial ese bloque no existe, ni siquiera vacío.
+- 2026-09-09: «¿Qué necesitas hacer hoy?» gana **dos accesos que salen del
+  portal**: «Felicitar a mi equipo», que lleva a la ficha de Google de Lexy
+  Deudor abierta en el formulario de reseña, e «Ingresar un reclamo». Van al
+  final y en ese orden: primero el agradecimiento y después el reclamo, para que
+  la última palabra de la pantalla no sea «algo salió mal». Se abren en otra
+  pestaña y lo dicen antes de tocarlos, con el icono de enlace externo.
+- 2026-09-09: **el enlace de reclamos bajó del pie a la lista de accesos.** Dos
+  caminos al mismo formulario en la misma pantalla eran uno de más, y el de
+  arriba es el que la persona encuentra. Reemplaza la decisión del 2026-09-03
+  sobre «¿Problemas con tu caso? Reclama Aquí» al pie: el texto literal se fue
+  con él y ahora el acceso se llama «Ingresar un reclamo». El pie queda con la
+  frase de confidencialidad y, en el teléfono, «Salir».
+- 2026-09-09: **la cuenta de transferencia es la real** — Asesorías Jurídicas
+  Moller y Abadie Limitada, Banco de Chile, cuenta corriente 00-162-36534-09,
+  RUT 77.727.144-K, correo soporte@defensoriadeudor.cl. El correo pasó a ser el
+  quinto dato de la lista además de estar en la frase de abajo: el formulario del
+  banco lo pide para avisar la transferencia.
+- 2026-09-09: en «Mis pagos» **quedó un solo botón de copiar**, el de abajo que
+  se lleva todos los datos. Se fueron los iconos de copiar de cada fila: eran
+  cinco controles casi invisibles al costado de los datos, compitiendo con el
+  botón que sí resuelve el caso normal. Reemplaza a la decisión del 2026-09-08,
+  que los había dejado reducidos a su icono.
+
+- 2026-09-10: **la tarjeta de «Mi servicio» va a todo el ancho y el nombre en
+  versalitas**, con el interletrado abierto y **chico para lo que ocupa**: 18 px
+  en el teléfono, 20 en el computador. La caja alta suma mancha por sí sola —las
+  mayúsculas llenan toda la altura de la línea, sin ascendentes ni descendentes
+  que aireen la palabra—, así que al tamaño con que funcionaba en minúsculas se
+  volvía un muro. La presencia se la dan el lila, el ancho completo y estar
+  arriba de todo, no el cuerpo de la letra.
+  **La balanza va junto al rótulo, no junto al nombre**: al tamaño del rótulo y
+  en su mismo gris. Le devuelve identidad a una tarjeta que sin ella era un
+  rectángulo lila con dos líneas de texto, y no es un elemento nuevo — es la
+  misma balanza del acceso «Consultar mi servicio». A todo el ancho la página queda con un solo riel de izquierda a
+  derecha; encogida al largo de su nombre parecía que no había sabido decidir su
+  tamaño. En caja alta y con aire entre letras no hay contraforma que engordar
+  —que era el problema de las negritas a tamaño grande— y el nombre deja de
+  leerse como una frase para leerse como un emblema, que es lo correcto: nadie
+  *lee* «Protección Patrimonial», lo reconoce.
+- 2026-09-09: la tarjeta conserva **la piel de la especificación original**, que
+  es la que el diseñador reconoció como elegante en su referencia: fondo
+  `#EEEDFE`, rótulo gris `#616161` en versalitas, nombre navy `#0B013C` en Geist,
+  radio 14, sin borde y con sombra suave.
+  **La elegancia de esta tarjeta está en lo que le falta**, no en la letra: sin
+  icono, sin borde, con el rótulo apagado a gris y el nombre sin gritar. Lo que
+  la hace destacar es que flota sobre el navy.
+  Antes de llegar acá se recorrieron las dos únicas familias del sistema —Geist
+  para texto e interfaz, Switzer para display; Geist Mono es de código— en varios
+  pesos y tamaños. **Descartadas por el diseñador:** Geist en negrita, Switzer en
+  negrita, Switzer en peso medio, Geist en versalitas y Geist regular a 28 px.
+  No hay una tercera familia: Neue Montreal y Satoshi se descartaron en agosto de
+  2026 (ninguna en uso, y Neue Montreal es free-personal-use).
+  Se compararon las **dos únicas familias del sistema** —Geist para texto e
+  interfaz, Switzer para display; Geist Mono es de código— en varios pesos, y el
+  diseñador eligió esta. Neue Montreal y Satoshi se habían descartado en agosto
+  de 2026 (ninguna en uso, y Neue Montreal es free-personal-use). **No hay una
+  tercera opción tipográfica**: lo que queda por mover es peso, tamaño e
+  interletrado, porque las dos familias son variables (100–900).
+- 2026-09-09: la tarjeta de «Mi servicio» **destaca por densidad y por color, no
+  por tamaño**: lila un paso más profundo que `accent` (`#E7E4FC`) con hairline
+  `#CBC4F2`, negrita con el interletrado cerrado, esquina de 10 px en vez de 14 y
+  sombra corta. Con la esquina redonda y la sombra larga y difusa flotaba blanda.
+  Los iconos estructurales del inicio subieron a trazo 2 por lo mismo.
+- 2026-09-09: **la jerarquía del inicio, de mayor a menor:** nombre del servicio
+  (24 px en el teléfono, 28 en el computador) → «¿Qué necesitas hacer hoy?»
+  (20/24) → títulos de bloque (16/18) → contenido de las filas (16). **Lo más
+  grande de la página es el nombre del servicio**: es la respuesta a la primera
+  pregunta de quien entra, y todo lo demás se lee en relación a él. Por eso la
+  pregunta bajó de 30 a 24 px y los títulos de bloque quedaron chicos y elegantes,
+  con el contador aún más chico y en gris. Se probó darles el tamaño de la
+  pregunta y el resultado fue el contrario: título, nombre de la etapa y nombre
+  del servicio medían casi lo mismo y no había jerarquía que leer. Después de «Mi
+  servicio» son el mensaje principal de la pantalla —lo que la persona vino a
+  leer— y tienen que pesar como tal, no como el rótulo de una lista más.
+- 2026-09-09: **cada título de bloque lleva su icono sobrio en navy**: un hito
+  para «Estado de mi caso», un tribunal para «Mis juicios» y un documento para
+  «Mis escrituras». Dejan reconocer de qué es cada sección al pasar la
+  vista, sin leer. En navy porque el único color con significado en la pantalla es
+  el del nivel de urgencia.
+- 2026-09-10: **las tres filas del inicio tienen la misma anatomía**: rótulo chico
+  arriba, etapa abajo, etiqueta de urgencia y chevron. En los juicios y las
+  escrituras el rótulo dice de cuál de todas se trata; en el estado del caso dice
+  de qué servicio es, que responde la misma pregunta cuando hay uno solo. Sin él,
+  la fila del caso tenía una línea y las otras dos, y se leían como piezas de dos
+  sistemas distintos aunque la tipografía fuera idéntica. No se repite con la
+  tarjeta de arriba: allá el servicio es el titular de la página, acá un rótulo
+  gris de doce píxeles que ubica la fila.
+- 2026-09-09: **en las filas manda la etapa, no el identificador.** El ROL de una
+  causa y el tipo de una escritura pasaron arriba y en chico, como rótulo de la
+  fila; el nombre de la etapa ocupa la línea principal. Nadie entra al portal a
+  leer un rol: entra a saber en qué va.
+- 2026-09-10: **todo panel desplegado abre con el bloque lila «ETAPA ACTUAL»**,
+  con la explicación de la etapa pero **sin repetir su nombre**: ese ya está en el
+  título de la fila, justo arriba, y repetido a diez píxeles y en cuerpo más
+  grande la persona lee dos veces lo mismo y la segunda parece otra cosa. Sin el
+  bloque, el panel empezaba directo por «qué está haciendo tu equipo», que
+  responde otra pregunta.
+- 2026-09-09: **«Revisar estado de mi caso» salió de los accesos**: la
+  información ya está arriba, en su propio bloque. Con eso, el desplegable del
+  caso pasó a traer **todo** lo que escribe el capitán —la bajada de la etapa y
+  «qué puede pasar después» incluidas—, no la versión breve de las listas: es el
+  único lugar donde se lee la etapa entera y no puede quedar contenido sin dónde
+  mostrarse. **Consecuencia:** la página `/mi-caso` quedó sin ninguna entrada
+  desde el portal. Sigue funcionando por URL; hay que decidir si se elimina.
+- 2026-09-09: **el botón de WhatsApp abre un panel anclado al botón**, no una
+  página aparte, cuando la persona tiene los dos contactos: elegir entre dos
+  nombres no es cambiar de lugar, y quien aprieta ese botón normalmente está
+  mirando algo de su caso que no quiere perder de vista. El panel trae también el
+  correo de soporte. Con un solo contacto sigue abriendo WhatsApp directo.
+  Usa `Popover` del registry (instalado el 2026-09-09), que ya trae el cierre con
+  Escape y con clic afuera. **Consecuencia:** a `/mi-equipo` solo le queda una
+  entrada, desde el estado vacío de «Mis pagos»; también hay que decidir si se
+  mantiene.
+
+- 2026-09-09: la bajada del saludo es **«Todo lo que debes saber de tu servicio
+  a un solo click.»**, la escribió el diseñador y va literal (con «click», no
+  «clic»). Reemplaza a las dos frases anteriores: una enumeraba las secciones,
+  que ya están más abajo, y la otra ofrecía ayuda, que ya la ofrece el botón de
+  WhatsApp. **Ahora también aparece en el teléfono**, donde antes no cabía: con
+  una sola línea sí entra, y el saludo sin bajada dejaba el isotipo y el nombre
+  solos contra demasiada franja de navy. El rótulo «Portal de cliente» sigue
+  siendo solo del computador.
+- 2026-09-09: **el encabezado se subió**: menos aire arriba y abajo del saludo
+  (`pt-5 pb-20`, `md:pt-7 md:pb-24`), así el contenido empieza antes.
+
+- 2026-09-09: sobre el botón flotante de WhatsApp va el rótulo **«Contacta a tu
+  equipo»**, chico y en una pastilla blanca. El círculo verde solo dice
+  «WhatsApp», no a quién ni para qué, y en una pantalla donde todo lo demás está
+  nombrado era el único elemento que había que adivinar. La pastilla no recibe
+  clics —el objetivo es el círculo— y va en blanco porque debajo se desplaza
+  contenido y tiene que leerse igual sobre una tarjeta o sobre el lienzo gris.
+
+- 2026-09-09: los accesos se llaman **«Consultar mi servicio»** y **«Pagar mis
+  honorarios»** (antes «Saber sobre mi servicio» y «Revisar y pagar mi cuota»).
+- 2026-09-09: **«Consultar mi servicio» se despliega en el inicio**, no navega:
+  la explicación del servicio es lectura, no un trámite, y sacar a la persona del
+  inicio para leer tres párrafos y volver le hace perder el hilo. Los otros tres
+  accesos sí llevan a otro lado, porque ahí hay algo que *hacer* —pagar,
+  felicitar, reclamar—, no algo que leer. En el teléfono el panel ocupa las dos
+  columnas debajo de su cuadrado: la explicación en media pantalla de ancho no se
+  lee. **Consecuencia:** `/mi-servicio` quedó sin entrada desde el portal, igual
+  que `/mi-caso`. Las dos siguen funcionando por URL; hay que decidir si se
+  eliminan.
+- 2026-09-09: en el teléfono **«Salir» está arriba a la derecha**, en la misma
+  fila que el isotipo, dentro del encabezado navy. Antes vivía al pie y había que
+  recorrer la página entera para cerrar sesión. Reemplaza a la decisión del
+  2026-09-08 de dejarlo al pie por falta de sitio en el encabezado.
+
+- 2026-09-10: **el nivel de urgencia se cuenta en dos tiempos.** Con la fila
+  cerrada es una **etiqueta redondeada y chica** a la derecha —Tranquilo (verde) ·
+  Atento (ámbar) · Urgente (rojo)—, con el `Tag` del registry; se le agregó al
+  componente el tamaño `xs` (20 px de alto, 11 px de letra), porque a `sm` pesaba
+  más que el título al que acompaña, y se le subió la densidad del relleno a los
+  tres tonos de estado, porque al 10 % se leían como un pastel de kit. Se probó
+  como punto de color y palabra suelta —sin caja— y se volvió a la pastilla:
+  contenida se distingue del título de la fila sin que haya que leerla, porque con dos o tres causas abiertas la
+  pregunta es «cuál de todas me pide algo» y eso se compara de un vistazo; una
+  frase en cada fila obliga a leerlas todas para comparar. Al **desplegar**
+  aparece el refuerzo verbal, cerrando el detalle:
+  «No necesitas hacer nada por ahora.» · «Puede que necesitemos alguna gestión de
+  tu parte.» · «Necesitamos tu máxima atención y colaboración.»
+  Cierra y no abre el detalle: es la conclusión de todo lo anterior, y puesta
+  arriba sería una alarma antes del contexto que la explica.
+  Las tres etiquetas y las tres frases son **estándar y cerradas**, no las
+  escribe el equipo caso a caso: redactadas libremente dos etapas «urgentes»
+  dirían cosas distintas. El título de la actualización dice **qué pasa** y el
+  nivel dice **qué hacer con eso**. El color nunca es la única señal.
+- 2026-09-10: **el panel de WhatsApp es siempre el mismo**, venga uno o dos
+  contactos: título fijo «Escríbenos por WhatsApp», una fila por persona con el
+  círculo verde, el nombre, el rol y **chevron siempre**, y abajo, tras una
+  divisoria, el correo de soporte. Se descartó saltar directo a WhatsApp cuando
+  hay un solo contacto: el botón se comportaba distinto según un dato que la
+  persona no ve, así que dos clientes tenían dos productos distintos en la mano.
+  También se descartó el título «¿Con quién quieres hablar?», que con un solo
+  contacto ofrecía elegir entre una cosa.
+- 2026-09-10: **quién ve el cliente lo configura el capitán por etapa**, no por
+  servicio —solo abogado, solo ejecutiva o los dos—, así que puede cambiar
+  durante el mismo caso. Está en el contrato como lo que falta definir en
+  `contacto`: dónde vive esa configuración y cómo llega al portal.
+- 2026-09-10: en «Mis juicios» cada causa se rotula **«Rol N.° [ROL] · [Acreedor]»**
+  —«Rol N.° C-4821-2026 · Banco Estado»—. El acreedor es un campo nuevo de la
+  caja y **se suma al ROL, no lo reemplaza**: el rol identifica el expediente,
+  pero lo que la persona reconoce es a quién le debe.
+
+- 2026-09-10: el bloque D se llama **«Mis escrituras»**, no «Estado de mis
+  escrituras». Queda a la par de «Mis juicios» y el «estado» ya lo cuenta cada
+  fila con su etapa.
+
+- 2026-09-10: **cada fila lleva su propio nivel de urgencia**, sea del caso, de
+  un juicio o de una escritura. La etapa se muestra igual en los tres bloques, así
+  que si el capitán marca urgente la etapa de una escritura, la persona tiene que
+  verlo ahí. Reemplaza a la regla del 2026-09-07 de **un solo signo de urgencia
+  por pantalla**: funcionaba con un caso único y se caía con varios —callar la
+  urgencia de dos juicios para no repetir un color es esconder justo lo que hay
+  que decir—. Es además lo que hace útil una lista de tres causas: la pregunta que
+  trae la persona es «cuál de todas me pide algo».
+- 2026-09-10: en el panel del capitán, al elegir el nivel **se muestra la frase
+  exacta que va a leer el cliente**, con su icono y su color. La frase es fija por
+  nivel y no se edita; mostrarla evita que el capitán elija «un tono» imaginando
+  otra cosa. Los tres niveles se llaman ahí **Tranquilo · Atento · Urgente**.
+
+- 2026-09-10: **el portal ya no aparece ampliado al entrar desde el teléfono.**
+  No era el portal: iOS hace zoom sobre cualquier campo con letra menor a 16 px
+  al enfocarlo, y ese zoom no se deshace al navegar, así que el acceso lo dejaba
+  ampliado y el portal heredaba la pantalla descolocada. Los campos del sistema
+  (`Input`, `Textarea`, `Select`) pasaron a 16 px en el teléfono y vuelven a 14
+  desde `md`. Se descartó `maximum-scale=1` en el viewport: apaga el pellizco
+  para ampliar en toda la aplicación y deja afuera a quien necesita ampliar para
+  leer.
+- 2026-09-10: **las pantallas de detalle no llevan «Salir»**, solo «Volver al
+  inicio». Con las dos, la esquina de arriba ofrecía dos salidas a la vez —una
+  que retrocede y otra que cierra la sesión— y en un teléfono están a un
+  centímetro: quien viene a ver su cuota podía cerrar sesión sin querer. Cerrar
+  sesión se hace desde el inicio, que es de donde se entró.
+- 2026-09-10: **la línea de urgencia va en cuerpo de metadato** (12 px, icono a
+  la par) para que la frase más larga —«Puede que necesitemos algo de ti
+  pronto»— nunca ocupe dos líneas en el teléfono. Partida en dos deja de leerse
+  de un vistazo, que es lo único que esa línea tiene que hacer.
+
+- 2026-09-10: al desplegar «Consultar mi servicio» se muestran **dos cosas y
+  nada más**: «Objetivo del servicio» y «Beneficios que puedes obtener». Los
+  beneficios van como lista con su icono al costado, no como tarjetas blancas —
+  el panel ya es un contenedor y meterle tarjetas adentro es una caja dentro de
+  otra caja.
+  **Son dos rótulos, no dos frases:** el objetivo va con la explicación completa
+  (`servicio.queEs`). Se probó dejarlo en el resumen de una línea y se perdía casi
+  todo lo que la persona necesita para entender qué contrató, que es lo que este
+  acceso viene a responder.
+  El texto va a **medida de lectura (65 caracteres)** y no a lo ancho del panel:
+  en el computador el panel mide 900 px y una línea de ese largo hace perder el
+  renglón al volver.
+- 2026-09-10: en el teléfono, el acceso desplegable **se abre en una sola pieza**:
+  la tarjeta pasa a las dos columnas y el panel queda dentro de ella, con el mismo
+  margen que su texto. Antes quedaba un cuadrado chico arriba y un panel ancho
+  suelto debajo, que se leía como dos cosas distintas.
+- 2026-09-10: en el acceso, el logo y el eslogan **«Hacemos fácil lo legal» son
+  un solo bloque de marca**: pegados, sin aire entre los dos, y el eslogan
+  **alineado con la palabra «lexydeudor»**, no con el centro del conjunto. El
+  isotipo se lleva el primer 23 % del lockup, así que centrado bajo todo caía a
+  la izquierda de la palabra y los dos textos no compartían ningún borde. El
+  23 % va como proporción y no en píxeles: vale igual en el teléfono (192 px) y
+  en el computador (240 px). Desde `lg` el eslogan recupera su aire y su tamaño
+  de título.
+
+- 2026-09-10: **los títulos de portada bajan a 24 px en el teléfono** y vuelven a
+  30 desde `md`: «Ingresa a tu portal» y los de las pantallas de detalle. A 30 px
+  llenaban la línea de borde a borde y competían con lo que tenían al lado —en el
+  acceso, con el hero de marca justo encima—. El saludo del inicio ya lo hacía;
+  eran las únicas dos portadas que no escalaban.
+
+- 2026-09-10: **el encabezado del inicio cierra en arco** —media circunferencia,
+  no una esquina redondeada—, con la tarjeta del servicio montada encima: lo que
+  se ve de la curva son los dos costados. Se probó cerrarlo recto y se volvió al
+  arco. El solape de la tarjeta sobre la franja es lo que amarra el encabezado
+  con el contenido.
+- 2026-09-10: **las respuestas de la etapa van apiladas, no de lado.** Se probaron
+  deslizándose en el teléfono y se volvió atrás: las cuatro no son alternativas
+  entre las que se elige una, son las cuatro partes de una misma explicación, y
+  esconder tres detrás de un gesto obliga a descubrir que existen antes de poder
+  leerlas. El problema que el carrusel intentaba resolver —que el detalle medía
+  varias pantallas— se resolvió acortando los textos.
+- 2026-09-10: **los textos de las etapas son cortos**: una o dos frases por campo,
+  81 caracteres el más largo. Estaban escritos como párrafos y en un teléfono el
+  detalle de una etapa medía varias pantallas. Las explicaciones de servicio
+  (`servicio.queEs`) también se acortaron a un párrafo. Son textos de ejemplo: el
+  largo real lo fija el capitán, pero este es el que la pantalla soporta bien.
+- 2026-09-10: al desplegar «Consultar mi servicio» van **el objetivo y los
+  beneficios, cada uno con la forma que le corresponde**: el objetivo es un
+  párrafo, así que va sobre el gris del panel, sin caja, a medida de lectura y en
+  cuerpo de texto; los beneficios, filas separadas por hairline. **Las dos cosas
+  viven en una sola superficie blanca**, separadas por una línea y con el rótulo
+  de los beneficios en una banda gris que hace de bisagra.
+  Se probó el objetivo suelto sobre el gris del panel y se perdía: quedaba justo
+  encima de un bloque blanco que se llevaba toda la luz, así que se leía como
+  antesala de los beneficios y no como la mitad del contenido. Dentro de la misma
+  pieza, las dos pesan lo que dice su tipografía y no lo que dice su fondo — sin
+  teñir nada de lila.
+  Los beneficios en lista y no en grilla de dos columnas: con tres, la grilla
+  dejaba un hueco y las tarjetas de cada fila se estiraban a la altura de la más
+  larga. Es además la regla de contención del sistema —espacio, superficie,
+  línea— y la misma pieza de los accesos del computador.
+  **Se probaron como láminas deslizables y se descartó:** en el computador las
+  dos se veían completas a la vez, el gesto no llevaba a ninguna parte y los
+  puntitos no contaban nada. Un carrusel que en la mitad de las pantallas no hace
+  nada es una mecánica inventada. Con los textos cortos, las dos cosas caben
+  apiladas también en el teléfono.
+
+- 2026-09-10: la transición de marca (entrar y salir) **se dibuja colgada del
+  `body`**, no donde está el botón que la dispara. «Salir» vive en el encabezado
+  navy del inicio, que crea su propio contexto de apilamiento: ahí adentro su
+  `z-50` solo competía con los hermanos del encabezado, y el contenido de la
+  página se pintaba encima. Al salir se veía la transición de fondo con las
+  tarjetas del portal flotando sobre ella.
+
+- 2026-09-10: **todo el producto va un punto más grande**: la base tipográfica
+  quedó en 106,25 % de la del navegador (17 px con la configuración por defecto,
+  en vez de 16). Va en un solo lugar (`src/index.css`) y no retocando pantalla por
+  pantalla, porque el sistema está construido en `rem`: tipografía, espaciado,
+  radios y anchos salen todos de esa base, así que subirla escala el conjunto sin
+  romper ninguna de las proporciones afinadas una por una. En porcentaje y no en
+  píxeles para que quien tenga agrandada la letra en su navegador conserve su
+  ajuste. **Efecto secundario a tener presente:** los breakpoints también están en
+  `rem`, así que el corte a escritorio pasa de 768 a 816 px.
+
+- 2026-09-10: en el nombre compuesto, **cada servicio va en su propia línea** y
+  el «con» cierra la primera: «DEFENSA EN JUICIO CON» / «PROTECCIÓN PATRIMONIAL».
+  Suelto, el navegador lo parte donde le alcanza el ancho y el corte cae en mitad
+  de un nombre, que obliga a leer dos veces para entender que es un solo
+  servicio. El nombre **reserva siempre dos líneas**, así que la tarjeta mide lo
+  mismo tenga el servicio que tenga: antes era baja en «Renegociación de deudas»
+  y alta en el compuesto, y su solape con la franja navy está calculado contra un
+  alto fijo.
 
 - 2026-09-03: **PP = Protección Patrimonial**. El servicio quedó como «Litigios y
   Protección Patrimonial».

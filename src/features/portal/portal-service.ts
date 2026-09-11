@@ -1,7 +1,10 @@
 import { sesion } from "@/features/auth";
 import { read } from "@/prototype/ports";
 
+import { componerInicio, determinarServicioPrincipal, nombreDelServicioPrincipal } from "./composicion";
 import type {
+  Caja,
+  CajaConEtapa,
   Cliente,
   ConfiguracionPortal,
   Contacto,
@@ -63,18 +66,31 @@ async function cargarConfiguracion(): Promise<ConfiguracionPortal> {
   return configuracion;
 }
 
+/**
+ * Junta cada caja con la etapa en que va. Las etapas se piden todas de una vez y
+ * después se reparten: pedir una por caja sería una llamada por juicio.
+ */
+async function conSusEtapas(cajas: Caja[], todas: Etapa[]): Promise<CajaConEtapa[]> {
+  const porId = new Map(todas.map((etapa) => [etapa.id, etapa]));
+  return cajas.map((caja) => ({ caja, etapa: porId.get(caja.etapaId) ?? null }));
+}
+
 /** Inicio: solo lo justo para saludar y anticipar si hay algo que hacer. */
 export async function cargarInicio(): Promise<DatosInicio> {
   const cliente = await cargarClienteEnSesion();
 
-  const [servicios, etapas, configuracion] = await Promise.all([
+  const [servicios, etapas, configuracion, cajas, resultados, contactos] = await Promise.all([
     read.load<Servicio[]>(
-      "servicioEnInicio",
-      { id: cliente.servicioId },
+      "serviciosDelCatalogo",
+      undefined,
       {
-        description: "Nombre y resumen del servicio contratado, para el destacado del inicio",
+        description:
+          "Nombre y explicación de cada servicio de Lexy. El inicio toma los del servicio principal, que puede ser uno o la combinación de dos",
         trigger: "Al abrir el inicio",
-        reads: { entities: ["servicio"], fields: ["servicio.nombre", "servicio.resumen"] },
+        reads: {
+          entities: ["servicio"],
+          fields: ["servicio.tipo", "servicio.nombre", "servicio.queEs"],
+        },
       },
     ),
     read.load<Etapa[]>(
@@ -90,12 +106,117 @@ export async function cargarInicio(): Promise<DatosInicio> {
       },
     ),
     cargarConfiguracion(),
+    read.load<Caja[]>(
+      "cajasDelCliente",
+      { clienteId: cliente.id },
+      {
+        description:
+          "Todos los casos abiertos de la persona. Con estos se decide qué bloques arman su inicio",
+        trigger: "Al abrir el inicio",
+        reads: {
+          entities: ["caja"],
+          fields: [
+            "caja.tipo",
+            "caja.estado",
+            "caja.identificador",
+            "caja.acreedor",
+            "caja.etapaId",
+          ],
+        },
+      },
+    ),
+    read.load<ResultadoServicio[]>(
+      "resultadosEnInicio",
+      undefined,
+      {
+        description:
+          "Resultados que se pueden lograr con cada servicio. El inicio los muestra al desplegar «Consultar mi servicio»",
+        trigger: "Al abrir el inicio",
+        reads: {
+          entities: ["resultadoServicio"],
+          fields: [
+            "resultadoServicio.servicioId",
+            "resultadoServicio.titulo",
+            "resultadoServicio.texto",
+            "resultadoServicio.icono",
+            "resultadoServicio.orden",
+          ],
+        },
+      },
+    ),
+    read.load<Contacto[]>(
+      "contactosParaElBotonDeWhatsapp",
+      { clienteId: cliente.id },
+      {
+        description: "Ejecutiva y abogado asignados, para el botón flotante de WhatsApp",
+        trigger: "Al abrir el inicio",
+        reads: {
+          entities: ["contacto"],
+          fields: ["contacto.nombre", "contacto.rol", "contacto.telefonoWhatsapp"],
+        },
+      },
+    ),
   ]);
 
-  const servicio = servicios[0];
-  if (!servicio) throw new Error("Falta el servicio contratado.");
+  const contratado = servicios.find((candidato) => candidato.id === cliente.servicioId);
+  if (!contratado) throw new Error("Falta el servicio contratado.");
 
-  return { cliente, servicio, etapa: etapas[0] ?? null, configuracion };
+  // Paso 0: con las cajas de la persona se resuelve cuál es su servicio
+  // principal, y de ahí salen los bloques. Lo que figura contratado solo se usa
+  // de respaldo, para quien todavía no tiene ninguna caja abierta.
+  const composicion = componerInicio(cajas, contratado.tipo);
+
+  const serviciosPrincipales = composicion.servicioPrincipal.flatMap((tipo) => {
+    const servicio = servicios.find((candidato) => candidato.tipo === tipo);
+    if (!servicio) return [];
+
+    return [
+      {
+        servicio,
+        resultados: resultados
+          .filter((resultado) => resultado.servicioId === servicio.id)
+          .sort((a, b) => a.orden - b.orden),
+      },
+    ];
+  });
+
+  // Las etapas de las cajas se piden aparte de la del caso: son las de los
+  // juicios y las escrituras, que van cada una por su cuenta.
+  const etapasDeLasCajas = await read.load<Etapa[]>(
+    "etapasDeLasCajas",
+    undefined,
+    {
+      description:
+        "Etapa en que va cada juicio y cada escritura. El inicio muestra el nombre en la lista, y el resto al desplegar la caja",
+      trigger: "Al abrir el inicio, cuando la persona tiene más de un caso",
+      reads: {
+        entities: ["etapa"],
+        fields: [
+          "etapa.visibleParaCliente",
+          "etapa.nombreParaCliente",
+          "etapa.queHaceLexy",
+          "etapa.queNecesitamosDelCliente",
+          "etapa.plazoEsperado",
+        ],
+      },
+    },
+  );
+
+  const [juicios, escrituras] = await Promise.all([
+    conSusEtapas(composicion.juicios, etapasDeLasCajas),
+    conSusEtapas(composicion.escrituras, etapasDeLasCajas),
+  ]);
+
+  return {
+    cliente,
+    serviciosPrincipales,
+    etapa: etapas[0] ?? null,
+    configuracion,
+    composicion,
+    juicios,
+    escrituras,
+    contactos,
+  };
 }
 
 /** «¿En qué está mi caso?»: el contenido completo que escribió el capitán. */
@@ -176,36 +297,76 @@ export async function cargarMisPagos(): Promise<DatosMisPagos> {
   return { cliente, proximaCuota, configuracion };
 }
 
-/** «¿Qué es mi servicio?»: la explicación y los resultados posibles. */
+/**
+ * «¿Qué es mi servicio?»: la explicación y los resultados posibles.
+ *
+ * Explica el **servicio principal**, resuelto con las mismas cajas que arman el
+ * inicio, no lo que figura contratado en la ficha. Cuando el principal es
+ * compuesto —defensa en juicio con protección patrimonial— se explican los dos:
+ * el bloque de arriba del inicio los nombra juntos, y quien entra acá desde ahí
+ * viene a leer de qué se tratan las dos cosas.
+ */
 export async function cargarMiServicio(): Promise<DatosMiServicio> {
   const cliente = await cargarClienteEnSesion();
 
-  const [servicios, resultados] = await Promise.all([
+  const [servicios, resultados, cajas] = await Promise.all([
     read.load<Servicio[]>(
-      "detalleDelServicio",
-      { id: cliente.servicioId },
+      "detalleDeLosServicios",
+      undefined,
       {
-        description: "Explicación del servicio contratado en lenguaje simple",
+        description: "Explicación de cada servicio de Lexy en lenguaje simple",
         trigger: "Al abrir «¿Qué es mi servicio?»",
-        reads: { entities: ["servicio"], fields: ["servicio.nombre", "servicio.queEs"] },
+        reads: {
+          entities: ["servicio"],
+          fields: ["servicio.tipo", "servicio.nombre", "servicio.queEs"],
+        },
       },
     ),
     read.load<ResultadoServicio[]>(
-      "resultadosDelServicio",
-      { servicioId: cliente.servicioId },
+      "resultadosDeLosServicios",
+      undefined,
       {
-        description: "Resultados que se pueden lograr con el servicio contratado",
+        description: "Resultados que se pueden lograr con cada servicio",
         trigger: "Al abrir «¿Qué es mi servicio?»",
         reads: {
           entities: ["resultadoServicio"],
-          fields: ["resultadoServicio.texto", "resultadoServicio.orden"],
+          fields: [
+            "resultadoServicio.servicioId",
+            "resultadoServicio.titulo",
+            "resultadoServicio.texto",
+            "resultadoServicio.icono",
+            "resultadoServicio.orden",
+          ],
         },
+      },
+    ),
+    read.load<Caja[]>(
+      "cajasDelClienteEnMiServicio",
+      { clienteId: cliente.id },
+      {
+        description:
+          "Casos abiertos de la persona, para saber cuál es el servicio que hay que explicarle",
+        trigger: "Al abrir «¿Qué es mi servicio?»",
+        reads: { entities: ["caja"], fields: ["caja.tipo", "caja.estado"] },
       },
     ),
   ]);
 
-  const servicio = servicios[0];
-  if (!servicio) throw new Error("Falta el servicio contratado.");
+  const contratado = servicios.find((candidato) => candidato.id === cliente.servicioId);
+  if (!contratado) throw new Error("Falta el servicio contratado.");
 
-  return { servicio, resultados: [...resultados].sort((a, b) => a.orden - b.orden) };
+  const principales = determinarServicioPrincipal(cajas, contratado.tipo).flatMap((tipo) => {
+    const encontrado = servicios.find((candidato) => candidato.tipo === tipo);
+    return encontrado ? [encontrado] : [];
+  });
+
+  return {
+    nombre: nombreDelServicioPrincipal(principales),
+    servicios: principales.map((servicio) => ({
+      servicio,
+      resultados: resultados
+        .filter((resultado) => resultado.servicioId === servicio.id)
+        .sort((a, b) => a.orden - b.orden),
+    })),
+  };
 }

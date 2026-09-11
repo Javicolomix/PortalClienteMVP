@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 import fondoMarca from "@/shared/assets/lexy-fondo-navy.png";
 import { cn } from "@/shared/lib/utils/cn";
@@ -55,7 +56,14 @@ function TransicionDeMarca({
     return () => cancelAnimationFrame(cuadro);
   }, []);
 
-  return (
+  // Se dibuja **colgada del `body`**, no donde está el botón que la disparó.
+  // «Salir» vive dentro del encabezado navy del inicio, que crea su propio
+  // contexto de apilamiento (`isolate`): ahí adentro, un `z-50` solo compite con
+  // los hermanos del encabezado, y el contenido de la página —que va después y
+  // con `z-10`— se pintaba encima. La transición quedaba de fondo, con las
+  // tarjetas del portal flotando sobre ella. Colgada del `body` no depende de
+  // dónde se la invoque.
+  return createPortal(
     <div
       className={cn(
         "fixed inset-0 isolate z-50 flex items-center justify-center overflow-hidden",
@@ -79,7 +87,8 @@ function TransicionDeMarca({
       >
         {(encendido) => <MarcaLexy encendido={encendido} />}
       </ClicAnimado>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

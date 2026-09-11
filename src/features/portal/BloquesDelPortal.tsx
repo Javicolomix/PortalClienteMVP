@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 
-import type { ICONOS } from "./iconos";
+import { ICONOS } from "./iconos";
+import { NIVELES } from "./nivel-urgencia";
+import type { Etapa } from "./portal.types";
 
 type Icono = (typeof ICONOS)[keyof typeof ICONOS];
 
@@ -20,7 +22,12 @@ type Icono = (typeof ICONOS)[keyof typeof ICONOS];
  * incorpora la rampa, se reemplaza por tokens y no hay que tocar las pantallas.
  */
 const MORADO = {
-  rotulo: "text-[#534ab7]",
+  // El rótulo va en el tono más oscuro de la rampa, el mismo del título, y no en
+  // el claro con que llegó: a 12 px y en versalitas el morado claro se leía
+  // desvaído sobre el lila, y bajarlo un escalón no alcanzaba a notarse. Lo que
+  // lo distingue del cuerpo es la caja alta y el interletrado, no el color —que
+  // a ese porte rinde menos que a cualquier otro.
+  rotulo: "text-[#26215c]",
   titulo: "text-[#26215c]",
   texto: "text-[#3c3489]",
 } as const;
@@ -81,7 +88,7 @@ export function TarjetaInformativa({
   children: ReactNode;
 }) {
   return (
-    <section className="flex gap-3 rounded-lg bg-card p-4 ring-1 ring-border-subtle">
+    <section className="flex h-full gap-3 rounded-lg bg-card p-4 ring-1 ring-border-subtle">
       <Icono className="mt-0.5 size-[18px] shrink-0 text-brand-navy" aria-hidden />
 
       <div className="min-w-0">
@@ -91,5 +98,108 @@ export function TarjetaInformativa({
         </p>
       </div>
     </section>
+  );
+}
+
+/**
+ * El detalle que aparece al **desplegar** el estado de un caso, de un juicio o
+ * de una escritura. Los tres bloques desplegables del inicio muestran esto
+ * mismo, así que vive en un solo lugar: es el contenido que escribió el capitán,
+ * y no hay razón para que se vea distinto según de qué caja cuelgue.
+ *
+ * **Abre con la explicación de la etapa**, en el bloque lila: sin ese ancla el
+ * panel empezaba directamente por «qué está haciendo tu equipo», que responde
+ * otra pregunta. El nombre de la etapa no se repite acá —lo dice el título de la
+ * fila, justo arriba—: solo va el rótulo «Etapa actual» y debajo la explicación.
+ *
+ * Después va en dos versiones. La **completa** —la del estado del caso— trae
+ * todo lo que escribió el capitán, «qué puede pasar después» incluida. La
+ * **breve** —la de cada juicio y cada escritura— deja fuera el futuro: con dos o
+ * tres causas abiertas la pregunta es «cuál de todas me pide algo», y eso se
+ * responde comparando lo que cada una necesita, no leyendo el futuro de cada
+ * una.
+ *
+ * La versión completa existe porque este bloque es hoy el único lugar donde se
+ * lee la etapa entera, y no puede quedar contenido del capitán sin ninguna
+ * pantalla que lo muestre.
+ *
+ * Cuando la etapa es de trabajo interno no hay nada que mostrar, y decirlo es
+ * mejor que un panel vacío.
+ */
+export function DetalleDeEtapa({
+  etapa,
+  completo,
+}: {
+  etapa: Etapa | null;
+  completo?: boolean;
+}) {
+  if (!etapa) {
+    return (
+      <p className="type-supporting px-1 py-1 leading-relaxed text-muted-foreground">
+        Ahora mismo esto está en una etapa de trabajo interno de nuestro equipo, así que no hay
+        novedades que mostrarte todavía. Apenas las haya, las vas a ver acá.
+      </p>
+    );
+  }
+
+  const tarjetas = [
+    { clave: "equipo", Icono: ICONOS.equipo, titulo: "Qué está haciendo tu equipo", texto: etapa.queHaceLexy },
+    { clave: "tarea", Icono: ICONOS.tarea, titulo: "Qué necesitamos de ti", texto: etapa.queNecesitamosDelCliente },
+    { clave: "plazo", Icono: ICONOS.reloj, titulo: "Plazo esperado", texto: etapa.plazoEsperado },
+    ...(completo
+      ? [
+          {
+            clave: "camino",
+            Icono: ICONOS.camino,
+            titulo: "Qué puede pasar después",
+            texto: etapa.quePuedePasarDespues,
+          },
+        ]
+      : []),
+  ];
+
+  return (
+    <div className="space-y-2.5">
+      {/* Sin el nombre de la etapa: ya está en el título de la fila, justo
+          arriba y a la vista. Repetido a diez píxeles de distancia y en cuerpo
+          más grande, la persona lee dos veces lo mismo y la segunda parece otra
+          cosa. Queda el rótulo y, debajo, la explicación. */}
+      <BloqueDestacado rotulo="Etapa actual">{etapa.mensajePrincipal}</BloqueDestacado>
+
+      {/* Apiladas, no de lado. Se probaron deslizándose y se volvió atrás: las
+          cuatro no son alternativas entre las que se elige una, son las cuatro
+          partes de una misma explicación, y esconder tres detrás de un gesto
+          obliga a descubrir que existen antes de poder leerlas. */}
+      {tarjetas.map((tarjeta) => (
+        <TarjetaInformativa key={tarjeta.clave} Icono={tarjeta.Icono} titulo={tarjeta.titulo}>
+          {tarjeta.texto}
+        </TarjetaInformativa>
+      ))}
+
+      <RefuerzoDeUrgencia etapa={etapa} />
+    </div>
+  );
+}
+
+/**
+ * El refuerzo verbal del nivel de urgencia, al pie del detalle. La pastilla de
+ * la fila dice la palabra —«Urgente»— y acá, ya desplegado, va la frase
+ * completa: qué significa esa palabra para esta persona.
+ *
+ * **Cierra el detalle, no lo abre.** Es la conclusión de todo lo anterior: la
+ * persona primero entiende en qué etapa está y qué se está haciendo, y recién
+ * entonces lee si tiene que actuar. Puesto arriba, sería una alarma antes del
+ * contexto que la explica.
+ */
+function RefuerzoDeUrgencia({ etapa }: { etapa: Etapa }) {
+  const { frase, Icono, color } = NIVELES[etapa.nivelUrgencia];
+
+  return (
+    <p
+      className={`flex items-start gap-2 border-t border-border-subtle px-1 pt-4 type-supporting font-medium ${color}`}
+    >
+      <Icono className="mt-0.5 size-4 shrink-0" aria-hidden />
+      {frase}
+    </p>
   );
 }

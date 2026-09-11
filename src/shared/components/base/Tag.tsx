@@ -8,15 +8,26 @@ const tagVariants = cva("inline-flex select-none items-center gap-1 border font-
     tone: {
       gray: "border-border bg-secondary text-secondary-foreground",
       brand: "border-primary/20 bg-primary/10 text-primary",
-      success: "border-success/30 bg-success/10 text-success-strong",
-      warning: "border-warning/30 bg-warning/10 text-warning-strong",
-      danger: "border-destructive/20 bg-destructive/10 text-destructive",
+      // Los tres tonos de estado van con el relleno al doble de densidad que el
+      // tinte de kit por defecto, y el borde en la variante oscura del propio
+      // color en vez del color pleno. Con el tinte al 10 % y el borde claro, una
+      // etiqueta de estado se lee como un pastel genérico y no como una señal;
+      // el texto ya iba en la variante `-strong`, así que el relleno flojo era
+      // lo único que la dejaba blanda.
+      success: "border-success-strong/25 bg-success/20 text-success-strong",
+      warning: "border-warning-strong/25 bg-warning/25 text-warning-strong",
+      danger: "border-destructive/35 bg-destructive/15 text-destructive",
     },
     shape: {
       square: "rounded",
       rounded: "rounded-full",
     },
     size: {
+      // `xs` lo agregó el Portal Cliente: la etiqueta de nivel de urgencia va
+      // dentro de una fila, al lado de un título de 16 px, y a `sm` (24 px de
+      // alto) pesaba más que el texto al que acompaña. Una etiqueta que no es lo
+      // principal de su fila necesita quedar por debajo de la altura de la letra.
+      xs: "h-5 px-1.5 type-meta text-[11px]",
       sm: "h-6 px-2 type-meta",
       md: "h-7 px-2.5 type-supporting",
       lg: "h-8 px-3 type-body",

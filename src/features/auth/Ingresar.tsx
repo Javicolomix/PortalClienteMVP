@@ -50,16 +50,33 @@ function Hero() {
       />
 
       <div className="flex w-full flex-1 flex-col items-center lg:items-start lg:justify-center">
-        <img src={logoClaro} alt="Lexy Deudor" className="w-48 lg:w-60" />
+        {/* El logo y su eslogan son **un solo bloque de marca**, del ancho del
+            logo. El eslogan se alinea con la palabra «lexydeudor» y no con el
+            centro del conjunto: el isotipo se lleva el primer 23 % del lockup,
+            así que centrado bajo todo caía un poco a la izquierda de la palabra
+            y los dos textos no compartían ningún borde.
 
-        {/* En el teléfono el eslogan iba en el mismo cuerpo que un título de
+            El 23 % es proporción y no píxeles a propósito: vale igual cuando el
+            logo mide 192 px en el teléfono y 240 en el computador. */}
+        <div className="w-48 lg:w-60">
+          <img src={logoClaro} alt="Lexy Deudor" className="w-full" />
+
+          {/* En el teléfono el eslogan iba en el mismo cuerpo que un título de
             sección, justo debajo de un logo de 192 px: pesaba tanto como la
             marca y competía con ella. Acá abajo es una bajada —más chica y sin
             negrita— y recién desde `lg`, donde el hero tiene aire de sobra,
-            vuelve a su tamaño de título. */}
-        <p className="mt-4 type-supporting text-white lg:mt-5 lg:text-lg lg:font-semibold">
-          Hacemos <em className="italic">fácil</em> lo legal
-        </p>
+            vuelve a su tamaño de título.
+
+            En el teléfono va **sin nada de aire**, apoyado en el borde del
+            wordmark: es parte del lockup de la marca, no un párrafo debajo de
+            él. Cualquier separación, por chica que sea, los vuelve dos
+            elementos sueltos que casualmente están uno encima del otro. Desde
+            `lg` sí se separa, porque ahí crece a cuerpo de título y necesita su
+            propio aire. */}
+          <p className="type-supporting pl-[23%] text-left text-white lg:mt-5 lg:pl-0 lg:text-lg lg:font-semibold">
+            Hacemos <em className="italic">fácil</em> lo legal
+          </p>
+        </div>
 
         <p className="mt-4 hidden max-w-sm type-body text-white/75 lg:block">
           Desde tu Portal Cliente podrás consultar el avance de tu caso, revisar tus pagos y
@@ -164,7 +181,14 @@ export function Ingresar() {
         <Hero />
 
         <div className="px-6 py-10 md:px-10 md:py-12">
-          <h1 className="type-page-title text-foreground">Ingresa a tu portal</h1>
+          {/* Baja a 24 px en el teléfono. A 30 px llenaba la línea de borde a
+              borde de la tarjeta y pesaba tanto como el hero de marca que tiene
+              justo encima: dos cosas fuertes apiladas en una pantalla cuyo
+              trabajo real son dos campos y un botón. Es además la escala que ya
+              usa el saludo del inicio. */}
+          <h1 className="type-page-title text-2xl text-foreground md:text-3xl">
+            Ingresa a tu portal
+          </h1>
           <p className="mt-2 type-body text-muted-foreground">
             Usa el correo y la clave que te enviamos.
           </p>

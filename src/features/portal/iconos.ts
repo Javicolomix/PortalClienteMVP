@@ -6,14 +6,17 @@ import {
   CreditCard,
   Eraser,
   FileText,
+  Flag,
   Handshake,
   House,
+  Landmark,
   MessageCircle,
   Milestone,
   Scale,
   Search,
   ShieldCheck,
   Signpost,
+  Star,
   TrendingDown,
 } from "lucide-react";
 
@@ -48,6 +51,9 @@ export const ICONOS = {
   etapa: Milestone,
   mensaje: MessageCircle,
   pago: CreditCard,
+  tribunal: Landmark,
+  felicitacion: Star,
+  reclamo: Flag,
 } as const;
 
 export type ClaveIcono = keyof typeof ICONOS;

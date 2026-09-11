@@ -14,5 +14,22 @@
 @layer base {
   html {
     overflow-x: clip;
+
+    /**
+     * Un punto de zoom sobre todo el producto: 106,25 % de la base del
+     * navegador, que con la configuración por defecto son 17 px en vez de 16.
+     *
+     * Va acá y no retocando tamaños pantalla por pantalla porque **el sistema
+     * está construido en `rem`**: tipografía, espaciado, radios y anchos salen
+     * todos de esta misma base. Subirla escala el conjunto sin tocar ninguna
+     * proporción de las que se afinaron una por una; subir los tamaños a mano
+     * las rompería todas.
+     *
+     * En porcentaje y no en píxeles a propósito: quien tenga agrandada la letra
+     * en su navegador —por vista cansada, por preferencia— conserva su ajuste y
+     * este zoom se le aplica encima. Con `17px` fijo, le estaríamos pisando la
+     * configuración.
+     */
+    font-size: 106.25%;
   }
 }
