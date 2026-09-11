@@ -241,7 +241,7 @@ function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
   return (
     <section
       className={cn(
-        "w-full rounded-xl bg-[#d9d5f7] px-6 py-5 md:w-fit md:min-w-[24rem] md:max-w-2xl md:px-9 md:py-6",
+        "w-full rounded-xl bg-[#e4e1fa] px-6 py-5 md:w-fit md:min-w-[24rem] md:max-w-2xl md:px-9 md:py-6",
         // Con un nombre de una línea la tarjeta queda baja al lado de la del
         // nombre compuesto, que ocupa dos. Se le suma aire abajo para acercarlas
         // de porte. Es aire y no una línea de texto reservada: reservada dejaba
@@ -563,7 +563,13 @@ export function Inicio() {
                 {/* Bajó de 30 a 24 px en el computador: con el nombre del
                     servicio como pieza más grande de la página, una pregunta
                     más grande que él invertía la jerarquía. */}
-                <h2 className="type-page-title text-xl text-foreground md:text-2xl">
+                {/* Al mismo porte y en la misma tipografía que «Estado de mi
+                    caso» y «Mis juicios»: los tres encabezan una sección del
+                    inicio y están al mismo nivel, así que no hay razón para que
+                    uno vaya en la tipografía de display y a cuatro píxeles más.
+                    El énfasis en índigo y cursiva se queda: eso es lo que le da
+                    personalidad, no el tamaño. */}
+                <h2 className="type-section-title text-foreground md:text-lg">
                   ¿Qué necesitas <em className="text-primary italic">hacer hoy</em>?
                 </h2>
                 <div className="mt-5">
