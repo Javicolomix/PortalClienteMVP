@@ -1,6 +1,5 @@
-import { ChevronDown, ChevronRight, ExternalLink } from "lucide-react";
+import { ChevronRight, ExternalLink } from "lucide-react";
 import type { ReactNode } from "react";
-import { useState } from "react";
 import { Link } from "react-router";
 
 import { BotonSalir } from "@/features/auth";
@@ -12,10 +11,10 @@ import { cn } from "@/shared/lib/utils/cn";
 
 import { BotonWhatsapp } from "./BotonWhatsapp";
 import { muestraBloque, nombreDelServicioPrincipal } from "./composicion";
-import { iconoPorClave, ICONOS } from "./iconos";
+import { ICONOS } from "./iconos";
 import { FilaDesplegable, ListaDeCajas, TituloDeBloque } from "./ListaDeCajas";
 import { CargandoPagina, ErrorDeCarga } from "./PaginaDelPortal";
-import type { DatosInicio, Etapa, ServicioConResultados } from "./portal.types";
+import type { DatosInicio, Etapa } from "./portal.types";
 import { cargarInicio } from "./portal-service";
 import { saludoSegunHora } from "./saludo";
 
@@ -330,131 +329,11 @@ type Opcion = {
   corto: string;
   apoyo: string;
   Icono: Icono;
-  /** A dónde lleva. Ausente en la opción que, en vez de llevar, despliega. */
-  ruta?: string;
+  /** A dónde lleva. */
+  ruta: string;
   /** Sale del portal: se abre en otra pestaña y se dice antes de tocarlo. */
   externo?: boolean;
-  /** Lo que se abre en el lugar. Presente solo en la opción que no navega. */
-  despliega?: ReactNode;
 };
-
-/**
- * Lo que explica «Consultar mi servicio» al desplegarse: **dos cosas**, el
- * objetivo y los beneficios. Dos rótulos, no dos frases: el objetivo va completo,
- * con la explicación que escribió el equipo, no resumido a una línea. Se probó
- * dejarlo en el resumen de una frase y se perdía casi todo lo que la persona
- * necesita para entender qué contrató — que es exactamente lo que este acceso
- * viene a responder.
- *
- * **El texto va a medida de lectura, no a lo ancho del panel.** En el computador
- * el panel mide 900 px y una línea de ese largo hace perder el renglón al volver:
- * el ojo no encuentra dónde sigue. 65 caracteres es el ancho con que se lee un
- * párrafo sin esfuerzo, y es el que usan las pantallas de detalle del portal.
- *
- * Los beneficios van como lista con su icono al costado, no como tarjetas
- * blancas: el panel ya es un contenedor, y meterle tarjetas adentro es una caja
- * dentro de otra caja dentro de otra.
- *
- * Con el nombre compuesto se explican los dos servicios, porque los dos se
- * contrataron. La advertencia va una sola vez al cierre: es la misma para todo
- * lo que hace Lexy y repetida se lee como letra chica.
- */
-function RotuloDeSeccion({ children }: { children: ReactNode }) {
-  return (
-    <p className="type-meta font-medium tracking-widest text-muted-foreground uppercase">
-      {children}
-    </p>
-  );
-}
-
-/**
- * Lo que explica «Consultar mi servicio» al desplegarse: **el objetivo y los
- * beneficios**, y cada uno con la forma que le corresponde.
- *
- * El objetivo es un párrafo: se lee de corrido, así que va sobre el gris del
- * panel, sin caja, a medida de lectura y en cuerpo de texto. Los beneficios son
- * cosas distintas que se comparan, así que van en tarjetas —una superficie por
- * cosa— en dos columnas desde `md` y apiladas en el teléfono.
- *
- * **Se probó como láminas que se deslizaban de lado y se volvió atrás.** En el
- * computador las dos se veían completas al mismo tiempo, así que el gesto no
- * llevaba a ninguna parte y los puntitos no contaban nada; un carrusel que en la
- * mitad de las pantallas no hace nada es una mecánica inventada. Acortando los
- * textos, las dos cosas caben apiladas también en el teléfono.
- *
- * Con el nombre compuesto se explican los dos servicios, porque los dos se
- * contrataron. La advertencia va una sola vez al cierre: es la misma para todo
- * lo que hace Lexy y repetida se lee como letra chica.
- */
-function ExplicacionDelServicio({ servicios }: { servicios: ServicioConResultados[] }) {
-  const varios = servicios.length > 1;
-
-  return (
-    <div className="space-y-4">
-      {servicios.map(({ servicio, resultados }) => (
-        <div key={servicio.id}>
-          {varios ? (
-            <h4 className="mb-2.5 type-item-title text-foreground">{servicio.nombre}</h4>
-          ) : null}
-
-          {/* Las dos cosas viven en **una sola superficie**, separadas por un
-              hairline. El objetivo estaba suelto sobre el gris del panel, justo
-              encima de un bloque blanco que se llevaba toda la luz: quedaba de
-              antesala de los beneficios en vez de ser la mitad del contenido.
-              Dentro de la misma pieza, las dos pesan lo que dice su tipografía
-              y no lo que dice su fondo — y no hace falta teñir nada. */}
-          <div className="overflow-hidden rounded-lg bg-card ring-1 ring-border-subtle">
-            <div className="px-4 py-4">
-              <RotuloDeSeccion>Objetivo del servicio</RotuloDeSeccion>
-              <p className="mt-2 max-w-[62ch] type-body leading-relaxed whitespace-pre-line text-foreground">
-                {servicio.queEs}
-              </p>
-            </div>
-
-            <div className="border-t border-border-subtle bg-surface-subtle px-4 py-2.5">
-              <RotuloDeSeccion>Beneficios que puedes obtener</RotuloDeSeccion>
-            </div>
-
-            <ul>
-              {resultados.map((resultado, fila) => {
-                const Icono = iconoPorClave(resultado.icono);
-
-                return (
-                  <li
-                    key={resultado.id}
-                    className={cn(
-                      "flex gap-3 px-4 py-3.5",
-                      fila > 0 && "border-t border-border-subtle",
-                    )}
-                  >
-                    <Icono
-                      className="mt-0.5 size-[18px] shrink-0 text-brand-navy"
-                      strokeWidth={1.75}
-                      aria-hidden
-                    />
-                    <span className="min-w-0">
-                      <span className="type-supporting block font-medium text-foreground">
-                        {resultado.titulo}
-                      </span>
-                      <span className="type-supporting mt-0.5 block leading-relaxed text-muted-foreground">
-                        {resultado.texto}
-                      </span>
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </div>
-      ))}
-
-      <p className="type-meta text-muted-foreground">
-        Cada caso es distinto: el resultado depende de tu situación y de lo que se acuerde durante
-        el proceso.
-      </p>
-    </div>
-  );
-}
 
 /**
  * Los iconos de los accesos van todos en el navy de marca. El único color con
@@ -464,13 +343,6 @@ function ExplicacionDelServicio({ servicios }: { servicios: ServicioConResultado
  * «Conversar con mi equipo» ya no está acá: escribirle a alguien no es una tarea
  * más entre otras, así que salió a un botón flotante que se ve desde cualquier
  * punto de la pantalla.
- *
- * **«Consultar mi servicio» no lleva a ninguna parte: se despliega acá mismo.**
- * Es la única de la lista que se comporta así, y tiene sentido que sea esa: la
- * explicación del servicio es lectura, no un trámite, y sacar a la persona del
- * inicio para leer tres párrafos y volver es hacerle perder el hilo. Las otras
- * tres sí llevan a otro lado porque ahí hay algo que hacer —pagar, felicitar,
- * reclamar—, no algo que leer.
  *
  * Las dos últimas salen del portal. Van al final y en ese orden a propósito:
  * primero el agradecimiento y después el reclamo, porque son las dos salidas de
@@ -483,11 +355,11 @@ function ExplicacionDelServicio({ servicios }: { servicios: ServicioConResultado
 const opciones = (datos: DatosInicio): Opcion[] => [
   {
     clave: "servicio",
+    ruta: "/mi-servicio",
     titulo: "Consultar mi servicio",
     corto: "Consultar mi servicio",
     apoyo: "Qué hacemos por ti y a qué resultado apuntamos",
     Icono: ICONOS.balanza,
-    despliega: <ExplicacionDelServicio servicios={datos.serviciosPrincipales} />,
   },
   {
     clave: "pagos",
@@ -518,38 +390,19 @@ const opciones = (datos: DatosInicio): Opcion[] => [
 ];
 
 /**
- * El envoltorio de un acceso, que cambia según lo que el acceso haga: los de
- * adentro del portal navegan sin recargar, los de afuera se abren en otra
- * pestaña —y lo dicen antes, con el icono de enlace externo— y el que despliega
- * es un botón que abre su panel en el lugar.
+ * El envoltorio de un acceso: los de adentro del portal navegan sin recargar y
+ * los de afuera se abren en otra pestaña —y lo dicen antes, con el icono de
+ * enlace externo.
  */
 function EnlaceDeAcceso({
   opcion,
-  abierta,
-  alDesplegar,
   className,
   children,
 }: {
   opcion: Opcion;
-  abierta: boolean;
-  alDesplegar: () => void;
   className: string;
   children: ReactNode;
 }) {
-  if (opcion.despliega) {
-    return (
-      <button
-        type="button"
-        onClick={alDesplegar}
-        aria-expanded={abierta}
-        aria-controls={`acceso-${opcion.clave}`}
-        className={cn(className, "text-left")}
-      >
-        {children}
-      </button>
-    );
-  }
-
   if (opcion.externo) {
     return (
       <a href={opcion.ruta} target="_blank" rel="noreferrer" className={className}>
@@ -559,7 +412,7 @@ function EnlaceDeAcceso({
   }
 
   return (
-    <Link to={opcion.ruta ?? "/"} className={className}>
+    <Link to={opcion.ruta} className={className}>
       {children}
     </Link>
   );
@@ -574,87 +427,28 @@ const CLASES_DEL_CUADRADO =
  * El icono va suelto y grande, sin pastilla detrás: es lo que distingue un
  * cuadrado de otro de un vistazo, sin leer. El texto de apoyo no viaja acá: en
  * un cuadrado sobra, y el nombre del acceso ya dice a dónde lleva.
- *
- * El panel del acceso desplegable ocupa **las dos columnas**, justo debajo de su
- * cuadrado. Abrirlo dentro del cuadrado dejaría un texto largo en media pantalla
- * de ancho, y la explicación del servicio es para leerla.
  */
 function AccesosEnCuadricula({ opciones }: { opciones: Opcion[] }) {
-  const [abierta, setAbierta] = useState<string | null>(null);
-
   return (
     <ul className="grid grid-cols-2 gap-3 md:hidden">
-      {opciones.map((opcion) => {
-        const abierto = abierta === opcion.clave;
+      {opciones.map((opcion) => (
+        <li key={opcion.clave}>
+          <EnlaceDeAcceso opcion={opcion} className={CLASES_DEL_CUADRADO}>
+            <IconoDeAcceso Icono={opcion.Icono} grande />
+            <span className="type-item-title text-balance text-foreground">{opcion.corto}</span>
 
-        // El que se despliega se abre **en una sola pieza**: la tarjeta pasa a
-        // las dos columnas y el panel queda dentro de ella, con el mismo margen
-        // que su texto. Cerrado se ve igual que sus hermanos; abierto no queda
-        // un cuadrado chico arriba y un panel ancho suelto debajo, que era lo
-        // que se leía como dos cosas distintas.
-        if (opcion.despliega) {
-          return (
-            <li key={opcion.clave} className={cn(abierto && "col-span-2")}>
-              <div className="h-full overflow-hidden rounded-xl bg-card ring-1 ring-border-subtle">
-                <button
-                  type="button"
-                  onClick={() => setAbierta(abierto ? null : opcion.clave)}
-                  aria-expanded={abierto}
-                  aria-controls={`acceso-${opcion.clave}`}
-                  className="relative flex w-full flex-col gap-3 p-4 text-left transition-colors [-webkit-tap-highlight-color:transparent] hover:bg-surface-subtle active:bg-surface-muted focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring"
-                >
-                  <IconoDeAcceso Icono={opcion.Icono} grande />
-
-                  <span className="type-item-title text-balance text-foreground">
-                    {abierto ? opcion.titulo : opcion.corto}
-                  </span>
-
-                  <ChevronDown
-                    className={cn(
-                      "absolute top-4 right-4 size-4 text-foreground-faint transition-transform duration-200 motion-reduce:transition-none",
-                      abierto && "rotate-180",
-                    )}
-                    aria-hidden
-                  />
-                </button>
-
-                {abierto ? (
-                  <div
-                    id={`acceso-${opcion.clave}`}
-                    className="border-t border-border-subtle bg-surface-subtle px-4 pt-4 pb-5"
-                  >
-                    {opcion.despliega}
-                  </div>
-                ) : null}
-              </div>
-            </li>
-          );
-        }
-
-        return (
-          <li key={opcion.clave}>
-            <EnlaceDeAcceso
-              opcion={opcion}
-              abierta={false}
-              alDesplegar={() => {}}
-              className={CLASES_DEL_CUADRADO}
-            >
-              <IconoDeAcceso Icono={opcion.Icono} grande />
-              <span className="type-item-title text-balance text-foreground">{opcion.corto}</span>
-
-              {opcion.externo ? (
-                <>
-                  <ExternalLink
-                    className="absolute top-3 right-3 size-3.5 text-foreground-faint"
-                    aria-hidden
-                  />
-                  <span className="sr-only">Se abre fuera del portal</span>
-                </>
-              ) : null}
-            </EnlaceDeAcceso>
-          </li>
-        );
-      })}
+            {opcion.externo ? (
+              <>
+                <ExternalLink
+                  className="absolute top-3 right-3 size-3.5 text-foreground-faint"
+                  aria-hidden
+                />
+                <span className="sr-only">Se abre fuera del portal</span>
+              </>
+            ) : null}
+          </EnlaceDeAcceso>
+        </li>
+      ))}
     </ul>
   );
 }
@@ -665,8 +459,6 @@ function AccesosEnCuadricula({ opciones }: { opciones: Opcion[] }) {
  * → línea). Acá hay ancho de sobra para la frase completa y su apoyo.
  */
 function AccesosEnLista({ opciones }: { opciones: Opcion[] }) {
-  const [abierta, setAbierta] = useState<string | null>(null);
-
   return (
     <div className="hidden overflow-hidden rounded-lg bg-card ring-1 ring-border-subtle md:block">
       <ul>
@@ -674,10 +466,6 @@ function AccesosEnLista({ opciones }: { opciones: Opcion[] }) {
           <li key={opcion.clave} className={cn(indice > 0 && "border-t border-border-subtle")}>
             <EnlaceDeAcceso
               opcion={opcion}
-              abierta={abierta === opcion.clave}
-              alDesplegar={() =>
-                setAbierta((previa) => (previa === opcion.clave ? null : opcion.clave))
-              }
               className="flex w-full items-center gap-4 px-5 py-4 transition-colors hover:bg-surface-subtle active:bg-surface-muted focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring"
             >
               <IconoDeAcceso Icono={opcion.Icono} />
@@ -689,15 +477,7 @@ function AccesosEnLista({ opciones }: { opciones: Opcion[] }) {
                 </span>
               </span>
 
-              {opcion.despliega ? (
-                <ChevronDown
-                  className={cn(
-                    "size-5 shrink-0 text-foreground-faint transition-transform duration-200 motion-reduce:transition-none",
-                    abierta === opcion.clave && "rotate-180",
-                  )}
-                  aria-hidden
-                />
-              ) : opcion.externo ? (
+              {opcion.externo ? (
                 <>
                   <span className="sr-only">Se abre fuera del portal</span>
                   <ExternalLink className="size-4 shrink-0 text-foreground-faint" aria-hidden />
@@ -706,15 +486,6 @@ function AccesosEnLista({ opciones }: { opciones: Opcion[] }) {
                 <ChevronRight className="size-5 shrink-0 text-foreground-faint" aria-hidden />
               )}
             </EnlaceDeAcceso>
-
-            {opcion.despliega && abierta === opcion.clave ? (
-              <div
-                id={`acceso-${opcion.clave}`}
-                className="border-t border-border-subtle bg-surface-subtle px-5 pt-4 pb-5"
-              >
-                {opcion.despliega}
-              </div>
-            ) : null}
           </li>
         ))}
       </ul>
@@ -763,15 +534,13 @@ export function Inicio() {
                   se le suma. Cada caja va por su propia etapa, así que los
                   juicios y las escrituras se listan por separado. */}
               <TarjetaDelServicio
-                nombres={datos.serviciosPrincipales.map((item) => item.servicio.nombre)}
+                nombres={datos.serviciosPrincipales.map((servicio) => servicio.nombre)}
               />
 
               {muestraBloque(datos.composicion, "caso") ? (
                 <BloqueDelCaso
                   etapa={datos.etapa?.visibleParaCliente ? datos.etapa : null}
-                  servicio={nombreDelServicioPrincipal(
-                    datos.serviciosPrincipales.map((item) => item.servicio),
-                  )}
+                  servicio={nombreDelServicioPrincipal(datos.serviciosPrincipales)}
                 />
               ) : null}
 

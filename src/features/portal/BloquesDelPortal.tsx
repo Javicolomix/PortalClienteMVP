@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 
 import { ICONOS } from "./iconos";
-import { NIVELES } from "./nivel-urgencia";
 import type { Etapa } from "./portal.types";
 
 type Icono = (typeof ICONOS)[keyof typeof ICONOS];
@@ -107,6 +106,9 @@ export function TarjetaInformativa({
  * mismo, así que vive en un solo lugar: es el contenido que escribió el capitán,
  * y no hay razón para que se vea distinto según de qué caja cuelgue.
  *
+ * No repite el nivel de urgencia al pie: la instrucción completa ya está en la
+ * fila, arriba y a la vista sin desplegar nada.
+ *
  * **Abre con la explicación de la etapa**, en el bloque lila: sin ese ancla el
  * panel empezaba directamente por «qué está haciendo tu equipo», que responde
  * otra pregunta. El nombre de la etapa no se repite acá —lo dice el título de la
@@ -176,30 +178,6 @@ export function DetalleDeEtapa({
         </TarjetaInformativa>
       ))}
 
-      <RefuerzoDeUrgencia etapa={etapa} />
     </div>
-  );
-}
-
-/**
- * El refuerzo verbal del nivel de urgencia, al pie del detalle. La pastilla de
- * la fila dice la palabra —«Urgente»— y acá, ya desplegado, va la frase
- * completa: qué significa esa palabra para esta persona.
- *
- * **Cierra el detalle, no lo abre.** Es la conclusión de todo lo anterior: la
- * persona primero entiende en qué etapa está y qué se está haciendo, y recién
- * entonces lee si tiene que actuar. Puesto arriba, sería una alarma antes del
- * contexto que la explica.
- */
-function RefuerzoDeUrgencia({ etapa }: { etapa: Etapa }) {
-  const { frase, Icono, color } = NIVELES[etapa.nivelUrgencia];
-
-  return (
-    <p
-      className={`flex items-start gap-2 border-t border-border-subtle px-1 pt-4 type-supporting font-medium ${color}`}
-    >
-      <Icono className="mt-0.5 size-4 shrink-0" aria-hidden />
-      {frase}
-    </p>
   );
 }

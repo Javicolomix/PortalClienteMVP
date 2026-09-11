@@ -79,18 +79,15 @@ async function conSusEtapas(cajas: Caja[], todas: Etapa[]): Promise<CajaConEtapa
 export async function cargarInicio(): Promise<DatosInicio> {
   const cliente = await cargarClienteEnSesion();
 
-  const [servicios, etapas, configuracion, cajas, resultados, contactos] = await Promise.all([
+  const [servicios, etapas, configuracion, cajas, contactos] = await Promise.all([
     read.load<Servicio[]>(
       "serviciosDelCatalogo",
       undefined,
       {
         description:
-          "Nombre y explicación de cada servicio de Lexy. El inicio toma los del servicio principal, que puede ser uno o la combinación de dos",
+          "Nombre de cada servicio de Lexy. El inicio toma el del servicio principal, que puede ser uno o la combinación de dos",
         trigger: "Al abrir el inicio",
-        reads: {
-          entities: ["servicio"],
-          fields: ["servicio.tipo", "servicio.nombre", "servicio.queEs"],
-        },
+        reads: { entities: ["servicio"], fields: ["servicio.tipo", "servicio.nombre"] },
       },
     ),
     read.load<Etapa[]>(
@@ -125,25 +122,6 @@ export async function cargarInicio(): Promise<DatosInicio> {
         },
       },
     ),
-    read.load<ResultadoServicio[]>(
-      "resultadosEnInicio",
-      undefined,
-      {
-        description:
-          "Resultados que se pueden lograr con cada servicio. El inicio los muestra al desplegar «Consultar mi servicio»",
-        trigger: "Al abrir el inicio",
-        reads: {
-          entities: ["resultadoServicio"],
-          fields: [
-            "resultadoServicio.servicioId",
-            "resultadoServicio.titulo",
-            "resultadoServicio.texto",
-            "resultadoServicio.icono",
-            "resultadoServicio.orden",
-          ],
-        },
-      },
-    ),
     read.load<Contacto[]>(
       "contactosParaElBotonDeWhatsapp",
       { clienteId: cliente.id },
@@ -168,16 +146,7 @@ export async function cargarInicio(): Promise<DatosInicio> {
 
   const serviciosPrincipales = composicion.servicioPrincipal.flatMap((tipo) => {
     const servicio = servicios.find((candidato) => candidato.tipo === tipo);
-    if (!servicio) return [];
-
-    return [
-      {
-        servicio,
-        resultados: resultados
-          .filter((resultado) => resultado.servicioId === servicio.id)
-          .sort((a, b) => a.orden - b.orden),
-      },
-    ];
+    return servicio ? [servicio] : [];
   });
 
   // Las etapas de las cajas se piden aparte de la del caso: son las de los

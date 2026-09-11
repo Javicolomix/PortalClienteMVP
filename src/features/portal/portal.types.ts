@@ -164,12 +164,10 @@ export type CajaConEtapa = {
 export type DatosInicio = {
   cliente: Cliente;
   /**
-   * El servicio principal ya resuelto, con su explicación y sus resultados: el
-   * inicio nombra el servicio arriba y lo explica al desplegar «Consultar mi
-   * servicio». Es una lista porque «defensa en juicio con protección
-   * patrimonial» son dos servicios al mismo nivel.
+   * El servicio principal ya resuelto. Es una lista porque «defensa en juicio
+   * con protección patrimonial» son dos servicios al mismo nivel.
    */
-  serviciosPrincipales: ServicioConResultados[];
+  serviciosPrincipales: Servicio[];
   etapa: Etapa | null;
   configuracion: ConfiguracionPortal;
   /** Qué bloques toca mostrar, ya resuelto por `componerInicio`. */

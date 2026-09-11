@@ -8,16 +8,13 @@ import type { NivelUrgencia } from "./portal.types";
  * —«Esperando el atraso en tus deudas»— y el nivel dice si tiene que actuar o
  * puede quedarse tranquilo.
  *
- * Se cuenta en **dos tiempos**, y esa es la decisión de fondo:
+ * La **`frase`** es lo que se ve con la fila cerrada, entera y con su icono. Se
+ * probó en dos tiempos —una etiqueta de una palabra arriba y la frase guardada
+ * para el desplegable— y se volvió atrás: la persona tenía que abrir la fila
+ * para saber qué le tocaba hacer, que es justo lo que vino a averiguar.
  *
- * - **`etiqueta`** es lo que se ve con la fila cerrada: un punto de color y una
- *   palabra, sin caja.
- *   Con dos o tres causas abiertas, la pregunta es «cuál de todas me pide algo»
- *   y eso se responde comparando de un vistazo — una frase en cada fila obliga a
- *   leerlas todas para comparar.
- * - **`frase`** es el refuerzo verbal que aparece al desplegar, cerrando el
- *   detalle. Ahí ya no hay nada que comparar y sí hay espacio para decirlo
- *   completo, después de que la persona leyó qué está pasando.
+ * La **`etiqueta`** es esa misma palabra, y hoy solo la usa el panel del capitán
+ * para nombrar cada nivel al elegirlo.
  *
  * Las tres frases y las tres etiquetas son **estándar y cerradas**: no las
  * escribe el equipo caso a caso, se eligen. Un nivel redactado libremente deja

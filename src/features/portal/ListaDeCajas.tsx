@@ -2,7 +2,6 @@ import { ChevronDown } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 
-import { Tag } from "@/shared/components/base/Tag";
 import { cn } from "@/shared/lib/utils/cn";
 
 import { DetalleDeEtapa } from "./BloquesDelPortal";
@@ -130,21 +129,26 @@ export function FilaDesplegable({
               <span className="type-meta mb-0.5 block text-muted-foreground">{sobretitulo}</span>
             ) : null}
             <span className="type-item-title block text-balance text-foreground">{titulo}</span>
+
+            {/* La instrucción completa, en la propia fila y con su icono. Se
+                probó como etiqueta de una palabra —con la frase guardada para el
+                desplegable— y se volvió atrás: la persona tenía que abrir para
+                saber qué le tocaba hacer, que es justo lo que vino a averiguar.
+                Acá lo lee sin tocar nada. */}
+            {nivel ? (
+              <span
+                className={cn(
+                  "mt-1.5 flex items-center gap-2 type-supporting font-medium",
+                  nivel.color,
+                )}
+              >
+                <nivel.Icono className="size-4 shrink-0" aria-hidden />
+                {nivel.frase}
+              </span>
+            ) : null}
           </span>
 
-          {/* La pastilla, con la fila cerrada: **una palabra**. Con dos o tres
-              causas abiertas la pregunta es «cuál de todas me pide algo», y eso
-              se compara de un vistazo; una frase en cada fila obliga a leerlas
-              todas para comparar. La frase completa aparece al desplegar.
 
-              Se probó como punto de color y palabra suelta, sin caja, y se
-              volvió a la pastilla: contenida se distingue del título de la fila
-              sin que haya que leerla. */}
-          {nivel ? (
-            <Tag tone={nivel.tono} size="xs" shape="rounded" className="shrink-0">
-              {nivel.etiqueta}
-            </Tag>
-          ) : null}
 
           <ChevronDown
             className={cn(

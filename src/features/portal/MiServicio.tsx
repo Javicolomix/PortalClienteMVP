@@ -28,16 +28,16 @@ function ExplicacionDelServicio({
         <h2 className="type-subsection-title text-foreground">{item.servicio.nombre}</h2>
       ) : null}
 
-      <BloqueDestacado rotulo="En qué consiste">{item.servicio.queEs}</BloqueDestacado>
+      <BloqueDestacado rotulo="Objetivo del servicio">{item.servicio.queEs}</BloqueDestacado>
 
       {/* Cada resultado es una tarjeta con su icono: son cosas distintas que se
           pueden lograr, no los puntos de una misma enumeración. El icono deja
           reconocer cada uno de un vistazo, sin leer la frase entera. */}
       <section>
         {conNombre ? (
-          <h3 className="type-section-title text-foreground">Qué se puede lograr</h3>
+          <h3 className="type-section-title text-foreground">Beneficios que puedes obtener</h3>
         ) : (
-          <h2 className="type-section-title text-foreground">Qué se puede lograr</h2>
+          <h2 className="type-section-title text-foreground">Beneficios que puedes obtener</h2>
         )}
 
         <ul className="mt-3 space-y-2.5">

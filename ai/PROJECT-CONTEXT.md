@@ -663,39 +663,30 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
 
 - 2026-09-09: los accesos se llaman **«Consultar mi servicio»** y **«Pagar mis
   honorarios»** (antes «Saber sobre mi servicio» y «Revisar y pagar mi cuota»).
-- 2026-09-09: **«Consultar mi servicio» se despliega en el inicio**, no navega:
-  la explicación del servicio es lectura, no un trámite, y sacar a la persona del
-  inicio para leer tres párrafos y volver le hace perder el hilo. Los otros tres
-  accesos sí llevan a otro lado, porque ahí hay algo que *hacer* —pagar,
-  felicitar, reclamar—, no algo que leer. En el teléfono el panel ocupa las dos
-  columnas debajo de su cuadrado: la explicación en media pantalla de ancho no se
-  lee. **Consecuencia:** `/mi-servicio` quedó sin entrada desde el portal, igual
-  que `/mi-caso`. Las dos siguen funcionando por URL; hay que decidir si se
-  eliminan.
+- 2026-09-11: **«Consultar mi servicio» lleva a `/mi-servicio`**, como los demás
+  accesos. Se probó desplegándolo en el inicio y se volvió atrás. La pantalla usa
+  los dos rótulos que se definieron mientras era desplegable —«Objetivo del
+  servicio» y «Beneficios que puedes obtener»—, y el inicio deja de cargar la
+  explicación y los resultados, que ya no muestra.
+  **Pendiente:** `/mi-caso` sigue sin entrada desde el portal, porque su
+  contenido está completo en el desplegable del estado del caso. Funciona por
+  URL; hay que decidir si se elimina.
 - 2026-09-09: en el teléfono **«Salir» está arriba a la derecha**, en la misma
   fila que el isotipo, dentro del encabezado navy. Antes vivía al pie y había que
   recorrer la página entera para cerrar sesión. Reemplaza a la decisión del
   2026-09-08 de dejarlo al pie por falta de sitio en el encabezado.
 
-- 2026-09-10: **el nivel de urgencia se cuenta en dos tiempos.** Con la fila
-  cerrada es una **etiqueta redondeada y chica** a la derecha —Tranquilo (verde) ·
-  Atento (ámbar) · Urgente (rojo)—, con el `Tag` del registry; se le agregó al
-  componente el tamaño `xs` (20 px de alto, 11 px de letra), porque a `sm` pesaba
-  más que el título al que acompaña, y se le subió la densidad del relleno a los
-  tres tonos de estado, porque al 10 % se leían como un pastel de kit. Se probó
-  como punto de color y palabra suelta —sin caja— y se volvió a la pastilla:
-  contenida se distingue del título de la fila sin que haya que leerla, porque con dos o tres causas abiertas la
-  pregunta es «cuál de todas me pide algo» y eso se compara de un vistazo; una
-  frase en cada fila obliga a leerlas todas para comparar. Al **desplegar**
-  aparece el refuerzo verbal, cerrando el detalle:
-  «No necesitas hacer nada por ahora.» · «Puede que necesitemos alguna gestión de
-  tu parte.» · «Necesitamos tu máxima atención y colaboración.»
-  Cierra y no abre el detalle: es la conclusión de todo lo anterior, y puesta
-  arriba sería una alarma antes del contexto que la explica.
-  Las tres etiquetas y las tres frases son **estándar y cerradas**, no las
-  escribe el equipo caso a caso: redactadas libremente dos etapas «urgentes»
-  dirían cosas distintas. El título de la actualización dice **qué pasa** y el
-  nivel dice **qué hacer con eso**. El color nunca es la única señal.
+- 2026-09-11: **el nivel de urgencia se muestra entero en la fila**, con su icono
+  y en su color: «No necesitas hacer nada por ahora.» · «Puede que necesitemos
+  alguna gestión de tu parte.» · «Necesitamos tu máxima atención y colaboración.»
+  Se probó en dos tiempos —etiqueta de una palabra en la fila y la frase completa
+  al desplegar— y se volvió atrás: la persona tenía que abrir para saber qué le
+  tocaba hacer, que es justo lo que vino a averiguar. El panel ya no repite la
+  frase al pie.
+  Las tres frases son **estándar y cerradas**, no las escribe el equipo caso a
+  caso: redactadas libremente, dos etapas «urgentes» dirían cosas distintas. El
+  título de la actualización dice **qué pasa** y el nivel dice **qué hacer con
+  eso**. El color nunca es la única señal.
 - 2026-09-10: **el panel de WhatsApp es siempre el mismo**, venga uno o dos
   contactos: título fijo «Escríbenos por WhatsApp», una fila por persona con el
   círculo verde, el nombre, el rol y **chevron siempre**, y abajo, tras una
@@ -795,26 +786,6 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   detalle de una etapa medía varias pantallas. Las explicaciones de servicio
   (`servicio.queEs`) también se acortaron a un párrafo. Son textos de ejemplo: el
   largo real lo fija el capitán, pero este es el que la pantalla soporta bien.
-- 2026-09-10: al desplegar «Consultar mi servicio» van **el objetivo y los
-  beneficios, cada uno con la forma que le corresponde**: el objetivo es un
-  párrafo, así que va sobre el gris del panel, sin caja, a medida de lectura y en
-  cuerpo de texto; los beneficios, filas separadas por hairline. **Las dos cosas
-  viven en una sola superficie blanca**, separadas por una línea y con el rótulo
-  de los beneficios en una banda gris que hace de bisagra.
-  Se probó el objetivo suelto sobre el gris del panel y se perdía: quedaba justo
-  encima de un bloque blanco que se llevaba toda la luz, así que se leía como
-  antesala de los beneficios y no como la mitad del contenido. Dentro de la misma
-  pieza, las dos pesan lo que dice su tipografía y no lo que dice su fondo — sin
-  teñir nada de lila.
-  Los beneficios en lista y no en grilla de dos columnas: con tres, la grilla
-  dejaba un hueco y las tarjetas de cada fila se estiraban a la altura de la más
-  larga. Es además la regla de contención del sistema —espacio, superficie,
-  línea— y la misma pieza de los accesos del computador.
-  **Se probaron como láminas deslizables y se descartó:** en el computador las
-  dos se veían completas a la vez, el gesto no llevaba a ninguna parte y los
-  puntitos no contaban nada. Un carrusel que en la mitad de las pantallas no hace
-  nada es una mecánica inventada. Con los textos cortos, las dos cosas caben
-  apiladas también en el teléfono.
 
 - 2026-09-10: la transición de marca (entrar y salir) **se dibuja colgada del
   `body`**, no donde está el botón que la dispara. «Salir» vive en el encabezado
