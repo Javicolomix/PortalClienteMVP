@@ -181,12 +181,12 @@ export function Ingresar() {
         <Hero />
 
         <div className="px-6 py-10 md:px-10 md:py-12">
-          {/* Baja a 24 px en el teléfono. A 30 px llenaba la línea de borde a
+          {/* En el teléfono va a la misma escala que el saludo del inicio, que
+              es la portada equivalente. Más grande llenaba la línea de borde a
               borde de la tarjeta y pesaba tanto como el hero de marca que tiene
               justo encima: dos cosas fuertes apiladas en una pantalla cuyo
-              trabajo real son dos campos y un botón. Es además la escala que ya
-              usa el saludo del inicio. */}
-          <h1 className="type-page-title text-2xl text-foreground md:text-3xl">
+              trabajo real son dos campos y un botón. */}
+          <h1 className="type-page-title text-xl text-foreground md:text-3xl">
             Ingresa a tu portal
           </h1>
           <p className="mt-2 type-body text-muted-foreground">
