@@ -241,7 +241,14 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
 function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
   return (
     <section
-      className="w-full rounded-xl bg-[#d9d5f7] px-6 py-5 md:w-fit md:min-w-[24rem] md:max-w-2xl md:px-9 md:py-6"
+      className={cn(
+        "w-full rounded-xl bg-[#d9d5f7] px-6 py-5 md:w-fit md:min-w-[24rem] md:max-w-2xl md:px-9 md:py-6",
+        // Con un nombre de una línea la tarjeta queda baja al lado de la del
+        // nombre compuesto, que ocupa dos. Se le suma aire abajo para acercarlas
+        // de porte. Es aire y no una línea de texto reservada: reservada dejaba
+        // medio bloque de lila vacío, que era peor que la diferencia de alto.
+        nombres.length === 1 && "pb-8 md:pb-9",
+      )}
       style={{ boxShadow: "0 8px 24px rgb(11 1 60 / 0.10)" }}
     >
       <p className="flex items-center gap-1.5 type-meta text-[11px] font-medium tracking-[0.1em] text-[#4a4478] uppercase">
