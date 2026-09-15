@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 28,
+  datasetVersion: 29,
   entities: {
     cliente: [
       {
@@ -338,9 +338,9 @@ export const fixtures: Fixtures = {
         etapaId: "etp-lit-00",
       },
 
-      // Soledad: liquidación con una causa real encima. El servicio principal
-      // sigue siendo la liquidación —lo concursal manda— y el juicio se le suma
-      // abajo: es la estrategia concursal-táctica. El monitoreo no cuenta.
+      // Soledad: liquidación con una escritura encima. El servicio principal
+      // sigue siendo la liquidación —lo concursal manda— y la escritura se le
+      // suma abajo, sin quitarle el estado de su caso. El monitoreo no cuenta.
       {
         id: "caj-018",
         clienteId: "cli-007",
@@ -352,11 +352,18 @@ export const fixtures: Fixtures = {
       {
         id: "caj-030",
         clienteId: "cli-007",
-        tipo: "defensaEnJuicio",
+        tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "C-5514-2026",
-        acreedor: "Banco Falabella",
-        etapaId: "etp-lit-01",
+        identificador: "Declaración de bien familiar",
+        etapaId: "etp-pp-02",
+      },
+      {
+        id: "caj-049",
+        clienteId: "cli-007",
+        tipo: "proteccionPatrimonial",
+        estado: "madre",
+        identificador: "",
+        etapaId: "etp-pp-01",
       },
       {
         id: "caj-019",
