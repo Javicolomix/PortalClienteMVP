@@ -90,6 +90,22 @@ export const prototypeDataContract = definePrototypeDataContract({
             note: "Confirmar de dónde sale el nombre y si viene separado del apellido: el saludo usa solo el nombre de pila.",
           },
         },
+        apellido: {
+          id: "apellido",
+          productDescription:
+            "Apellido de la persona. El portal no lo muestra en ninguna pantalla —saluda por el nombre de pila—, pero lo usa en los mensajes que salen hacia el equipo: el WhatsApp y el correo del comprobante parten con nombre y apellido para que quien recibe pueda ubicar a la persona sin pedirle el RUT.",
+          dataType: "string",
+          required: true,
+          usage: { visible: false, editable: false, calculated: false, technical: true },
+          usedIn: [PORTAL],
+          origin: "lexyConfirmed",
+          source: { kind: "unknown" },
+          dataClassification: "sensitive",
+          technicalValidation: {
+            status: "pendingTi",
+            note: "Confirmar si Lexy guarda el apellido separado del nombre, y qué se manda cuando la persona tiene dos apellidos: hoy el portal asume un solo campo y lo pega tal cual venga.",
+          },
+        },
         servicioId: {
           id: "servicioId",
           productDescription:
@@ -725,14 +741,15 @@ export const prototypeDataContract = definePrototypeDataContract({
         },
         estado: {
           id: "estado",
-          productDescription: "Si la cuota está pendiente o ya fue pagada.",
+          productDescription:
+            "En qué quedó la cuota: pendiente de pago, pagada, o morosa —vencida sin que se registrara el pago—. El portal las trata distinto: la pendiente más antigua es la que destaca arriba, las otras dos van al historial, y la morosa ahí en rojo.",
           dataType: "enum",
           required: true,
           usage: { ...soloTecnico, filterable: true },
           usedIn: [PORTAL],
-          enumValues: ["pendiente", "pagada"],
+          enumValues: ["pendiente", "pagada", "morosa"],
           ...pendienteTi(
-            "Confirmar cuánto se demora en reflejarse un pago: el cliente puede transferir y seguir viendo la cuota como pendiente.",
+            "DOS COSAS: (1) cuánto se demora en reflejarse un pago, porque el cliente puede transferir y seguir viendo la cuota como pendiente; (2) quién y cuándo marca una cuota como morosa. Si el paso de pendiente a morosa lo hace un proceso por fecha, hay que definir a los cuántos días corre, porque el portal la muestra en rojo y eso llega antes que cualquier llamado de cobranza.",
             "lexyConfirmed",
           ),
         },
@@ -852,6 +869,30 @@ export const prototypeDataContract = definePrototypeDataContract({
           usage: soloVisible,
           usedIn: [PORTAL],
           ...pendienteTi("Confirmar los datos bancarios vigentes con Finanzas.", "lexyConfirmed"),
+        },
+        nombreCobranza: {
+          id: "nombreCobranza",
+          productDescription:
+            "Nombre de pila de quien ve los cobros en Lexy. Va en «Mis pagos», en el botón con que la persona reclama o pregunta por su cobro: escribirle a alguien con nombre no es lo mismo que escribirle a un departamento.",
+          dataType: "string",
+          required: true,
+          usage: soloVisible,
+          usedIn: [PORTAL],
+          ...desdeUsabilidad(
+            "Confirmar quién queda como contacto de cobranza y qué pasa cuando esa persona cambia o no está: hoy el portal muestra un nombre fijo para toda la cartera.",
+          ),
+        },
+        telefonoCobranza: {
+          id: "telefonoCobranza",
+          productDescription:
+            "WhatsApp de cobranza. Es el mismo para todos los clientes, a diferencia de la ejecutiva y el abogado, que van por caso.",
+          dataType: "string",
+          required: true,
+          usage: soloVisible,
+          usedIn: [PORTAL],
+          ...desdeUsabilidad(
+            "Confirmar si cobranza atiende por un número personal o por uno de la empresa. Si es personal, hay que definir qué se muestra cuando esa persona sale de Lexy.",
+          ),
         },
       },
     },

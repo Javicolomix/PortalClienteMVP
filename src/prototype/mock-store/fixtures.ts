@@ -11,12 +11,13 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 32,
+  datasetVersion: 33,
   entities: {
     cliente: [
       {
         id: "cli-001",
         nombre: "Juan",
+        apellido: "Cárdenas",
         correo: "juan.cardenas@example.com",
         rut: "16.482.937-5",
         servicioId: "srv-renegociacion",
@@ -25,6 +26,7 @@ export const fixtures: Fixtures = {
       {
         id: "cli-002",
         nombre: "Javiera",
+        apellido: "Rojas",
         correo: "javiera.rojas@example.com",
         rut: "15.204.336-8",
         servicioId: "srv-renegociacion",
@@ -33,6 +35,7 @@ export const fixtures: Fixtures = {
       {
         id: "cli-003",
         nombre: "Ignacio",
+        apellido: "Bravo",
         correo: "ignacio.bravo@example.com",
         rut: "12.345.678-5",
         servicioId: "srv-defensa-juicio",
@@ -41,6 +44,7 @@ export const fixtures: Fixtures = {
       {
         id: "cli-004",
         nombre: "Rosa",
+        apellido: "Mella",
         correo: "rosa.mella@example.com",
         rut: "9.876.543-3",
         servicioId: "srv-proteccion-patrimonial",
@@ -49,6 +53,7 @@ export const fixtures: Fixtures = {
       {
         id: "cli-005",
         nombre: "Marcela",
+        apellido: "Ibáñez",
         correo: "marcela.ibanez@example.com",
         rut: "14.552.081-2",
         servicioId: "srv-defensa-juicio",
@@ -57,6 +62,7 @@ export const fixtures: Fixtures = {
       {
         id: "cli-006",
         nombre: "Patricio",
+        apellido: "Vergara",
         correo: "patricio.vergara@example.com",
         rut: "11.203.764-9",
         servicioId: "srv-defensa-juicio",
@@ -65,6 +71,7 @@ export const fixtures: Fixtures = {
       {
         id: "cli-007",
         nombre: "Soledad",
+        apellido: "Muñoz",
         correo: "soledad.munoz@example.com",
         rut: "13.907.442-K",
         servicioId: "srv-liquidacion",
@@ -73,6 +80,7 @@ export const fixtures: Fixtures = {
       {
         id: "cli-008",
         nombre: "Héctor",
+        apellido: "Salas",
         correo: "hector.salas@example.com",
         rut: "8.442.315-6",
         servicioId: "srv-renegociacion",
@@ -81,6 +89,7 @@ export const fixtures: Fixtures = {
       {
         id: "cli-014",
         nombre: "Tomás",
+        apellido: "Alcaíno",
         correo: "tomas.alcaino@example.com",
         rut: "16.331.907-2",
         servicioId: "srv-defensa-juicio",
@@ -89,6 +98,7 @@ export const fixtures: Fixtures = {
       {
         id: "cli-015",
         nombre: "Paula",
+        apellido: "Vidal",
         correo: "paula.vidal@example.com",
         rut: "11.746.220-5",
         servicioId: "srv-proteccion-patrimonial",
@@ -97,6 +107,7 @@ export const fixtures: Fixtures = {
       {
         id: "cli-013",
         nombre: "Rodrigo",
+        apellido: "Paredes",
         correo: "rodrigo.paredes@example.com",
         rut: "14.099.562-8",
         servicioId: "srv-renegociacion",
@@ -105,6 +116,7 @@ export const fixtures: Fixtures = {
       {
         id: "cli-012",
         nombre: "Valentina",
+        apellido: "Cortés",
         correo: "valentina.cortes@example.com",
         rut: "15.842.073-K",
         servicioId: "srv-defensa-juicio",
@@ -113,6 +125,7 @@ export const fixtures: Fixtures = {
       {
         id: "cli-011",
         nombre: "Gonzalo",
+        apellido: "Reyes",
         correo: "gonzalo.reyes@example.com",
         rut: "12.870.455-6",
         servicioId: "srv-defensa-juicio",
@@ -121,6 +134,7 @@ export const fixtures: Fixtures = {
       {
         id: "cli-010",
         nombre: "Andrea",
+        apellido: "Lagos",
         correo: "andrea.lagos@example.com",
         rut: "17.664.209-1",
         servicioId: "srv-liquidacion",
@@ -129,6 +143,7 @@ export const fixtures: Fixtures = {
       {
         id: "cli-009",
         nombre: "Ximena",
+        apellido: "Torres",
         correo: "ximena.torres@example.com",
         rut: "10.338.771-4",
         servicioId: "srv-proteccion-patrimonial",
@@ -137,6 +152,7 @@ export const fixtures: Fixtures = {
       {
         id: "cli-016",
         nombre: "Nicolás",
+        apellido: "Fuentes",
         correo: "nicolas.fuentes@example.com",
         rut: "13.558.492-7",
         servicioId: "srv-defensa-juicio",
@@ -256,7 +272,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-004",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Compraventa de inmueble",
+        identificador: "Compraventa de Inmueble",
         etapaId: "etp-pp-02",
       },
       {
@@ -264,7 +280,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-004",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Constitución de sociedad",
+        identificador: "Constitución de Sociedades",
         etapaId: "etp-pp-03",
       },
       // Su tercera escritura es del mismo tipo que la primera: en Streak no hay
@@ -276,7 +292,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-004",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Compraventa de inmueble",
+        identificador: "Compraventa de Inmueble",
         etapaId: "etp-pp-01",
       },
       {
@@ -413,7 +429,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-008",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Mandato general de administración",
+        identificador: "Mandato",
         etapaId: "etp-pp-03",
       },
       {
@@ -462,9 +478,11 @@ export const fixtures: Fixtures = {
         etapaId: "etp-lit-00",
       },
 
-      // Nicolás: defensa en juicio con tres causas, una en cada nivel de
-      // urgencia. Es la lista donde se ve que los tres pills conviven sin
-      // pisarse y que la que pide algo se encuentra sin leerlas todas.
+      // Nicolás: defensa en juicio con cuatro causas, una en cada nivel de
+      // urgencia y **dos del mismo banco**. Es el caso que pidió litigios para
+      // probar la lista larga: se ve que los tres estados conviven sin pisarse,
+      // que la que pide algo se encuentra sin leerlas todas, y que dos causas
+      // del mismo acreedor comparten burbuja y se separan por el rol.
       {
         id: "caj-057",
         clienteId: "cli-016",
@@ -493,6 +511,15 @@ export const fixtures: Fixtures = {
         etapaId: "etp-lit-01",
       },
       {
+        id: "caj-061",
+        clienteId: "cli-016",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-2093-2026",
+        acreedor: "Banco Estado",
+        etapaId: "etp-lit-02",
+      },
+      {
         id: "caj-060",
         clienteId: "cli-016",
         tipo: "defensaEnJuicio",
@@ -501,13 +528,17 @@ export const fixtures: Fixtures = {
         etapaId: "etp-lit-00",
       },
 
-      // Paula: protección patrimonial con dos escrituras y ninguna causa.
+      // Paula: protección patrimonial con cuatro escrituras y ninguna causa.
+      // **Dos son compraventas de inmueble**, que es el caso que trajo el equipo
+      // de PP: en Streak no hay con qué distinguirlas, así que acá se prueba si
+      // la burbuja de color y la etapa alcanzan para no leerlas como un dato
+      // repetido por error.
       {
         id: "caj-053",
         clienteId: "cli-015",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Constitución de sociedad",
+        identificador: "Constitución de Sociedades",
         etapaId: "etp-pp-01",
       },
       {
@@ -515,8 +546,24 @@ export const fixtures: Fixtures = {
         clienteId: "cli-015",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Compraventa de inmueble",
+        identificador: "Compraventa de Inmueble",
         etapaId: "etp-pp-03",
+      },
+      {
+        id: "caj-062",
+        clienteId: "cli-015",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Compraventa de Inmueble",
+        etapaId: "etp-pp-04",
+      },
+      {
+        id: "caj-063",
+        clienteId: "cli-015",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Mandato",
+        etapaId: "etp-pp-02",
       },
       {
         id: "caj-055",
@@ -633,7 +680,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-011",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Constitución de sociedad",
+        identificador: "Constitución de Sociedades",
         etapaId: "etp-pp-01",
       },
       {
@@ -1621,19 +1668,159 @@ export const fixtures: Fixtures = {
         monto: 89000,
         estado: "pendiente",
       },
+      // Nicolás: el plan largo. Cinco pagadas, **una morosa** y seis por venir.
+      // Es el único cliente con una cuota morosa: sirve para ver la bolita roja
+      // en el lugar exacto del mes que falló, y la fila en rojo del historial.
       {
-        id: "cuo-205",
+        id: "cuo-211",
+        clienteId: "cli-016",
+        numero: 1,
+        fechaVencimiento: "2026-04-05",
+        monto: 96500,
+        estado: "pagada",
+        fechaPago: "2026-04-04",
+      },
+      {
+        id: "cuo-212",
+        clienteId: "cli-016",
+        numero: 2,
+        fechaVencimiento: "2026-05-05",
+        monto: 96500,
+        estado: "pagada",
+        fechaPago: "2026-05-06",
+      },
+      {
+        id: "cuo-213",
+        clienteId: "cli-016",
+        numero: 3,
+        fechaVencimiento: "2026-06-05",
+        monto: 96500,
+        estado: "pagada",
+        fechaPago: "2026-06-05",
+      },
+      {
+        id: "cuo-214",
         clienteId: "cli-016",
         numero: 4,
+        fechaVencimiento: "2026-07-05",
+        monto: 96500,
+        estado: "pagada",
+        fechaPago: "2026-07-08",
+      },
+      {
+        id: "cuo-215",
+        clienteId: "cli-016",
+        numero: 5,
+        fechaVencimiento: "2026-08-05",
+        monto: 96500,
+        estado: "pagada",
+        fechaPago: "2026-08-05",
+      },
+      {
+        id: "cuo-2116",
+        clienteId: "cli-016",
+        numero: 6,
+        fechaVencimiento: "2026-09-05",
+        monto: 96500,
+        estado: "morosa",
+      },
+      {
+        id: "cuo-2117",
+        clienteId: "cli-016",
+        numero: 7,
         fechaVencimiento: "2026-10-05",
         monto: 96500,
         estado: "pendiente",
       },
       {
-        id: "cuo-115",
+        id: "cuo-2118",
+        clienteId: "cli-016",
+        numero: 8,
+        fechaVencimiento: "2026-11-05",
+        monto: 96500,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2119",
+        clienteId: "cli-016",
+        numero: 9,
+        fechaVencimiento: "2026-12-05",
+        monto: 96500,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2120",
+        clienteId: "cli-016",
+        numero: 10,
+        fechaVencimiento: "2027-01-05",
+        monto: 96500,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2121",
+        clienteId: "cli-016",
+        numero: 11,
+        fechaVencimiento: "2027-02-05",
+        monto: 96500,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2122",
+        clienteId: "cli-016",
+        numero: 12,
+        fechaVencimiento: "2027-03-05",
+        monto: 96500,
+        estado: "pendiente",
+      },
+      // Paula: seis cuotas, tres pagadas. El plan a media asta, sin morosas.
+      {
+        id: "cuo-2301",
+        clienteId: "cli-015",
+        numero: 1,
+        fechaVencimiento: "2026-06-22",
+        monto: 115000,
+        estado: "pagada",
+        fechaPago: "2026-06-21",
+      },
+      {
+        id: "cuo-2302",
         clienteId: "cli-015",
         numero: 2,
+        fechaVencimiento: "2026-07-22",
+        monto: 115000,
+        estado: "pagada",
+        fechaPago: "2026-07-24",
+      },
+      {
+        id: "cuo-2303",
+        clienteId: "cli-015",
+        numero: 3,
+        fechaVencimiento: "2026-08-22",
+        monto: 115000,
+        estado: "pagada",
+        fechaPago: "2026-08-22",
+      },
+      {
+        id: "cuo-2304",
+        clienteId: "cli-015",
+        numero: 4,
+        fechaVencimiento: "2026-09-22",
+        monto: 115000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2305",
+        clienteId: "cli-015",
+        numero: 5,
         fechaVencimiento: "2026-10-22",
+        monto: 115000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2306",
+        clienteId: "cli-015",
+        numero: 6,
+        fechaVencimiento: "2026-11-22",
         monto: 115000,
         estado: "pendiente",
       },
@@ -1645,12 +1832,72 @@ export const fixtures: Fixtures = {
         monto: 46800,
         estado: "pendiente",
       },
+      // Valentina: ocho cuotas y ninguna morosa. Es el plan que se lee como va:
+      // dos bolitas llenas y seis vacías.
       {
-        id: "cuo-112",
+        id: "cuo-2201",
         clienteId: "cli-012",
         numero: 1,
-        fechaVencimiento: "2026-10-12",
-        monto: 99500,
+        fechaVencimiento: "2026-07-22",
+        monto: 115000,
+        estado: "pagada",
+        fechaPago: "2026-07-21",
+      },
+      {
+        id: "cuo-2202",
+        clienteId: "cli-012",
+        numero: 2,
+        fechaVencimiento: "2026-08-22",
+        monto: 115000,
+        estado: "pagada",
+        fechaPago: "2026-08-22",
+      },
+      {
+        id: "cuo-2203",
+        clienteId: "cli-012",
+        numero: 3,
+        fechaVencimiento: "2026-09-22",
+        monto: 115000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2204",
+        clienteId: "cli-012",
+        numero: 4,
+        fechaVencimiento: "2026-10-22",
+        monto: 115000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2205",
+        clienteId: "cli-012",
+        numero: 5,
+        fechaVencimiento: "2026-11-22",
+        monto: 115000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2206",
+        clienteId: "cli-012",
+        numero: 6,
+        fechaVencimiento: "2026-12-22",
+        monto: 115000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2207",
+        clienteId: "cli-012",
+        numero: 7,
+        fechaVencimiento: "2027-01-22",
+        monto: 115000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2208",
+        clienteId: "cli-012",
+        numero: 8,
+        fechaVencimiento: "2027-02-22",
+        monto: 115000,
         estado: "pendiente",
       },
       {
@@ -1699,6 +1946,11 @@ export const fixtures: Fixtures = {
         banco: "Banco de Chile",
         numeroCuenta: "00-162-36534-09",
         rutTitular: "77.727.144-K",
+        // Cobranza es una sola persona para toda la cartera, a diferencia de la
+        // ejecutiva y el abogado, que van por caso. Por eso vive acá y no en
+        // `contacto`.
+        nombreCobranza: "Scarlet",
+        telefonoCobranza: "+56 9 8136 4658",
       },
     ],
   },

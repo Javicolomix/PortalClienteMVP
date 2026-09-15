@@ -7,10 +7,25 @@ export type RolContacto = "ejecutiva" | "abogado";
 
 export type Cliente = {
   id: string;
+  /** Nombre de pila. Es con lo que se saluda: «Hola, Valentina». */
   nombre: string;
+  /**
+   * Apellido. El portal no lo muestra en ninguna pantalla —saludar por nombre y
+   * apellido suena a carta del banco—, pero **sí va en los mensajes que salen
+   * hacia el equipo**: WhatsApp y el correo del comprobante. Del otro lado hay
+   * alguien que atiende a muchas personas y «soy Valentina» no ubica a nadie.
+   */
+  apellido: string;
   servicioId: string;
   etapaActualId: string;
 };
+
+/**
+ * Cómo se presenta la persona cuando el mensaje sale del portal hacia el
+ * equipo. Nunca se usa para hablarle a ella.
+ */
+export const nombreCompleto = (cliente: Pick<Cliente, "nombre" | "apellido">): string =>
+  [cliente.nombre, cliente.apellido].filter(Boolean).join(" ");
 
 /**
  * Los cuatro servicios que puede tener contratados una persona. El portal se
@@ -82,18 +97,57 @@ export type Caja = {
 };
 
 /**
- * Cómo se rotula una caja en su lista. En una causa el ROL solo no le dice nada
- * a nadie: lo que la persona reconoce es a quién le debe, así que van los dos
- * juntos —«Rol N.° C-4821-2026 · Banco Estado»—. En una escritura basta el tipo,
- * que ya se lee en castellano.
+ * Con qué se reconoce una caja entre varias, en dos piezas de peso distinto.
  *
- * Es el rótulo de la fila, no su titular: lo que manda arriba es la etapa.
+ * **`principal` va primero y con tinta**, `secundario` detrás y en gris. En una
+ * causa el principal es el **acreedor**, no el rol: la persona no recuerda el
+ * número de un expediente, recuerda a quién le debe. El orden estaba al revés
+ * —«Rol N.° C-4821-2026 · Banco Estado»— y litigios lo corrigió: el rol quedó,
+ * porque es lo único que distingue dos causas del mismo banco, pero pasa atrás.
+ *
+ * En una escritura el principal es el tipo, que ya se lee en castellano, y no
+ * hay secundario: en Streak no existe con qué distinguir dos del mismo tipo.
+ * Ahí lo que las separa es la burbuja de color y la etapa de cada una.
+ *
+ * Es el rótulo de la fila, no su titular: lo que manda en la línea de abajo
+ * sigue siendo la etapa.
  */
-export const rotuloDeLaCaja = (caja: Caja): string | undefined => {
-  if (caja.tipo !== "defensaEnJuicio") return caja.identificador || undefined;
+export type IdentidadDeCaja = {
+  principal: string;
+  secundario?: string;
+  /**
+   * De qué depende el color de la burbuja, que **no siempre es el texto que se
+   * lee**. Los dos embudos necesitan cosas distintas:
+   *
+   * - En una **causa** la clave es el acreedor, así que dos causas del mismo
+   *   banco salen del mismo color a propósito: son del mismo acreedor y eso es
+   *   información. Lo que las separa es el rol, que va escrito al lado.
+   * - En una **escritura** la clave es la caja. Dos compraventas de inmueble
+   *   tienen el mismo texto, el mismo tipo y nada que las distinga —en Streak no
+   *   existe ese dato—, así que una burbuja sacada del tipo les daría el mismo
+   *   color y volvería a dejarlas como un dato repetido por error, que es
+   *   exactamente lo que el color venía a resolver. Sacándola de la caja, las dos
+   *   filas se separan aunque digan lo mismo.
+   *
+   * El color no significa nada por sí solo en ninguno de los dos casos: sirve
+   * para distinguir y para agrupar, no para decir qué pasa. Lo que pasa lo dice
+   * la pastilla de urgencia, y esa sí tiene significado fijo.
+   */
+  claveDeColor: string;
+};
 
-  const partes = [caja.identificador ? `Rol N.° ${caja.identificador}` : "", caja.acreedor ?? ""];
-  return partes.filter(Boolean).join(" · ") || undefined;
+export const identidadDeLaCaja = (caja: Caja): IdentidadDeCaja | undefined => {
+  if (caja.tipo !== "defensaEnJuicio") {
+    return caja.identificador
+      ? { principal: caja.identificador, claveDeColor: caja.id }
+      : undefined;
+  }
+
+  const rol = caja.identificador ? `Rol N.° ${caja.identificador}` : undefined;
+  if (caja.acreedor) {
+    return { principal: caja.acreedor, secundario: rol, claveDeColor: caja.acreedor };
+  }
+  return rol ? { principal: rol, claveDeColor: caja.id } : undefined;
 };
 
 export type ResultadoServicio = {
@@ -141,6 +195,13 @@ export type ConfiguracionPortal = {
   banco: string;
   numeroCuenta: string;
   rutTitular: string;
+  /**
+   * Quién ve los cobros en Lexy y por dónde se le escribe. Es **la misma persona
+   * para todos los clientes**, a diferencia de la ejecutiva y el abogado, que
+   * van por caso: por eso vive en la configuración y no en `contacto`.
+   */
+  nombreCobranza: string;
+  telefonoCobranza: string;
 };
 
 export type Cuota = {
@@ -151,7 +212,13 @@ export type Cuota = {
   fechaVencimiento: string;
   /** Pesos chilenos, entero. */
   monto: number;
-  estado: "pendiente" | "pagada";
+  /**
+   * `morosa` es una cuota que venció y no se pagó. Se separa de `pendiente`
+   * porque el portal las trata distinto: la pendiente es la que toca pagar y va
+   * destacada arriba; la morosa ya pasó y va en el historial, en rojo, para que
+   * la persona vea por qué su saldo no cuadra.
+   */
+  estado: "pendiente" | "pagada" | "morosa";
   /** Cuándo se pagó, ISO `aaaa-mm-dd`. Solo en las pagadas. */
   fechaPago?: string;
 };
@@ -210,9 +277,45 @@ export type DatosMiServicio = {
 export type DatosMisPagos = {
   cliente: Cliente;
   proximaCuota: Cuota | null;
-  /** Las cuotas ya pagadas, de la más reciente a la más antigua. */
+  /**
+   * Las cuotas cerradas —pagadas y morosas—, de la más reciente a la más
+   * antigua, que es el orden en que se busca un pago.
+   */
   historial: Cuota[];
+  /** Todas las cuotas del plan. Es con lo que se cuenta cuánto falta. */
+  cuotas: Cuota[];
   configuracion: ConfiguracionPortal;
+};
+
+/**
+ * El avance del plan de pago: cuántas cuotas van, cuántas faltan y cuánta plata
+ * es cada cosa. Sale de las cuotas, no de un campo aparte, porque un total que
+ * se guarda por separado es un total que algún día no va a cuadrar con sus
+ * partes.
+ */
+export type AvanceDelPlan = {
+  total: number;
+  pagadas: number;
+  morosas: number;
+  montoPagado: number;
+  montoPorPagar: number;
+  montoTotal: number;
+};
+
+export const avanceDelPlan = (cuotas: Cuota[]): AvanceDelPlan => {
+  const pagadas = cuotas.filter((cuota) => cuota.estado === "pagada");
+  const morosas = cuotas.filter((cuota) => cuota.estado === "morosa");
+  const montoPagado = pagadas.reduce((suma, cuota) => suma + cuota.monto, 0);
+  const montoTotal = cuotas.reduce((suma, cuota) => suma + cuota.monto, 0);
+
+  return {
+    total: cuotas.length,
+    pagadas: pagadas.length,
+    morosas: morosas.length,
+    montoPagado,
+    montoPorPagar: montoTotal - montoPagado,
+    montoTotal,
+  };
 };
 
 /** Una etapa está lista para publicarse solo si sus seis textos están escritos. */

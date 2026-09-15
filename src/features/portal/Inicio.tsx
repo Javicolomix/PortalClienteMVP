@@ -14,7 +14,7 @@ import { muestraBloque, nombreDelServicioPrincipal } from "./composicion";
 import { ICONOS } from "./iconos";
 import { FilaDesplegable, ListaDeCajas, TituloDeBloque } from "./ListaDeCajas";
 import { CargandoPagina, ErrorDeCarga } from "./PaginaDelPortal";
-import type { DatosInicio, Etapa } from "./portal.types";
+import { type DatosInicio, type Etapa, nombreCompleto } from "./portal.types";
 import { cargarInicio } from "./portal-service";
 import { saludoSegunHora } from "./saludo";
 
@@ -310,7 +310,7 @@ function BloqueDelCaso({ etapa, servicio }: { etapa: Etapa | null; servicio: str
       <div className="mt-3">
         <FilaDesplegable
           id="mi-caso"
-          sobretitulo={servicio}
+          identidad={{ principal: servicio, claveDeColor: servicio }}
           titulo={etapa ? etapa.nombreParaCliente : "Tu caso está avanzando"}
           etapa={etapa}
           completo
@@ -591,7 +591,7 @@ export function Inicio() {
 
               <BotonWhatsapp
                 contactos={datos.contactos}
-                nombreCliente={datos.cliente.nombre}
+                nombreCliente={nombreCompleto(datos.cliente)}
                 correoSoporte={datos.configuracion.correoSoporte}
               />
             </>

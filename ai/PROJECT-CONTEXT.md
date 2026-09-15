@@ -831,6 +831,34 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   vieja dejaba la pantalla en blanco, sin nada que explicara qué pasó ni cómo
   salir.
 
+- 2026-09-15 (reunión con Litigios y PP): **la pastilla de urgencia deja de
+  nombrar emociones.** «Tranquilo» y «Atento» pasan a «Sin acción» y «Atención»;
+  «Urgente» queda igual. El equipo objetó que el portal le indicara un estado de
+  ánimo a alguien que está siendo demandado: la pastilla dice cuánta acción se le
+  pide, no cómo debería sentirse. Va con **punto de semáforo** adentro y una
+  **leyenda desplegable** en la cabecera de cada bloque, porque tres palabras
+  sueltas no se entienden a primera vista.
+- 2026-09-15 (misma reunión): en una causa, **el acreedor va antes que el rol**.
+  La persona reconoce su juicio por a quién le debe, no por el número del
+  expediente. El rol se mantiene, en gris y detrás, porque es lo único que
+  distingue dos causas del mismo banco.
+- 2026-09-15 (misma reunión): cada caja de las listas lleva una **burbuja de
+  color con sus iniciales** —propuesta de Javi—. Nace de que dos escrituras del
+  mismo tipo, o dos causas del mismo acreedor, se leían como un dato repetido por
+  error. El color sale del **acreedor** en las causas (dos del mismo banco
+  comparten burbuja a propósito) y de la **caja** en las escrituras (donde no hay
+  nada que las distinga y el color es lo único que las separa). Evita verde,
+  ámbar y rojo, que ya significan urgencia.
+- 2026-09-15: **el WhatsApp sale con nombre y apellido.** Del otro lado hay
+  alguien que atiende a cientos de personas: «soy Valentina» obliga a pedir el
+  RUT antes de poder ayudar. El cliente gana el campo `apellido`, que el portal
+  nunca le muestra a ella.
+- 2026-09-15: «Mis pagos» gana **cuánto llevas del plan, en bolitas** (pagadas,
+  morosas y por venir) y un **contacto directo con cobranza** —Scarlet, la misma
+  persona para toda la cartera, así que su número vive en la configuración del
+  portal—. La cuota gana el estado `morosa`, que va en rojo en el historial.
+  PENDIENTE CON TI: quién y cuándo marca una cuota como morosa.
+
 - 2026-09-03: **PP = Protección Patrimonial**. El servicio quedó como «Litigios y
   Protección Patrimonial».
 - 2026-09-03: los tres servicios cargados (renegociación, liquidación, litigios y

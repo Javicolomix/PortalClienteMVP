@@ -5,7 +5,7 @@ import { useCarga } from "@/shared/hooks/useCarga";
 import { cn } from "@/shared/lib/utils/cn";
 
 import { CargandoPagina, ErrorDeCarga, PaginaDelPortal } from "./PaginaDelPortal";
-import type { DatosMiEquipo } from "./portal.types";
+import { type DatosMiEquipo, nombreCompleto } from "./portal.types";
 import { cargarMiEquipo } from "./portal-service";
 import { enlaceWhatsapp, ETIQUETA_ROL } from "./whatsapp";
 
@@ -50,7 +50,7 @@ function Contactos({ datos }: { datos: DatosMiEquipo }) {
                   className="w-full sm:w-auto"
                 >
                   <a
-                    href={enlaceWhatsapp(contacto.telefonoWhatsapp, datos.cliente.nombre)}
+                    href={enlaceWhatsapp(contacto.telefonoWhatsapp, nombreCompleto(datos.cliente))}
                     target="_blank"
                     rel="noreferrer"
                   >

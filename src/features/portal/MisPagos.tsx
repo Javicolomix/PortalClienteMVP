@@ -17,9 +17,17 @@ import { useCarga } from "@/shared/hooks/useCarga";
 import { cn } from "@/shared/lib/utils/cn";
 
 import { formatearFechaCorta } from "./fechas";
+import { MarcaWhatsapp } from "./MarcaWhatsapp";
 import { CargandoPagina, ErrorDeCarga, PaginaDelPortal } from "./PaginaDelPortal";
-import type { ConfiguracionPortal, Cuota, DatosMisPagos } from "./portal.types";
+import {
+  avanceDelPlan,
+  type ConfiguracionPortal,
+  type Cuota,
+  type DatosMisPagos,
+  nombreCompleto,
+} from "./portal.types";
 import { cargarMisPagos } from "./portal-service";
+import { enlaceWhatsapp } from "./whatsapp";
 
 const FORMATO_PESOS = new Intl.NumberFormat("es-CL", {
   style: "currency",
@@ -160,6 +168,73 @@ function ProximaCuota({ cuota }: { cuota: Cuota }) {
   );
 }
 
+/**
+ * **Cuánto llevas del plan**, en bolitas.
+ *
+ * Es la pregunta que la persona trae y que el portal no contestaba: sabía cuánto
+ * le tocaba pagar este mes, pero no cuánto le quedaba por delante. Sin eso, un
+ * plan de veinticuatro cuotas se vive como una deuda sin fondo.
+ *
+ * Va en bolitas y no en una barra de progreso porque **las cuotas se cuentan**.
+ * Una barra dice «vas por la mitad»; las bolitas dejan contar seis llenas y seis
+ * vacías, que es la forma en que la gente lleva la cuenta de lo que paga. Es
+ * también lo que hace visible una cuota morosa: en una barra sería un tramo de
+ * otro color, acá es una bolita roja en el lugar exacto del mes que falló.
+ *
+ * Las bolitas son **adorno para el lector de pantalla** (`aria-hidden`): la
+ * frase de abajo dice lo mismo en palabras, y doce puntos anunciados uno a uno
+ * no le sirven a nadie.
+ *
+ * El dinero va debajo y en gris. Es el dato que pidió el equipo —deuda total
+ * contra pagada— pero no es lo primero que se mira: quien abre esta pantalla
+ * quiere saber cuánto le falta, y eso se cuenta en cuotas antes que en pesos.
+ */
+function AvanceDelPlan({ cuotas }: { cuotas: Cuota[] }) {
+  const avance = avanceDelPlan(cuotas);
+
+  if (avance.total === 0) return null;
+
+  return (
+    <section className="mt-4 rounded-lg bg-card p-5 ring-1 ring-border-subtle">
+      <h2 className="type-supporting text-muted-foreground">Tu plan de pago</h2>
+
+      <ul aria-hidden className="mt-3 flex flex-wrap gap-1.5">
+        {cuotas.map((cuota) => (
+          <li
+            key={cuota.id}
+            className={cn(
+              "size-2.5 rounded-full",
+              cuota.estado === "pagada" && "bg-primary",
+              cuota.estado === "morosa" && "bg-destructive",
+              cuota.estado === "pendiente" && "bg-transparent ring-1 ring-border-strong",
+            )}
+          />
+        ))}
+      </ul>
+
+      <p className="mt-3 type-body text-foreground">
+        <span className="font-semibold">
+          {avance.pagadas} de {avance.total}
+        </span>{" "}
+        {avance.total === 1 ? "cuota pagada" : "cuotas pagadas"}
+        {avance.morosas > 0 ? (
+          <>
+            {" · "}
+            <span className="font-medium text-destructive">
+              {avance.morosas} {avance.morosas === 1 ? "morosa" : "morosas"}
+            </span>
+          </>
+        ) : null}
+      </p>
+
+      <p className="mt-1 type-supporting text-muted-foreground">
+        Llevas pagados {FORMATO_PESOS.format(avance.montoPagado)} de{" "}
+        {FORMATO_PESOS.format(avance.montoTotal)}.
+      </p>
+    </section>
+  );
+}
+
 function ComoPagar({
   configuracion,
   nombreCliente,
@@ -216,7 +291,31 @@ function ComoPagar({
 }
 
 /**
- * Las cuotas ya pagadas, **cerradas por defecto**. Es información de respaldo:
+ * Cómo se muestra una cuota que ya pasó. Una sola función para las dos
+ * presentaciones del historial —la tabla del computador y la lista del
+ * teléfono—, para que no se puedan contradecir.
+ *
+ * `morosa` es una cuota que venció sin pago. Va en rojo y con su fecha de
+ * vencimiento en vez de la de pago, porque la de pago no existe: dejar la celda
+ * vacía haría pensar en un dato que falta, cuando lo que falta es el pago.
+ */
+const presentacionDeCuota = (cuota: Cuota) =>
+  cuota.estado === "morosa"
+    ? {
+        etiqueta: "Morosa",
+        tono: "danger" as const,
+        fecha: `Venció el ${formatearFechaCorta(cuota.fechaVencimiento)}`,
+        fechaEnTabla: `Venció el ${formatearFechaCorta(cuota.fechaVencimiento)}`,
+      }
+    : {
+        etiqueta: "Pagada",
+        tono: "success" as const,
+        fecha: `Pagada el ${formatearFechaCorta(cuota.fechaPago ?? cuota.fechaVencimiento)}`,
+        fechaEnTabla: formatearFechaCorta(cuota.fechaPago ?? cuota.fechaVencimiento),
+      };
+
+/**
+ * Las cuotas que ya pasaron, **cerradas por defecto**. Es información de respaldo:
  * sirve para comprobar que un pago quedó registrado, no para decidir nada hoy.
  * Abierta ocuparía más pantalla que la cuota que sí hay que pagar, que es lo
  * único que esta pantalla vino a resolver.
@@ -230,6 +329,8 @@ function HistorialDePagos({ cuotas }: { cuotas: Cuota[] }) {
   const [abierto, setAbierto] = useState(false);
 
   if (cuotas.length === 0) return null;
+
+  const hayMorosas = cuotas.some((cuota) => cuota.estado === "morosa");
 
   return (
     <section className="mt-10">
@@ -248,7 +349,7 @@ function HistorialDePagos({ cuotas }: { cuotas: Cuota[] }) {
                 <span className="font-normal text-muted-foreground">({cuotas.length})</span>
               </span>
               <span className="type-supporting mt-0.5 block text-muted-foreground">
-                Las cuotas que ya pagaste
+                {hayMorosas ? "Lo que pagaste y lo que quedó pendiente" : "Las cuotas que ya pagaste"}
               </span>
             </span>
 
@@ -283,12 +384,10 @@ function HistorialDePagos({ cuotas }: { cuotas: Cuota[] }) {
                     <Table.Row key={cuota.id}>
                       <Table.Cell>{cuota.numero}</Table.Cell>
                       <Table.Cell>{FORMATO_PESOS.format(cuota.monto)}</Table.Cell>
+                      <Table.Cell>{presentacionDeCuota(cuota).fechaEnTabla}</Table.Cell>
                       <Table.Cell>
-                        {formatearFechaCorta(cuota.fechaPago ?? cuota.fechaVencimiento)}
-                      </Table.Cell>
-                      <Table.Cell>
-                        <Tag tone="success" size="xs" shape="rounded">
-                          Pagada
+                        <Tag tone={presentacionDeCuota(cuota).tono} size="xs" shape="rounded">
+                          {presentacionDeCuota(cuota).etiqueta}
                         </Tag>
                       </Table.Cell>
                     </Table.Row>
@@ -311,12 +410,17 @@ function HistorialDePagos({ cuotas }: { cuotas: Cuota[] }) {
                       Cuota N°{cuota.numero} · {FORMATO_PESOS.format(cuota.monto)}
                     </span>
                     <span className="type-meta mt-0.5 block text-muted-foreground">
-                      Pagada el {formatearFechaCorta(cuota.fechaPago ?? cuota.fechaVencimiento)}
+                      {presentacionDeCuota(cuota).fecha}
                     </span>
                   </span>
 
-                  <Tag tone="success" size="xs" shape="rounded" className="shrink-0">
-                    Pagada
+                  <Tag
+                    tone={presentacionDeCuota(cuota).tono}
+                    size="xs"
+                    shape="rounded"
+                    className="shrink-0"
+                  >
+                    {presentacionDeCuota(cuota).etiqueta}
                   </Tag>
                 </li>
               ))}
@@ -324,6 +428,57 @@ function HistorialDePagos({ cuotas }: { cuotas: Cuota[] }) {
           </div>
         ) : null}
       </div>
+    </section>
+  );
+}
+
+/**
+ * **La salida cuando el número no cuadra.**
+ *
+ * Todo lo demás de esta pantalla asume que el cobro está bien y solo hay que
+ * pagarlo. Cuando no —la cuota subió, aparece una morosa que la persona jura
+ * haber pagado, no entiende por qué son veinticuatro y no dieciocho— el portal
+ * la dejaba sin nadie a quien preguntarle: el botón flotante del inicio lleva a
+ * la ejecutiva y al abogado, que ven el caso pero no los cobros.
+ *
+ * Va con nombre propio. «Contactar a cobranza» es escribirle a un
+ * departamento; «Hablar con Scarlet» es escribirle a alguien, y de eso se trata
+ * el portal entero.
+ *
+ * Es **la misma persona para todos los clientes**, así que el número vive en la
+ * configuración del portal y no en los contactos del caso.
+ *
+ * Cierra la página a propósito: se llega acá después de haber visto cuánto
+ * debes, cómo pagar y qué pagaste. Arriba habría interrumpido a quien solo venía
+ * a transferir.
+ */
+function DudasDelCobro({
+  configuracion,
+  nombreDelCliente,
+}: {
+  configuracion: ConfiguracionPortal;
+  nombreDelCliente: string;
+}) {
+  const enlace = enlaceWhatsapp(
+    configuracion.telefonoCobranza,
+    nombreDelCliente,
+    "Tengo una duda sobre el cobro de mis honorarios.",
+  );
+
+  return (
+    <section className="mt-10 rounded-lg bg-card p-5 ring-1 ring-border-subtle">
+      <h2 className="type-item-title text-foreground">¿Tienes dudas de tu cobro?</h2>
+      <p className="mt-2 type-body text-muted-foreground">
+        Si algo no te cuadra —el monto, una cuota que ya pagaste, cuántas te quedan—, escríbele a{" "}
+        {configuracion.nombreCobranza}, que lleva los pagos en Lexy.
+      </p>
+
+      <Button asChild variant="outline" className="mt-4 w-full sm:w-auto">
+        <a href={enlace} target="_blank" rel="noreferrer">
+          <MarcaWhatsapp className="size-4 text-[#25d366]" />
+          Hablar con {configuracion.nombreCobranza}
+        </a>
+      </Button>
     </section>
   );
 }
@@ -346,7 +501,12 @@ function ContenidoDePagos({ datos }: { datos: DatosMisPagos }) {
           </EmptyContent>
         </Empty>
 
+        <AvanceDelPlan cuotas={datos.cuotas} />
         <HistorialDePagos cuotas={datos.historial} />
+        <DudasDelCobro
+          configuracion={datos.configuracion}
+          nombreDelCliente={nombreCompleto(datos.cliente)}
+        />
       </>
     );
   }
@@ -354,8 +514,16 @@ function ContenidoDePagos({ datos }: { datos: DatosMisPagos }) {
   return (
     <>
       <ProximaCuota cuota={datos.proximaCuota} />
-      <ComoPagar configuracion={datos.configuracion} nombreCliente={datos.cliente.nombre} />
+      <AvanceDelPlan cuotas={datos.cuotas} />
+      <ComoPagar
+        configuracion={datos.configuracion}
+        nombreCliente={nombreCompleto(datos.cliente)}
+      />
       <HistorialDePagos cuotas={datos.historial} />
+      <DudasDelCobro
+        configuracion={datos.configuracion}
+        nombreDelCliente={nombreCompleto(datos.cliente)}
+      />
     </>
   );
 }

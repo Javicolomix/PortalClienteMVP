@@ -31,7 +31,12 @@ async function cargarClienteEnSesion(): Promise<Cliente> {
       trigger: "Al abrir cualquier pantalla del portal",
       reads: {
         entities: ["cliente"],
-        fields: ["cliente.nombre", "cliente.servicioId", "cliente.etapaActualId"],
+        fields: [
+          "cliente.nombre",
+          "cliente.apellido",
+          "cliente.servicioId",
+          "cliente.etapaActualId",
+        ],
       },
     },
   );
@@ -267,17 +272,26 @@ export async function cargarMisPagos(): Promise<DatosMisPagos> {
     cargarConfiguracion(),
   ]);
 
-  // La próxima es la pendiente más antigua del plan; el historial va al revés,
-  // de la más reciente a la más antigua, que es el orden en que se busca un pago.
+  // La próxima es la pendiente más antigua del plan. Una morosa no compite por
+  // ese lugar: ya venció, y ponerla ahí haría que la pantalla pidiera pagar algo
+  // distinto de lo que toca este mes.
   const proximaCuota =
     cuotas.filter((cuota) => cuota.estado === "pendiente").sort((a, b) => a.numero - b.numero)[0] ??
     null;
 
+  // El historial son las cuotas cerradas —pagadas y morosas—, de la más reciente
+  // a la más antigua, que es el orden en que se busca un pago. La morosa va acá
+  // y no arriba porque es un hecho del pasado que hay que poder consultar, no
+  // una acción de hoy.
   const historial = cuotas
-    .filter((cuota) => cuota.estado === "pagada")
+    .filter((cuota) => cuota.estado !== "pendiente")
     .sort((a, b) => b.numero - a.numero);
 
-  return { cliente, proximaCuota, historial, configuracion };
+  // Todas, en el orden del plan: es lo que cuentan las bolitas del avance, y ahí
+  // el orden es el de los meses, no el de la búsqueda.
+  const todas = [...cuotas].sort((a, b) => a.numero - b.numero);
+
+  return { cliente, proximaCuota, historial, cuotas: todas, configuracion };
 }
 
 /**
