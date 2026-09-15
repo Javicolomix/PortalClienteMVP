@@ -534,7 +534,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-012",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Mandato general de administración",
+        identificador: "Compraventa de Vehículo",
         etapaId: "etp-pp-02",
       },
       {
