@@ -827,12 +827,9 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   estamos haciendo · qué necesitamos de ti · qué puede pasar después · contacto
   principal · plazo esperado**— y el primer rótulo es «Qué estamos haciendo», no
   «Qué está haciendo tu equipo».
-- 2026-09-15: **«Mi servicio» es una franja de una línea**: rótulo y nombre en la
-  misma fila, separados por un filete, con el nombre en versalitas. Apilada era
-  un bloque de color con dos líneas cortas adentro y siempre se veía a medio
-  llenar — se probaron diez variantes de color, letra y tamaño sin tocar eso. En
-  una franja no hay superficie de sobra que justificar. En el teléfono el filete
-  desaparece y las dos partes se apilan.
+- 2026-09-15: **«Mi servicio» va apilada**: rótulo con la balanza arriba y el
+  nombre en versalitas debajo. Se probó como franja de una línea —rótulo y
+  nombre en la misma fila, separados por un filete— y el diseñador la descartó.
 
 - 2026-09-03: **PP = Protección Patrimonial**. El servicio quedó como «Litigios y
   Protección Patrimonial».

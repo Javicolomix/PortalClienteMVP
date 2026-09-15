@@ -138,7 +138,7 @@ export function FilaDesplegable({
               obliga a leerlas todas para comparar. La instrucción completa
               aparece al desplegar, cerrando el detalle. */}
           {nivel ? (
-            <Tag tone={nivel.tono} size="sm" shape="rounded" className="shrink-0">
+            <Tag tone={nivel.tono} size="xs" shape="rounded" className="shrink-0">
               {nivel.etiqueta}
             </Tag>
           ) : null}
