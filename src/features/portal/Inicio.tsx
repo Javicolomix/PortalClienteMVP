@@ -104,7 +104,7 @@ const BAJADA = "Todo lo que debes saber de tu servicio a un solo click.";
 function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
   return (
     <header
-      className="relative isolate -mb-12 overflow-hidden bg-brand-navy pt-5 pb-20 [--arco:3rem] md:pt-7 md:pb-24 md:[--arco:2.5rem]"
+      className="relative isolate -mb-7 overflow-hidden bg-brand-navy pt-5 pb-16 [--arco:3rem] md:pt-7 md:pb-20 md:[--arco:2.5rem]"
       style={{
         // Radio elíptico: el horizontal es media pantalla, así los dos arcos se
         // encuentran al medio y el borde queda como un solo arco continuo. El
@@ -240,39 +240,33 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
 function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
   return (
     <section
-      className={cn(
-        "w-full rounded-xl bg-[#e4e1fa] px-6 py-5 md:w-fit md:min-w-[24rem] md:max-w-2xl md:px-9 md:py-6",
-        // Con un nombre de una línea la tarjeta queda baja al lado de la del
-        // nombre compuesto, que ocupa dos. Se le suma aire abajo para acercarlas
-        // de porte. Es aire y no una línea de texto reservada: reservada dejaba
-        // medio bloque de lila vacío, que era peor que la diferencia de alto.
-        nombres.length === 1 && "pb-8 md:pb-9",
-      )}
-      style={{ boxShadow: "0 8px 24px rgb(11 1 60 / 0.10)" }}
+      className="w-full rounded-xl bg-[#e4e1fa] px-6 py-4 md:w-fit md:max-w-2xl md:px-7 md:py-5"
+      style={{ boxShadow: "0 6px 18px rgb(11 1 60 / 0.10)" }}
     >
-      <p className="flex items-center gap-1.5 type-meta text-[11px] font-medium tracking-[0.1em] text-[#4a4478] uppercase">
-        <ICONOS.balanza className="size-3.5 shrink-0" strokeWidth={1.75} aria-hidden />
-        Mi servicio
-      </p>
+      {/* Rótulo y nombre en la misma fila, separados por un filete. Apilados, la
+          tarjeta era un bloque de color con dos líneas cortas adentro y siempre
+          se veía a medio llenar; en una franja no hay superficie de sobra que
+          justificar. En el teléfono el filete desaparece y las dos partes se
+          apilan, que es lo único que cabe. */}
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">
+        <p className="flex shrink-0 items-center gap-1.5 type-meta text-[11px] font-medium tracking-[0.1em] text-[#4a4478] uppercase">
+          <ICONOS.balanza className="size-3.5 shrink-0" strokeWidth={1.75} aria-hidden />
+          Mi servicio
+        </p>
 
-      {/* Con el nombre compuesto, cada servicio va en su propia línea y el «con»
-          cierra la primera: «Defensa en juicio con» / «Protección Patrimonial».
-          Suelto, el navegador lo parte donde le alcance el ancho y el corte cae
-          en mitad de un nombre —«…Protección» arriba, «Patrimonial» abajo—, que
-          hace leer dos veces para entender que es un solo servicio.
+        <span className="hidden h-4 w-px shrink-0 bg-brand-navy/20 sm:block" aria-hidden />
 
-          El nombre **no reserva una segunda línea**. Se probó reservarla para
-          que la tarjeta midiera lo mismo en todas las cuentas, y el remedio era
-          peor: con un nombre de una línea quedaba medio bloque de lila vacío
-          debajo. La consistencia de alto entre cuentas no la ve nadie —cada
-          persona entra a la suya— y el vacío lo ve todo el mundo. */}
-      <p className="mt-2 type-subsection-title text-base leading-[1.35] tracking-[0.06em] text-balance text-brand-navy uppercase md:text-base">
-        {nombres.map((nombre, indice) => (
-          <span key={nombre} className="block">
-            {indice < nombres.length - 1 ? `${nombre} con` : nombre}
-          </span>
-        ))}
-      </p>
+        {/* Con el nombre compuesto, cada servicio va en su propia línea y el
+            «con» cierra la primera. Suelto, el navegador lo parte donde le
+            alcanza el ancho y el corte cae en mitad de un nombre. */}
+        <p className="type-subsection-title text-base leading-[1.35] tracking-[0.06em] text-brand-navy uppercase md:text-lg">
+          {nombres.map((nombre, indice) => (
+            <span key={nombre} className="block">
+              {indice < nombres.length - 1 ? `${nombre} con` : nombre}
+            </span>
+          ))}
+        </p>
+      </div>
     </section>
   );
 }
@@ -589,7 +583,12 @@ export function Inicio() {
                 </p>
               </footer>
 
+              {/* A quién ofrece el botón lo decide la etapa, no la pantalla: el
+                  capitán configura el contacto principal junto con el resto del
+                  contenido. Sin etapa visible se ofrecen los dos, que es la
+                  respuesta que no deja a nadie sin poder escribir. */}
               <BotonWhatsapp
+                contactoPrincipal={datos.etapa?.contactoPrincipal ?? "ambos"}
                 contactos={datos.contactos}
                 nombreCliente={datos.cliente.nombre}
                 correoSoporte={datos.configuracion.correoSoporte}

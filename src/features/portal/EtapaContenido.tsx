@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/shared/components/base/Card";
 import { BloqueDestacado, TarjetaInformativa } from "./BloquesDelPortal";
 import { ICONOS } from "./iconos";
 import { NIVELES } from "./nivel-urgencia";
-import type { Etapa } from "./portal.types";
+import { type Etapa,ETIQUETA_CONTACTO_PRINCIPAL } from "./portal.types";
 
 /** Cuando la etapa del caso es de trabajo interno, el cliente igual sabe dónde está parado. */
 export function CasoEnTrabajoInterno() {
@@ -48,7 +48,7 @@ export function EtapaContenido({ etapa }: { etapa: Etapa }) {
       </BloqueDestacado>
 
       <div className="space-y-2.5">
-        <TarjetaInformativa Icono={ICONOS.equipo} titulo="Qué está haciendo tu equipo">
+        <TarjetaInformativa Icono={ICONOS.equipo} titulo="Qué estamos haciendo">
           {etapa.queHaceLexy}
         </TarjetaInformativa>
 
@@ -56,12 +56,16 @@ export function EtapaContenido({ etapa }: { etapa: Etapa }) {
           {etapa.queNecesitamosDelCliente}
         </TarjetaInformativa>
 
-        <TarjetaInformativa Icono={ICONOS.reloj} titulo="Plazo esperado">
-          {etapa.plazoEsperado}
-        </TarjetaInformativa>
-
         <TarjetaInformativa Icono={ICONOS.camino} titulo="Qué puede pasar después">
           {etapa.quePuedePasarDespues}
+        </TarjetaInformativa>
+
+        <TarjetaInformativa Icono={ICONOS.mensaje} titulo="Contacto principal">
+          {ETIQUETA_CONTACTO_PRINCIPAL[etapa.contactoPrincipal]}
+        </TarjetaInformativa>
+
+        <TarjetaInformativa Icono={ICONOS.reloj} titulo="Plazo esperado">
+          {etapa.plazoEsperado}
         </TarjetaInformativa>
       </div>
 

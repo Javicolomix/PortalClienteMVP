@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 
 import { ICONOS } from "./iconos";
-import type { Etapa } from "./portal.types";
+import { NIVELES } from "./nivel-urgencia";
+import { type Etapa,ETIQUETA_CONTACTO_PRINCIPAL } from "./portal.types";
 
 type Icono = (typeof ICONOS)[keyof typeof ICONOS];
 
@@ -106,8 +107,12 @@ export function TarjetaInformativa({
  * mismo, así que vive en un solo lugar: es el contenido que escribió el capitán,
  * y no hay razón para que se vea distinto según de qué caja cuelgue.
  *
- * No repite el nivel de urgencia al pie: la instrucción completa ya está en la
- * fila, arriba y a la vista sin desplegar nada.
+ * **Cierra con la instrucción completa.** En la fila solo se ve la palabra del
+ * nivel —«Atento»—, que es lo que deja comparar varias causas de un vistazo;
+ * acá, ya desplegado, va la frase entera: qué significa esa palabra para esta
+ * persona. Cierra y no abre el detalle, porque es la conclusión de todo lo
+ * anterior: primero entiende en qué etapa está y qué se está haciendo, y recién
+ * entonces lee si le toca actuar.
  *
  * **Abre con la explicación de la etapa**, en el bloque lila: sin ese ancla el
  * panel empezaba directamente por «qué está haciendo tu equipo», que responde
@@ -144,10 +149,23 @@ export function DetalleDeEtapa({
     );
   }
 
+  // El orden lo fijó el diseñador y es el de una explicación hablada: qué
+  // estamos haciendo, qué te toca a ti, qué viene después, con quién hablas y
+  // cuánto demora. «Qué puede pasar después» solo va en el estado del caso: en
+  // una lista de tres causas, el futuro de cada una no ayuda a compararlas.
   const tarjetas = [
-    { clave: "equipo", Icono: ICONOS.equipo, titulo: "Qué está haciendo tu equipo", texto: etapa.queHaceLexy },
-    { clave: "tarea", Icono: ICONOS.tarea, titulo: "Qué necesitamos de ti", texto: etapa.queNecesitamosDelCliente },
-    { clave: "plazo", Icono: ICONOS.reloj, titulo: "Plazo esperado", texto: etapa.plazoEsperado },
+    {
+      clave: "equipo",
+      Icono: ICONOS.equipo,
+      titulo: "Qué estamos haciendo",
+      texto: etapa.queHaceLexy,
+    },
+    {
+      clave: "tarea",
+      Icono: ICONOS.tarea,
+      titulo: "Qué necesitamos de ti",
+      texto: etapa.queNecesitamosDelCliente,
+    },
     ...(completo
       ? [
           {
@@ -158,6 +176,18 @@ export function DetalleDeEtapa({
           },
         ]
       : []),
+    {
+      clave: "contacto",
+      Icono: ICONOS.mensaje,
+      titulo: "Contacto principal",
+      texto: ETIQUETA_CONTACTO_PRINCIPAL[etapa.contactoPrincipal],
+    },
+    {
+      clave: "plazo",
+      Icono: ICONOS.reloj,
+      titulo: "Plazo esperado",
+      texto: etapa.plazoEsperado,
+    },
   ];
 
   return (
@@ -178,6 +208,26 @@ export function DetalleDeEtapa({
         </TarjetaInformativa>
       ))}
 
+      <RefuerzoDeUrgencia etapa={etapa} />
+
     </div>
+  );
+}
+
+/**
+ * El refuerzo verbal del nivel de urgencia, al pie del detalle. Sin caja —una
+ * más acá abajo se leería como una tarjeta más— pero en el color de su nivel, el
+ * mismo de la pastilla que la persona vio arriba en la fila.
+ */
+function RefuerzoDeUrgencia({ etapa }: { etapa: Etapa }) {
+  const { frase, Icono, color } = NIVELES[etapa.nivelUrgencia];
+
+  return (
+    <p
+      className={`flex items-start gap-2 border-t border-border-subtle px-1 pt-4 type-supporting font-medium ${color}`}
+    >
+      <Icono className="mt-0.5 size-4 shrink-0" aria-hidden />
+      {frase}
+    </p>
   );
 }

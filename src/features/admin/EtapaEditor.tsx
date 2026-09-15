@@ -49,6 +49,7 @@ const esquemaEtapa = z
     queNecesitamosDelCliente: z.string(),
     quePuedePasarDespues: z.string(),
     plazoEsperado: z.string(),
+    contactoPrincipal: z.enum(["ejecutiva", "abogado", "ambos"]),
     nivelUrgencia: z.enum(["tranquilidad", "atencion", "urgente"]),
   })
   .superRefine((valores, contexto) => {
@@ -107,6 +108,17 @@ function FraseDelCliente({ nivel }: { nivel: keyof typeof NIVELES_DEL_CLIENTE })
   );
 }
 
+/**
+ * Quién atiende en esta etapa. Vive acá y no en el servicio porque cambia dentro
+ * del mismo caso: al principio atiende quien pide los documentos, en audiencia
+ * quien va al tribunal. Es lo que filtra a quién le ofrece escribir el portal.
+ */
+const CONTACTOS = [
+  { valor: "ejecutiva", titulo: "Tu ejecutiva legal" },
+  { valor: "abogado", titulo: "Tu abogado" },
+  { valor: "ambos", titulo: "Los dos" },
+] as const;
+
 const CAMPOS_LARGOS = [
   {
     nombre: "mensajePrincipal",
@@ -150,6 +162,7 @@ export function EtapaEditor({
     queNecesitamosDelCliente: etapa.queNecesitamosDelCliente,
     quePuedePasarDespues: etapa.quePuedePasarDespues,
     plazoEsperado: etapa.plazoEsperado,
+    contactoPrincipal: etapa.contactoPrincipal,
     nivelUrgencia: etapa.nivelUrgencia,
   };
 
@@ -241,6 +254,35 @@ export function EtapaEditor({
                 )}
               />
             ))}
+
+            <FormField
+              control={form.control}
+              name="contactoPrincipal"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contacto principal</FormLabel>
+                  <FormDescription>
+                    A quién le puede escribir el cliente en esta etapa. Se muestra en el detalle y
+                    define a quién ofrece el botón de WhatsApp.
+                  </FormDescription>
+                  <FormControl>
+                    <RadioGroup
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      className="gap-2 pt-1"
+                    >
+                      {CONTACTOS.map((contacto) => (
+                        <div key={contacto.valor} className="flex items-center gap-3">
+                          <RadioGroupItem value={contacto.valor} id={`contacto-${contacto.valor}`} />
+                          <Label htmlFor={`contacto-${contacto.valor}`}>{contacto.titulo}</Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
