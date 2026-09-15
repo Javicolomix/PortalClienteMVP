@@ -27,7 +27,11 @@ const tagVariants = cva("inline-flex select-none items-center gap-1 border font-
       // dentro de una fila, al lado de un título de 16 px, y a `sm` (24 px de
       // alto) pesaba más que el texto al que acompaña. Una etiqueta que no es lo
       // principal de su fila necesita quedar por debajo de la altura de la letra.
-      xs: "h-5 px-1.5 type-meta text-[11px]",
+      //
+      // Lo que se achica es la caja —18 px de alto, no 20—, no la letra: a 11 px
+      // ya está en el mínimo con que se puede leer una etiqueta de estado, y esta
+      // pantalla la lee alguien preocupado con el teléfono en la mano.
+      xs: "h-[18px] px-2 type-meta text-[11px]",
       sm: "h-6 px-2 type-meta",
       md: "h-7 px-2.5 type-supporting",
       lg: "h-8 px-3 type-body",
