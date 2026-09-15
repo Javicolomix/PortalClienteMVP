@@ -527,7 +527,7 @@ export const fixtures: Fixtures = {
         estado: "activa",
         identificador: "C-6621-2026",
         acreedor: "Banco Security",
-        etapaId: "etp-lit-01",
+        etapaId: "etp-lit-02",
       },
       {
         id: "caj-043",
