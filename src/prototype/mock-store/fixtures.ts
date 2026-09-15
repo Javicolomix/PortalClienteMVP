@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 32,
+  datasetVersion: 31,
   entities: {
     cliente: [
       {
@@ -166,7 +166,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-002",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Liquidación de Sociedad Conyugal",
+        identificador: "Declaración de bien familiar",
         etapaId: "etp-pp-02",
       },
       {
@@ -232,7 +232,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-004",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Compraventa de Inmueble",
+        identificador: "Compraventa de inmueble",
         etapaId: "etp-pp-02",
       },
       {
@@ -240,7 +240,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-004",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Constitución de Sociedades",
+        identificador: "Constitución de sociedad",
         etapaId: "etp-pp-03",
       },
       // Su tercera escritura es del mismo tipo que la primera: en Streak no hay
@@ -252,7 +252,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-004",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Compraventa de Inmueble",
+        identificador: "Compraventa de inmueble",
         etapaId: "etp-pp-01",
       },
       {
@@ -310,7 +310,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-006",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Cesión de Derechos Hereditarios",
+        identificador: "Usufructo vitalicio",
         etapaId: "etp-pp-01",
       },
       {
@@ -318,7 +318,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-006",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Liquidación de Sociedad Conyugal",
+        identificador: "Declaración de bien familiar",
         etapaId: "etp-pp-02",
       },
       {
@@ -354,7 +354,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-007",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Liquidación de Sociedad Conyugal",
+        identificador: "Declaración de bien familiar",
         etapaId: "etp-pp-02",
       },
       {
@@ -389,7 +389,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-008",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Mandato",
+        identificador: "Mandato general de administración",
         etapaId: "etp-pp-03",
       },
       {
@@ -455,7 +455,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-012",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Mandato",
+        identificador: "Mandato general de administración",
         etapaId: "etp-pp-02",
       },
       {
@@ -499,7 +499,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-011",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Constitución de Sociedades",
+        identificador: "Constitución de sociedad",
         etapaId: "etp-pp-01",
       },
       {
@@ -535,7 +535,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-010",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Liquidación de Sociedad Conyugal",
+        identificador: "Declaración de bien familiar",
         etapaId: "etp-pp-03",
       },
       {

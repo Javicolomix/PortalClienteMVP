@@ -7,7 +7,7 @@ import {
   PopoverTrigger,
 } from "@/shared/components/base/Popover";
 
-import type { Contacto, ContactoPrincipal } from "./portal.types";
+import type { Contacto } from "./portal.types";
 import { enlaceWhatsapp, ETIQUETA_ROL, rotuloDelContacto } from "./whatsapp";
 
 /**
@@ -180,12 +180,10 @@ function PanelDeContactos({
  * otras, es la salida de emergencia, y tiene que estar a la vista en cualquier
  * punto de la pantalla.
  *
- * **A quién le escribe lo decide la etapa, no el botón.** El capitán configura
- * el contacto principal de cada etapa junto con el resto del contenido —solo la
- * ejecutiva, solo el abogado o los dos—, así que puede cambiar dentro del mismo
- * caso a medida que avanza: al principio atiende quien pide los documentos, en
- * audiencia quien va al tribunal. El portal no elige: filtra por lo que dice la
- * etapa.
+ * **A quién le escribe lo decide la configuración de la etapa, no el botón.** El
+ * capitán define por etapa si al cliente se le muestra solo el abogado, solo la
+ * ejecutiva o los dos, así que puede cambiar durante el mismo caso a medida que
+ * avanza. El portal muestra lo que le llega y no elige.
  *
  * Por eso **el panel es siempre el mismo**, venga uno o dos contactos: mismo
  * título, mismas filas, mismo chevron. Se probó saltar directo a WhatsApp cuando
@@ -201,27 +199,17 @@ function PanelDeContactos({
  * así el botón no queda encima de lo último que hay que leer.
  */
 export function BotonWhatsapp({
-  contactoPrincipal,
   contactos,
   nombreCliente,
   correoSoporte,
 }: {
-  contactoPrincipal: ContactoPrincipal;
   contactos: Contacto[];
   nombreCliente: string;
   correoSoporte: string;
 }): ReactNode {
-  // Si la etapa pide un rol que no está asignado, se ofrecen todos: quedarse sin
-  // nadie a quien escribir por un dato mal cargado es el peor final posible para
-  // el botón de emergencia de la pantalla.
-  const deLaEtapa =
-    contactoPrincipal === "ambos"
-      ? contactos
-      : contactos.filter((contacto) => contacto.rol === contactoPrincipal);
-
   return (
     <PanelDeContactos
-      contactos={deLaEtapa.length > 0 ? deLaEtapa : contactos}
+      contactos={contactos}
       nombreCliente={nombreCliente}
       correoSoporte={correoSoporte}
     />

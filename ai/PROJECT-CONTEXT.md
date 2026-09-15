@@ -676,18 +676,17 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   recorrer la página entera para cerrar sesión. Reemplaza a la decisión del
   2026-09-08 de dejarlo al pie por falta de sitio en el encabezado.
 
-- 2026-09-15: **el nivel de urgencia se cuenta en dos tiempos.** En la fila
-  cerrada va una **pastilla de una palabra** a la derecha —Tranquilo · Atento ·
-  Urgente—, porque con dos o tres causas abiertas la pregunta es «cuál de todas
-  me pide algo» y eso se compara de un vistazo. Al **desplegar** aparece la
-  instrucción completa, cerrando el detalle: «No necesitas hacer nada por
-  ahora.» · «Puede que necesitemos alguna gestión de tu parte.» · «Necesitamos tu
-  máxima atención y colaboración.» Se probó al revés —la frase entera en la
-  fila— y se volvió acá.
+- 2026-09-11: **el nivel de urgencia se muestra entero en la fila**, con su icono
+  y en su color: «No necesitas hacer nada por ahora.» · «Puede que necesitemos
+  alguna gestión de tu parte.» · «Necesitamos tu máxima atención y colaboración.»
+  Se probó en dos tiempos —etiqueta de una palabra en la fila y la frase completa
+  al desplegar— y se volvió atrás: la persona tenía que abrir para saber qué le
+  tocaba hacer, que es justo lo que vino a averiguar. El panel ya no repite la
+  frase al pie.
   Las tres frases son **estándar y cerradas**, no las escribe el equipo caso a
   caso: redactadas libremente, dos etapas «urgentes» dirían cosas distintas. El
-  título dice **qué pasa** y el nivel dice **qué hacer con eso**. El color nunca
-  es la única señal.
+  título de la actualización dice **qué pasa** y el nivel dice **qué hacer con
+  eso**. El color nunca es la única señal.
 - 2026-09-10: **el panel de WhatsApp es siempre el mismo**, venga uno o dos
   contactos: título fijo «Escríbenos por WhatsApp», una fila por persona con el
   círculo verde, el nombre, el rol y **chevron siempre**, y abajo, tras una
@@ -813,23 +812,6 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   mismo tenga el servicio que tenga: antes era baja en «Renegociación de deudas»
   y alta en el compuesto, y su solape con la franja navy está calculado contra un
   alto fijo.
-
-- 2026-09-15: **el contacto principal es un campo de la etapa**, no del servicio:
-  solo la ejecutiva, solo el abogado o los dos. Lo elige el capitán junto con el
-  resto del contenido y puede cambiar dentro del mismo caso —al principio atiende
-  quien pide los documentos, en audiencia quien va al tribunal—. Se muestra como
-  una tarjeta del detalle y **filtra a quién ofrece el botón de WhatsApp**. Si la
-  etapa pide un rol que no está asignado, se ofrecen todos: quedarse sin nadie a
-  quien escribir por un dato mal cargado es el peor final para ese botón.
-  **Pendiente:** con varias cajas, cada etapa puede pedir un contacto distinto y
-  el botón flotante es uno solo; hoy usa el de la etapa del caso principal.
-- 2026-09-15: el detalle de la etapa va en el orden que fijó el diseñador —**qué
-  estamos haciendo · qué necesitamos de ti · qué puede pasar después · contacto
-  principal · plazo esperado**— y el primer rótulo es «Qué estamos haciendo», no
-  «Qué está haciendo tu equipo».
-- 2026-09-15: **«Mi servicio» va apilada**: rótulo con la balanza arriba y el
-  nombre en versalitas debajo. Se probó como franja de una línea —rótulo y
-  nombre en la misma fila, separados por un filete— y el diseñador la descartó.
 
 - 2026-09-03: **PP = Protección Patrimonial**. El servicio quedó como «Litigios y
   Protección Patrimonial».

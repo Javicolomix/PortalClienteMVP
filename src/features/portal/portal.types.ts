@@ -5,21 +5,6 @@ export type NivelUrgencia = "tranquilidad" | "atencion" | "urgente";
 
 export type RolContacto = "ejecutiva" | "abogado";
 
-/**
- * A quién le escribe el cliente **en esta etapa**. Lo define el capitán junto
- * con el resto del contenido, y por eso vive en la etapa y no en el servicio:
- * puede cambiar dentro del mismo caso a medida que avanza — al principio la
- * ejecutiva, que pide documentos; en audiencia el abogado.
- */
-export type ContactoPrincipal = RolContacto | "ambos";
-
-/** Cómo se nombra cada opción delante del cliente. */
-export const ETIQUETA_CONTACTO_PRINCIPAL = {
-  ejecutiva: "Tu ejecutiva legal",
-  abogado: "Tu abogado",
-  ambos: "Tu ejecutiva legal y tu abogado",
-} as const satisfies Record<ContactoPrincipal, string>;
-
 export type Cliente = {
   id: string;
   nombre: string;
@@ -134,8 +119,6 @@ export type Etapa = {
   queNecesitamosDelCliente: string;
   quePuedePasarDespues: string;
   plazoEsperado: string;
-  /** Quién atiende en esta etapa. Filtra a quién ofrece el botón de WhatsApp. */
-  contactoPrincipal: ContactoPrincipal;
   nivelUrgencia: NivelUrgencia;
 };
 

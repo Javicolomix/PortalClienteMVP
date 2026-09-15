@@ -568,19 +568,6 @@ export const prototypeDataContract = definePrototypeDataContract({
             "lexyConfirmed",
           ),
         },
-        contactoPrincipal: {
-          id: "contactoPrincipal",
-          productDescription:
-            "Quién atiende al cliente en esta etapa: «ejecutiva», «abogado» o «ambos». Lo elige el capitán junto con el resto del contenido, y por eso vive en la etapa y no en el servicio: puede cambiar dentro del mismo caso a medida que avanza. El portal lo muestra en el detalle de la etapa y filtra con él a quién ofrece el botón de WhatsApp.",
-          dataType: "string",
-          required: true,
-          usage: soloVisible,
-          usedIn: [PORTAL],
-          ...pendienteTi(
-            "Con varias cajas abiertas, cada una va por su etapa y cada etapa puede pedir un contacto distinto. Hay que definir cuál manda para el botón flotante, que es uno solo para toda la pantalla: hoy el portal usa el de la etapa del caso principal.",
-            "productAssumption",
-          ),
-        },
         nivelUrgencia: {
           id: "nivelUrgencia",
           productDescription:
