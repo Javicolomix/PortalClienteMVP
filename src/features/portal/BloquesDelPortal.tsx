@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { ICONOS } from "./iconos";
+import { NIVELES } from "./nivel-urgencia";
 import type { Etapa } from "./portal.types";
 
 type Icono = (typeof ICONOS)[keyof typeof ICONOS];
@@ -106,8 +107,9 @@ export function TarjetaInformativa({
  * mismo, así que vive en un solo lugar: es el contenido que escribió el capitán,
  * y no hay razón para que se vea distinto según de qué caja cuelgue.
  *
- * No repite el nivel de urgencia al pie: la instrucción completa ya está en la
- * fila, arriba y a la vista sin desplegar nada.
+ * **Cierra con la instrucción completa.** En la fila solo se ve la palabra del
+ * nivel —«Atento»—, que es lo que deja comparar varias causas de un vistazo; acá
+ * va la frase entera, después de que la persona leyó qué está pasando.
  *
  * **Abre con la explicación de la etapa**, en el bloque lila: sin ese ancla el
  * panel empezaba directamente por «qué está haciendo tu equipo», que responde
@@ -128,13 +130,7 @@ export function TarjetaInformativa({
  * Cuando la etapa es de trabajo interno no hay nada que mostrar, y decirlo es
  * mejor que un panel vacío.
  */
-export function DetalleDeEtapa({
-  etapa,
-  completo,
-}: {
-  etapa: Etapa | null;
-  completo?: boolean;
-}) {
+export function DetalleDeEtapa({ etapa, completo }: { etapa: Etapa | null; completo?: boolean }) {
   if (!etapa) {
     return (
       <p className="type-supporting px-1 py-1 leading-relaxed text-muted-foreground">
@@ -145,8 +141,18 @@ export function DetalleDeEtapa({
   }
 
   const tarjetas = [
-    { clave: "equipo", Icono: ICONOS.equipo, titulo: "Qué está haciendo tu equipo", texto: etapa.queHaceLexy },
-    { clave: "tarea", Icono: ICONOS.tarea, titulo: "Qué necesitamos de ti", texto: etapa.queNecesitamosDelCliente },
+    {
+      clave: "equipo",
+      Icono: ICONOS.equipo,
+      titulo: "Qué está haciendo tu equipo",
+      texto: etapa.queHaceLexy,
+    },
+    {
+      clave: "tarea",
+      Icono: ICONOS.tarea,
+      titulo: "Qué necesitamos de ti",
+      texto: etapa.queNecesitamosDelCliente,
+    },
     { clave: "plazo", Icono: ICONOS.reloj, titulo: "Plazo esperado", texto: etapa.plazoEsperado },
     ...(completo
       ? [
@@ -178,6 +184,25 @@ export function DetalleDeEtapa({
         </TarjetaInformativa>
       ))}
 
+      <RefuerzoDeUrgencia etapa={etapa} />
     </div>
+  );
+}
+
+/**
+ * El refuerzo verbal del nivel, al pie del detalle. Sin caja —una más acá abajo
+ * se leería como una tarjeta más— pero en el color de su nivel, el mismo de la
+ * pastilla que la persona vio arriba en la fila.
+ */
+function RefuerzoDeUrgencia({ etapa }: { etapa: Etapa }) {
+  const { frase, Icono, color } = NIVELES[etapa.nivelUrgencia];
+
+  return (
+    <p
+      className={`flex items-start gap-2 border-t border-border-subtle px-1 pt-4 type-supporting font-medium ${color}`}
+    >
+      <Icono className="mt-0.5 size-4 shrink-0" aria-hidden />
+      {frase}
+    </p>
   );
 }

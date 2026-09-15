@@ -35,16 +35,31 @@ export function PaginaDelPortal({
 }) {
   return (
     <div className="min-h-screen bg-surface-subtle">
-      <HeaderBar />
+      {/* La vuelta al inicio vive en la barra, **no en el cuerpo de la página**.
+          Es lo único que no se va con el scroll: en «Mis pagos», que mide varias
+          pantallas en el teléfono, un botón arriba del título queda fuera de
+          vista apenas empiezas a leer, y había que repetirlo al final para
+          compensarlo.
 
-      <main className="mx-auto w-full max-w-2xl px-4 py-8 md:px-6 md:py-12">
-        <Button asChild variant="ghost" size="sm" className="-ml-3 mb-6">
-          <Link to="/">
-            <ArrowLeft aria-hidden />
-            Volver al inicio
-          </Link>
-        </Button>
+          Va donde estaba el logo y no junto a él. La marca ya se presenta en el
+          inicio, que es de donde se entra; acá la barra tiene un solo trabajo,
+          que es decir cómo se sale. Con las dos cosas, la que importa compite
+          con la que no.
 
+          `sticky` es lo que sostiene todo esto: sin eso es un botón arriba más. */}
+      <HeaderBar
+        sticky
+        brand={
+          <Button asChild variant="ghost" size="sm" className="-ml-2">
+            <Link to="/">
+              <ArrowLeft aria-hidden />
+              Volver al inicio
+            </Link>
+          </Button>
+        }
+      />
+
+      <main className="mx-auto w-full max-w-2xl px-4 pt-6 pb-12 md:px-6 md:pt-10 md:pb-16">
         {/* Misma escala que el acceso y que el saludo del inicio: los títulos
             de portada bajan en el teléfono. */}
         <h1 className="type-page-title text-2xl text-foreground md:text-3xl">{titulo}</h1>
