@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 26,
+  datasetVersion: 28,
   entities: {
     cliente: [
       {
@@ -20,7 +20,7 @@ export const fixtures: Fixtures = {
         correo: "juan.cardenas@example.com",
         rut: "16.482.937-5",
         servicioId: "srv-renegociacion",
-        etapaActualId: "etp-reneg-03",
+        etapaActualId: "etp-reneg-08",
       },
       {
         id: "cli-002",
@@ -28,7 +28,7 @@ export const fixtures: Fixtures = {
         correo: "javiera.rojas@example.com",
         rut: "15.204.336-8",
         servicioId: "srv-renegociacion",
-        etapaActualId: "etp-reneg-02",
+        etapaActualId: "etp-reneg-03",
       },
       {
         id: "cli-003",
@@ -68,7 +68,7 @@ export const fixtures: Fixtures = {
         correo: "soledad.munoz@example.com",
         rut: "13.907.442-K",
         servicioId: "srv-liquidacion",
-        etapaActualId: "etp-liq-03",
+        etapaActualId: "etp-liq-05",
       },
       {
         id: "cli-008",
@@ -132,7 +132,7 @@ export const fixtures: Fixtures = {
         tipo: "renegociacion",
         estado: "activa",
         identificador: "",
-        etapaId: "etp-reneg-03",
+        etapaId: "etp-reneg-08",
       },
       {
         id: "caj-010",
@@ -150,7 +150,7 @@ export const fixtures: Fixtures = {
         tipo: "renegociacion",
         estado: "activa",
         identificador: "",
-        etapaId: "etp-reneg-02",
+        etapaId: "etp-reneg-03",
       },
       {
         id: "caj-003",
@@ -347,7 +347,7 @@ export const fixtures: Fixtures = {
         tipo: "liquidacion",
         estado: "activa",
         identificador: "",
-        etapaId: "etp-liq-03",
+        etapaId: "etp-liq-05",
       },
       {
         id: "caj-030",
@@ -814,9 +814,28 @@ export const fixtures: Fixtures = {
         nivelUrgencia: "atencion",
       },
       {
-        id: "etp-reneg-07",
+        id: "etp-reneg-08",
         servicioId: "srv-renegociacion",
         orden: 7,
+        visibleParaCliente: true,
+        nombreParaCliente: "Esperando tu audiencia de renegociación",
+        mensajePrincipal:
+          "La primera audiencia de tu proceso se realizó sin inconvenientes y los acreedores ya actualizaron los montos de las deudas que forman parte de tu renegociación.",
+        queHaceLexy:
+          "Estamos haciendo seguimiento de tu caso hasta la fecha de la Audiencia de Renegociación. Durante este periodo, prepararemos una simulación de tu propuesta de pago, considerando tus antecedentes y los montos actualizados de tus deudas. Además, aproximadamente una semana antes de la audiencia, nos pondremos en contacto contigo para actualizar la información de tus ingresos y asegurarnos de que la propuesta refleje correctamente tu situación actual.",
+        queNecesitamosDelCliente:
+          "Durante este periodo, debes mantener las mismas recomendaciones y restricciones informadas en la etapa anterior. Si tienes alguna duda o se produce algún cambio importante en tu situación económica, comunícaselo a tu abogado.",
+        quePuedePasarDespues:
+          "En la Audiencia de Renegociación, tu abogado negociará con tus acreedores una propuesta que se ajuste a tu situación y que permita reorganizar tus deudas bajo las mejores condiciones posibles, considerando aspectos como el monto de las cuotas, el plazo, los meses de gracia y, cuando corresponda, las tasas de interés.",
+        plazoEsperado:
+          "La audiencia se realizará en la fecha específica informada previamente a tu correo electrónico.",
+        contactoPrincipal: "abogado",
+        nivelUrgencia: "tranquilidad",
+      },
+      {
+        id: "etp-reneg-07",
+        servicioId: "srv-renegociacion",
+        orden: 8,
         visibleParaCliente: true,
         nombreParaCliente: "Audiencia de renegociación",
         mensajePrincipal: "Es la audiencia donde se discute el acuerdo con tus acreedores.",
@@ -844,9 +863,28 @@ export const fixtures: Fixtures = {
         nivelUrgencia: "tranquilidad",
       },
       {
-        id: "etp-liq-02",
+        id: "etp-liq-05",
         servicioId: "srv-liquidacion",
         orden: 2,
+        visibleParaCliente: true,
+        nombreParaCliente: "En espera del plazo para comenzar",
+        mensajePrincipal:
+          "Tu Liquidación es viable y podemos avanzar con ella 🚀. En este momento nos encontramos en una etapa previa a su presentación, por lo que lo más importante es esperar el momento adecuado para iniciar formalmente las gestiones. Por ahora, puedes estar tranquilo 🙌. Estamos atentos para avanzar contigo apenas llegue el momento.",
+        queHaceLexy:
+          "Nuestro equipo se encuentra preparando y revisando las condiciones necesarias para iniciar tu procedimiento, de manera que la presentación se realice correctamente y sin inconvenientes. 📋⚖️ Una vez que corresponda avanzar, comenzaremos oportunamente con las gestiones necesarias. 🚀",
+        queNecesitamosDelCliente:
+          "Por ahora, no necesitas realizar ninguna gestión. 🙌 Lo más importante es que nos mantengas informados si recibes alguna demanda, notificación judicial o comunicación relacionada con alguna deuda ⚠️📩. Si ocurre, avísanos de inmediato para que podamos revisar la situación y orientarte oportunamente.",
+        quePuedePasarDespues:
+          "Una vez cumplida la condición necesaria para iniciar tu procedimiento, comenzaremos formalmente con las gestiones de presentación de tu Liquidación ⚖️📄. A partir de ahí, te iremos informando sobre cada avance y sobre las acciones que correspondan en las siguientes etapas. 🚀",
+        plazoEsperado:
+          "Estamos a la espera de que se cumpla el plazo indicado por tu abogado ⏳. Este tiempo es necesario para poder iniciar tu procedimiento en las condiciones adecuadas. Una vez cumplido, podremos comenzar con las gestiones correspondientes. Mientras tanto, no debes preocuparte: tu procedimiento sigue siendo viable.",
+        contactoPrincipal: "abogado",
+        nivelUrgencia: "tranquilidad",
+      },
+      {
+        id: "etp-liq-02",
+        servicioId: "srv-liquidacion",
+        orden: 3,
         visibleParaCliente: true,
         nombreParaCliente: "Preparamos tu solicitud",
         mensajePrincipal: "Estamos preparando la solicitud para el tribunal.",
@@ -861,7 +899,7 @@ export const fixtures: Fixtures = {
       {
         id: "etp-liq-03",
         servicioId: "srv-liquidacion",
-        orden: 3,
+        orden: 4,
         visibleParaCliente: true,
         nombreParaCliente: "Tu caso está en el tribunal",
         mensajePrincipal: "Tu solicitud está en el tribunal, esperando resolución.",
@@ -876,7 +914,7 @@ export const fixtures: Fixtures = {
       {
         id: "etp-liq-04",
         servicioId: "srv-liquidacion",
-        orden: 4,
+        orden: 5,
         visibleParaCliente: true,
         nombreParaCliente: "Ya hay un liquidador a cargo",
         mensajePrincipal: "El tribunal designó un liquidador para tu caso.",
