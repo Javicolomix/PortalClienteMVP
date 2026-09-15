@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 31,
+  datasetVersion: 32,
   entities: {
     cliente: [
       {
@@ -133,6 +133,14 @@ export const fixtures: Fixtures = {
         rut: "10.338.771-4",
         servicioId: "srv-proteccion-patrimonial",
         etapaActualId: "etp-pp-01",
+      },
+      {
+        id: "cli-016",
+        nombre: "Nicolás",
+        correo: "nicolas.fuentes@example.com",
+        rut: "13.558.492-7",
+        servicioId: "srv-defensa-juicio",
+        etapaActualId: "etp-lit-04",
       },
     ],
 
@@ -448,6 +456,45 @@ export const fixtures: Fixtures = {
       {
         id: "caj-052",
         clienteId: "cli-014",
+        tipo: "defensaEnJuicio",
+        estado: "monitoreo",
+        identificador: "",
+        etapaId: "etp-lit-00",
+      },
+
+      // Nicolás: defensa en juicio con tres causas, una en cada nivel de
+      // urgencia. Es la lista donde se ve que los tres pills conviven sin
+      // pisarse y que la que pide algo se encuentra sin leerlas todas.
+      {
+        id: "caj-057",
+        clienteId: "cli-016",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-1184-2026",
+        acreedor: "Banco Estado",
+        etapaId: "etp-lit-04",
+      },
+      {
+        id: "caj-058",
+        clienteId: "cli-016",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-4409-2025",
+        acreedor: "Cencosud Scotiabank",
+        etapaId: "etp-lit-02",
+      },
+      {
+        id: "caj-059",
+        clienteId: "cli-016",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-8817-2026",
+        acreedor: "Caja Los Andes",
+        etapaId: "etp-lit-01",
+      },
+      {
+        id: "caj-060",
+        clienteId: "cli-016",
         tipo: "defensaEnJuicio",
         estado: "monitoreo",
         identificador: "",
@@ -1277,6 +1324,20 @@ export const fixtures: Fixtures = {
         telefonoWhatsapp: "+56 9 7302 6641",
       },
       {
+        id: "con-031",
+        clienteId: "cli-016",
+        nombre: "Daniela Soto",
+        rol: "ejecutiva",
+        telefonoWhatsapp: "+56 9 4418 2036",
+      },
+      {
+        id: "con-032",
+        clienteId: "cli-016",
+        nombre: "Andrés Peña",
+        rol: "abogado",
+        telefonoWhatsapp: "+56 9 7302 6641",
+      },
+      {
         id: "con-029",
         clienteId: "cli-015",
         nombre: "Camila Rivera",
@@ -1558,6 +1619,14 @@ export const fixtures: Fixtures = {
         numero: 3,
         fechaVencimiento: "2026-10-20",
         monto: 89000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-205",
+        clienteId: "cli-016",
+        numero: 4,
+        fechaVencimiento: "2026-10-05",
+        monto: 96500,
         estado: "pendiente",
       },
       {
