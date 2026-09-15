@@ -517,9 +517,9 @@ export const fixtures: Fixtures = {
         etapaId: "etp-lit-00",
       },
 
-      // Valentina: el servicio compuesto en su forma mínima, una causa y una
-      // escritura. Sirve para ver los dos bloques cuando cada lista tiene un
-      // solo ítem, que es cuando peor se justifica que sean listas.
+      // Valentina: el compuesto con una causa y dos escrituras en etapas
+      // distintas. Sirve para ver dos niveles de urgencia conviviendo dentro
+      // del mismo bloque.
       {
         id: "caj-042",
         clienteId: "cli-012",
@@ -536,6 +536,14 @@ export const fixtures: Fixtures = {
         estado: "activa",
         identificador: "Compraventa de Vehículo",
         etapaId: "etp-pp-02",
+      },
+      {
+        id: "caj-046",
+        clienteId: "cli-012",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Compraventa de Inmueble",
+        etapaId: "etp-pp-04",
       },
       {
         id: "caj-044",
@@ -1131,6 +1139,23 @@ export const fixtures: Fixtures = {
         plazoEsperado: "Depende de la hora que tengas para ir a la notaría.",
         contactoPrincipal: "ambos",
         nivelUrgencia: "urgente",
+      },
+      {
+        id: "etp-pp-04",
+        servicioId: "srv-proteccion-patrimonial",
+        orden: 4,
+        visibleParaCliente: true,
+        nombreParaCliente: "Inscribiendo tu escritura",
+        mensajePrincipal:
+          "Ya firmaste. Ahora la estamos inscribiendo para que quede a firme.",
+        queHaceLexy:
+          "Llevamos la escritura al registro que corresponde y seguimos el trámite.",
+        queNecesitamosDelCliente: "Nada. Te avisamos cuando esté inscrita.",
+        quePuedePasarDespues:
+          "Cuando la inscripción salga, te entregamos la copia y el resguardo queda completo.",
+        plazoEsperado: "Entre 15 y 30 días hábiles, según el registro.",
+        contactoPrincipal: "ejecutiva",
+        nivelUrgencia: "tranquilidad",
       },
     ],
 
