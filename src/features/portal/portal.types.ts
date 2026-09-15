@@ -152,6 +152,8 @@ export type Cuota = {
   /** Pesos chilenos, entero. */
   monto: number;
   estado: "pendiente" | "pagada";
+  /** Cuándo se pagó, ISO `aaaa-mm-dd`. Solo en las pagadas. */
+  fechaPago?: string;
 };
 
 /** Una caja con la etapa en que va, que es lo que la lista muestra de ella. */
@@ -208,6 +210,8 @@ export type DatosMiServicio = {
 export type DatosMisPagos = {
   cliente: Cliente;
   proximaCuota: Cuota | null;
+  /** Las cuotas ya pagadas, de la más reciente a la más antigua. */
+  historial: Cuota[];
   configuracion: ConfiguracionPortal;
 };
 

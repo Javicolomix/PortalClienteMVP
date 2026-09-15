@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router";
+import { Navigate, Route, Routes, useLocation } from "react-router";
 
 import { PanelEtapas } from "@/features/admin";
 import { Ingresar, RutaProtegida } from "@/features/auth";
@@ -69,6 +69,11 @@ export const App = () => {
         {showPrototypeDesignerPanel ? (
           <Route path="/designer-panel" element={<DesignerPanelPage />} />
         ) : null}
+        {/* Cualquier dirección que no exista lleva al inicio. Sin esto, una URL
+            vieja —un enlace guardado, una pestaña que quedó abierta en algo que
+            ya se borró— dejaba la pantalla en blanco, sin nada que explicara qué
+            pasó ni cómo salir. */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Toaster />
       {showPrototypeDesignerPanel && !isDesignerPanelPage ? <PrototypeDesignerPanel /> : null}

@@ -1,4 +1,4 @@
-import { CalendarDays, Check, Copy, ExternalLink } from "lucide-react";
+import { CalendarDays, Check, ChevronDown, Copy, ExternalLink } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
@@ -11,7 +11,10 @@ import {
   EmptyHeader,
   EmptyTitle,
 } from "@/shared/components/base/Empty";
+import { Table } from "@/shared/components/base/Table";
+import { Tag } from "@/shared/components/base/Tag";
 import { useCarga } from "@/shared/hooks/useCarga";
+import { cn } from "@/shared/lib/utils/cn";
 
 import { formatearFechaCorta } from "./fechas";
 import { CargandoPagina, ErrorDeCarga, PaginaDelPortal } from "./PaginaDelPortal";
@@ -212,22 +215,139 @@ function ComoPagar({
   );
 }
 
+/**
+ * Las cuotas ya pagadas, **cerradas por defecto**. Es información de respaldo:
+ * sirve para comprobar que un pago quedó registrado, no para decidir nada hoy.
+ * Abierta ocuparía más pantalla que la cuota que sí hay que pagar, que es lo
+ * único que esta pantalla vino a resolver.
+ *
+ * Va como lista y no como tabla. Una tabla de cuatro columnas obliga a
+ * desplazar de lado en un teléfono, y acá cada fila tiene solo dos cosas que
+ * decir: qué cuota fue y cuándo se pagó. El monto va con el número porque se
+ * leen juntos.
+ */
+function HistorialDePagos({ cuotas }: { cuotas: Cuota[] }) {
+  const [abierto, setAbierto] = useState(false);
+
+  if (cuotas.length === 0) return null;
+
+  return (
+    <section className="mt-10">
+      <div className="overflow-hidden rounded-lg bg-card ring-1 ring-border-subtle">
+        <h2>
+          <button
+            type="button"
+            onClick={() => setAbierto((estaba) => !estaba)}
+            aria-expanded={abierto}
+            aria-controls="historial-de-pagos"
+            className="flex w-full items-center gap-3 px-5 py-4 text-left transition-colors [-webkit-tap-highlight-color:transparent] hover:bg-surface-subtle active:bg-surface-muted focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring"
+          >
+            <span className="min-w-0 flex-1">
+              <span className="type-item-title block text-foreground">
+                Historial de pagos{" "}
+                <span className="font-normal text-muted-foreground">({cuotas.length})</span>
+              </span>
+              <span className="type-supporting mt-0.5 block text-muted-foreground">
+                Las cuotas que ya pagaste
+              </span>
+            </span>
+
+            <ChevronDown
+              className={cn(
+                "size-5 shrink-0 text-foreground-faint transition-transform duration-200 motion-reduce:transition-none",
+                abierto && "rotate-180",
+              )}
+              aria-hidden
+            />
+          </button>
+        </h2>
+
+        {abierto ? (
+          <div id="historial-de-pagos" className="border-t border-border-subtle">
+            {/* Dos presentaciones del mismo dato. Desde `md` la tabla del
+                sistema, con sus encabezados: cuatro columnas se comparan mejor
+                que cuatro filas, y es lo que la persona espera de un historial.
+                En el teléfono no caben —obligarían a desplazar de lado— así que
+                cada cuota se apila: número y monto arriba, fecha abajo, estado a
+                la derecha. */}
+            <div className="hidden md:block">
+              <Table columns="1fr 1.2fr 1.4fr auto" className="rounded-none border-none">
+                <Table.Header>
+                  <Table.Cell>N° de cuota</Table.Cell>
+                  <Table.Cell>Valor cuota</Table.Cell>
+                  <Table.Cell>Fecha de pago</Table.Cell>
+                  <Table.Cell>Estado</Table.Cell>
+                </Table.Header>
+                <Table.Content>
+                  {cuotas.map((cuota) => (
+                    <Table.Row key={cuota.id}>
+                      <Table.Cell>{cuota.numero}</Table.Cell>
+                      <Table.Cell>{FORMATO_PESOS.format(cuota.monto)}</Table.Cell>
+                      <Table.Cell>
+                        {formatearFechaCorta(cuota.fechaPago ?? cuota.fechaVencimiento)}
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Tag tone="success" size="xs" shape="rounded">
+                          Pagada
+                        </Tag>
+                      </Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Content>
+              </Table>
+            </div>
+
+            <ul className="md:hidden">
+              {cuotas.map((cuota, fila) => (
+                <li
+                  key={cuota.id}
+                  className={cn(
+                    "flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-3.5",
+                    fila > 0 && "border-t border-border-subtle",
+                  )}
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="type-data block text-foreground">
+                      Cuota N°{cuota.numero} · {FORMATO_PESOS.format(cuota.monto)}
+                    </span>
+                    <span className="type-meta mt-0.5 block text-muted-foreground">
+                      Pagada el {formatearFechaCorta(cuota.fechaPago ?? cuota.fechaVencimiento)}
+                    </span>
+                  </span>
+
+                  <Tag tone="success" size="xs" shape="rounded" className="shrink-0">
+                    Pagada
+                  </Tag>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
 function ContenidoDePagos({ datos }: { datos: DatosMisPagos }) {
   if (!datos.proximaCuota) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyTitle>No tienes cuotas pendientes</EmptyTitle>
-          <EmptyDescription>
-            Estás al día con tus honorarios. Cuando venga la próxima cuota, la vas a ver acá.
-          </EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent>
-          <Button asChild variant="outline">
-            <Link to="/mi-equipo">Preguntarle a mi equipo</Link>
-          </Button>
-        </EmptyContent>
-      </Empty>
+      <>
+        <Empty>
+          <EmptyHeader>
+            <EmptyTitle>No tienes cuotas pendientes</EmptyTitle>
+            <EmptyDescription>
+              Estás al día con tus honorarios. Cuando venga la próxima cuota, la vas a ver acá.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button asChild variant="outline">
+              <Link to="/mi-equipo">Preguntarle a mi equipo</Link>
+            </Button>
+          </EmptyContent>
+        </Empty>
+
+        <HistorialDePagos cuotas={datos.historial} />
+      </>
     );
   }
 
@@ -235,6 +355,7 @@ function ContenidoDePagos({ datos }: { datos: DatosMisPagos }) {
     <>
       <ProximaCuota cuota={datos.proximaCuota} />
       <ComoPagar configuracion={datos.configuracion} nombreCliente={datos.cliente.nombre} />
+      <HistorialDePagos cuotas={datos.historial} />
     </>
   );
 }

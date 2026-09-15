@@ -820,6 +820,17 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   unos centímetros más abajo y repetido tan cerca se lee dos veces.
   Reemplaza al botón fantasma sobre el título y a su copia al pie.
 
+- 2026-09-15: «Mis pagos» gana un **historial de cuotas pagadas, cerrado por
+  defecto** y al final de la página. Es información de respaldo —sirve para
+  comprobar que un pago se registró, no para decidir algo hoy—, así que no puede
+  competir con la cuota que sí hay que pagar. Al desplegarlo: **tabla con
+  encabezados desde `md`** y **lista apilada en el teléfono**, porque cuatro
+  columnas en 375 px obligan a desplazar de lado. La cuota gana el campo
+  `fechaPago`: la persona busca cuándo pagó, no cuándo vencía.
+- 2026-09-15: **cualquier dirección que no exista lleva al inicio.** Antes una URL
+  vieja dejaba la pantalla en blanco, sin nada que explicara qué pasó ni cómo
+  salir.
+
 - 2026-09-03: **PP = Protección Patrimonial**. El servicio quedó como «Litigios y
   Protección Patrimonial».
 - 2026-09-03: los tres servicios cargados (renegociación, liquidación, litigios y

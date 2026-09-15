@@ -656,7 +656,7 @@ export const prototypeDataContract = definePrototypeDataContract({
       productDescription:
         "Cada cuota de los honorarios que el cliente acordó pagar, con su vencimiento y monto.",
       roleInExperience:
-        "Responde en cinco segundos «cuánto debo y cuándo». El portal muestra solo la próxima pendiente.",
+        "Responde en cinco segundos «cuánto debo y cuándo». El portal destaca solo la próxima pendiente; las pagadas quedan en un historial desplegable, para comprobar que un pago se registró.",
       usedIn: [PORTAL],
       ...pendienteTi(
         "Confirmar de qué sistema salen las cuotas y quién marca una como pagada.",
@@ -734,6 +734,19 @@ export const prototypeDataContract = definePrototypeDataContract({
           ...pendienteTi(
             "Confirmar cuánto se demora en reflejarse un pago: el cliente puede transferir y seguir viendo la cuota como pendiente.",
             "lexyConfirmed",
+          ),
+        },
+        fechaPago: {
+          id: "fechaPago",
+          productDescription:
+            "Cuándo se pagó la cuota. Solo viene en las pagadas, y es lo que el portal muestra en el historial: la persona busca cuándo pagó, no cuándo vencía.",
+          dataType: "date",
+          required: false,
+          usage: soloVisible,
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar de dónde sale la fecha efectiva de pago, y qué se muestra cuando una cuota se pagó fuera de plazo o en partes.",
+            "productAssumption",
           ),
         },
       },

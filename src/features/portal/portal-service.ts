@@ -246,24 +246,38 @@ export async function cargarMisPagos(): Promise<DatosMisPagos> {
 
   const [cuotas, configuracion] = await Promise.all([
     read.load<Cuota[]>(
-      "cuotasPendientesDelCliente",
-      { clienteId: cliente.id, estado: "pendiente" },
+      "cuotasDelCliente",
+      { clienteId: cliente.id },
       {
-        description: "Cuotas de honorarios que el cliente todavía no ha pagado",
+        description:
+          "Todas las cuotas de honorarios de la persona: la próxima por pagar y las que ya pagó",
         trigger: "Al abrir «Mis pagos»",
         reads: {
           entities: ["cuota"],
-          fields: ["cuota.numero", "cuota.fechaVencimiento", "cuota.monto", "cuota.estado"],
+          fields: [
+            "cuota.numero",
+            "cuota.fechaVencimiento",
+            "cuota.monto",
+            "cuota.estado",
+            "cuota.fechaPago",
+          ],
         },
       },
     ),
     cargarConfiguracion(),
   ]);
 
-  // La próxima es la pendiente más antigua del plan.
-  const proximaCuota = [...cuotas].sort((a, b) => a.numero - b.numero)[0] ?? null;
+  // La próxima es la pendiente más antigua del plan; el historial va al revés,
+  // de la más reciente a la más antigua, que es el orden en que se busca un pago.
+  const proximaCuota =
+    cuotas.filter((cuota) => cuota.estado === "pendiente").sort((a, b) => a.numero - b.numero)[0] ??
+    null;
 
-  return { cliente, proximaCuota, configuracion };
+  const historial = cuotas
+    .filter((cuota) => cuota.estado === "pagada")
+    .sort((a, b) => b.numero - a.numero);
+
+  return { cliente, proximaCuota, historial, configuracion };
 }
 
 /**
