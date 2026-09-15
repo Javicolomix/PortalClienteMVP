@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 29,
+  datasetVersion: 31,
   entities: {
     cliente: [
       {
@@ -803,7 +803,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues: "Si la declaran admisible, tus acreedores no pueden cobrarte.",
         plazoEsperado: "Entre 5 y 10 días hábiles. Ese plazo lo maneja la Superintendencia.",
         contactoPrincipal: "ejecutiva",
-        nivelUrgencia: "atencion",
+        nivelUrgencia: "tranquilidad",
       },
       {
         id: "etp-reneg-06",
@@ -1035,7 +1035,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues: "Si estás de acuerdo con el borrador, coordinamos la firma.",
         plazoEsperado: "Entre 5 y 8 días hábiles.",
         contactoPrincipal: "ejecutiva",
-        nivelUrgencia: "tranquilidad",
+        nivelUrgencia: "atencion",
       },
       {
         id: "etp-pp-03",
