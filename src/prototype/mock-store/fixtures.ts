@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 24,
+  datasetVersion: 26,
   entities: {
     cliente: [
       {
@@ -20,7 +20,7 @@ export const fixtures: Fixtures = {
         correo: "juan.cardenas@example.com",
         rut: "16.482.937-5",
         servicioId: "srv-renegociacion",
-        etapaActualId: "etp-reneg-02",
+        etapaActualId: "etp-reneg-03",
       },
       {
         id: "cli-002",
@@ -79,6 +79,14 @@ export const fixtures: Fixtures = {
         etapaActualId: "etp-reneg-05",
       },
       {
+        id: "cli-013",
+        nombre: "Rodrigo",
+        correo: "rodrigo.paredes@example.com",
+        rut: "14.099.562-8",
+        servicioId: "srv-renegociacion",
+        etapaActualId: "etp-reneg-05",
+      },
+      {
         id: "cli-012",
         nombre: "Valentina",
         correo: "valentina.cortes@example.com",
@@ -124,7 +132,7 @@ export const fixtures: Fixtures = {
         tipo: "renegociacion",
         estado: "activa",
         identificador: "",
-        etapaId: "etp-reneg-02",
+        etapaId: "etp-reneg-03",
       },
       {
         id: "caj-010",
@@ -388,6 +396,35 @@ export const fixtures: Fixtures = {
       {
         id: "caj-022",
         clienteId: "cli-008",
+        tipo: "defensaEnJuicio",
+        estado: "monitoreo",
+        identificador: "",
+        etapaId: "etp-lit-00",
+      },
+
+      // Rodrigo: renegociación con un juicio encima y ninguna escritura. Lo
+      // concursal manda y el juicio se suma abajo, sin quitarle el estado de su
+      // caso: es la estrategia concursal-táctica en su forma más simple.
+      {
+        id: "caj-046",
+        clienteId: "cli-013",
+        tipo: "renegociacion",
+        estado: "activa",
+        identificador: "",
+        etapaId: "etp-reneg-05",
+      },
+      {
+        id: "caj-047",
+        clienteId: "cli-013",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-4417-2026",
+        acreedor: "Cencosud",
+        etapaId: "etp-lit-01",
+      },
+      {
+        id: "caj-048",
+        clienteId: "cli-013",
         tipo: "defensaEnJuicio",
         estado: "monitoreo",
         identificador: "",
@@ -694,6 +731,7 @@ export const fixtures: Fixtures = {
           "Nada por ahora. Si falta algún documento, tu ejecutiva te lo pide.",
         quePuedePasarDespues: "Si cumples los requisitos, preparamos tu solicitud.",
         plazoEsperado: "Entre 5 y 10 días hábiles.",
+        contactoPrincipal: "ejecutiva",
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -710,6 +748,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues:
           "Cuando se cumpla el plazo, te pedimos los documentos para presentar.",
         plazoEsperado: "Depende de tus deudas. Te avisamos cuando toque revisar de nuevo.",
+        contactoPrincipal: "ejecutiva",
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -717,13 +756,17 @@ export const fixtures: Fixtures = {
         servicioId: "srv-renegociacion",
         orden: 3,
         visibleParaCliente: true,
-        nombreParaCliente: "Preparamos tu solicitud",
-        mensajePrincipal: "Estamos armando la solicitud que vamos a presentar.",
-        queHaceLexy: "Ordenamos tus deudas, ingresos y gastos, y redactamos la propuesta de pago.",
+        nombreParaCliente: "Reuniendo tus antecedentes",
+        mensajePrincipal:
+          "Estamos reuniendo los antecedentes necesarios para poder preparar y presentar tu solicitud ante la Superintendencia.",
+        queHaceLexy:
+          "Tu ejecutivo legal te solicitará la documentación necesaria y estará revisando los documentos que envíes y orientándote durante el proceso, entregándote apoyo e indicaciones cuando sea necesario.",
         queNecesitamosDelCliente:
-          "Tus últimas 3 liquidaciones de sueldo y tu certificado de deudas.",
-        quePuedePasarDespues: "Con tus documentos completos, presentamos la solicitud.",
-        plazoEsperado: "5 días hábiles desde que recibimos tus documentos.",
+          "Reúne y carga en el portal los documentos solicitados dentro del plazo indicado, recuerda preguntar si tienes dudas o necesitas apoyo.",
+        quePuedePasarDespues:
+          "Una vez que hayas reunido toda la documentación, deberás firmar un mandato para que podamos representarte. Luego, tu abogado preparará y presentará tu solicitud ante la Superintendencia.",
+        plazoEsperado: "Recuerda que debes enviar la documentación dentro de 10 días hábiles.",
+        contactoPrincipal: "ejecutiva",
         nivelUrgencia: "atencion",
       },
       {
@@ -737,6 +780,7 @@ export const fixtures: Fixtures = {
         queNecesitamosDelCliente: "Nada. Es una revisión interna nuestra.",
         quePuedePasarDespues: "Presentamos tu solicitud ante la Superintendencia.",
         plazoEsperado: "2 o 3 días hábiles.",
+        contactoPrincipal: "ejecutiva",
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -751,6 +795,7 @@ export const fixtures: Fixtures = {
           "No tomes deudas nuevas ni le pagues a un acreedor antes que a otro.",
         quePuedePasarDespues: "Si la declaran admisible, tus acreedores no pueden cobrarte.",
         plazoEsperado: "Entre 5 y 10 días hábiles. Ese plazo lo maneja la Superintendencia.",
+        contactoPrincipal: "ejecutiva",
         nivelUrgencia: "atencion",
       },
       {
@@ -765,6 +810,7 @@ export const fixtures: Fixtures = {
           "Avísanos si un acreedor te informa un monto distinto al que revisamos.",
         quePuedePasarDespues: "Fijado el monto, se cita a la audiencia de renegociación.",
         plazoEsperado: "La fecha la fija la Superintendencia. Te la avisamos apenas la tengamos.",
+        contactoPrincipal: "ambos",
         nivelUrgencia: "atencion",
       },
       {
@@ -778,6 +824,7 @@ export const fixtures: Fixtures = {
         queNecesitamosDelCliente: "Que estés disponible ese día por si hay que consultarte algo.",
         quePuedePasarDespues: "Si aceptan, se firma el acuerdo y empiezas a pagar lo pactado.",
         plazoEsperado: "La fecha la fija la Superintendencia.",
+        contactoPrincipal: "ambos",
         nivelUrgencia: "urgente",
       },
 
@@ -793,6 +840,7 @@ export const fixtures: Fixtures = {
         queNecesitamosDelCliente: "Nada por ahora. Si necesitamos otro documento, te lo pedimos.",
         quePuedePasarDespues: "Si liquidar es el camino, preparamos tu solicitud para el tribunal.",
         plazoEsperado: "Entre 5 y 10 días hábiles.",
+        contactoPrincipal: "ejecutiva",
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -807,6 +855,7 @@ export const fixtures: Fixtures = {
           "Tu certificado de deudas y los papeles de los bienes a tu nombre.",
         quePuedePasarDespues: "Con todo listo presentamos y el tribunal revisa tu solicitud.",
         plazoEsperado: "5 días hábiles desde que recibimos tus documentos.",
+        contactoPrincipal: "ejecutiva",
         nivelUrgencia: "atencion",
       },
       {
@@ -821,6 +870,7 @@ export const fixtures: Fixtures = {
           "Nada por ahora. Si te llega una notificación, avísale a tu ejecutiva.",
         quePuedePasarDespues: "Si el tribunal acoge la solicitud, designa a un liquidador.",
         plazoEsperado: "Los plazos los fija el tribunal. Te avisamos cada avance.",
+        contactoPrincipal: "abogado",
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -834,6 +884,7 @@ export const fixtures: Fixtures = {
         queNecesitamosDelCliente: "Responder al liquidador cuando te pida información.",
         quePuedePasarDespues: "Al terminar, el saldo que quede impago se extingue.",
         plazoEsperado: "Depende de cuántos bienes y acreedores haya. Suele tomar meses.",
+        contactoPrincipal: "abogado",
         nivelUrgencia: "atencion",
       },
 
@@ -850,6 +901,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues:
           "Si aparece una demanda, la vas a ver acá y un abogado toma la defensa.",
         plazoEsperado: "Es permanente, mientras tengas tu servicio activo.",
+        contactoPrincipal: "ejecutiva",
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -863,6 +915,7 @@ export const fixtures: Fixtures = {
         queNecesitamosDelCliente: "Mándale a tu ejecutiva cualquier contrato o mensaje del caso.",
         quePuedePasarDespues: "Con la estrategia lista, presentamos tu defensa ante el tribunal.",
         plazoEsperado: "Entre 10 y 15 días hábiles.",
+        contactoPrincipal: "abogado",
         nivelUrgencia: "atencion",
       },
       {
@@ -877,6 +930,7 @@ export const fixtures: Fixtures = {
           "Si te notifican algo en tu domicilio, avísale a tu ejecutiva ese mismo día.",
         quePuedePasarDespues: "El tribunal notifica a la otra parte y fija la primera audiencia.",
         plazoEsperado: "Los fija el tribunal y varían mucho. No podemos comprometer una fecha.",
+        contactoPrincipal: "abogado",
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -890,6 +944,7 @@ export const fixtures: Fixtures = {
         queNecesitamosDelCliente: "",
         quePuedePasarDespues: "",
         plazoEsperado: "",
+        contactoPrincipal: "abogado",
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -906,6 +961,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues:
           "Con tu firma presentamos dentro de plazo y el juicio sigue su curso.",
         plazoEsperado: "El tribunal fijó una fecha límite. Tu ejecutiva te dice cuál es.",
+        contactoPrincipal: "ambos",
         nivelUrgencia: "urgente",
       },
       {
@@ -919,6 +975,7 @@ export const fixtures: Fixtures = {
         queNecesitamosDelCliente: "Cuéntanos si tienes bienes que no aparezcan en los registros.",
         quePuedePasarDespues: "Con el catastro listo te explicamos qué se puede proteger.",
         plazoEsperado: "Entre 10 y 15 días hábiles.",
+        contactoPrincipal: "ejecutiva",
         nivelUrgencia: "atencion",
       },
       {
@@ -932,6 +989,7 @@ export const fixtures: Fixtures = {
         queNecesitamosDelCliente: "Nada por ahora. Te mandamos el borrador antes de firmar.",
         quePuedePasarDespues: "Si estás de acuerdo con el borrador, coordinamos la firma.",
         plazoEsperado: "Entre 5 y 8 días hábiles.",
+        contactoPrincipal: "ejecutiva",
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -947,6 +1005,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues:
           "Firmada la escritura, la inscribimos y el resguardo queda constituido.",
         plazoEsperado: "Depende de la hora que tengas para ir a la notaría.",
+        contactoPrincipal: "ambos",
         nivelUrgencia: "urgente",
       },
     ],
@@ -1053,6 +1112,20 @@ export const fixtures: Fixtures = {
         nombre: "Matías Fuenzalida",
         rol: "abogado",
         telefonoWhatsapp: "+56 9 5530 9174",
+      },
+      {
+        id: "con-025",
+        clienteId: "cli-013",
+        nombre: "Camila Rivera",
+        rol: "ejecutiva",
+        telefonoWhatsapp: "+56 9 6721 4488",
+      },
+      {
+        id: "con-026",
+        clienteId: "cli-013",
+        nombre: "Andrés Peña",
+        rol: "abogado",
+        telefonoWhatsapp: "+56 9 7302 6641",
       },
       {
         id: "con-023",
@@ -1207,6 +1280,14 @@ export const fixtures: Fixtures = {
         numero: 2,
         fechaVencimiento: "2026-10-10",
         monto: 87400,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-113",
+        clienteId: "cli-013",
+        numero: 7,
+        fechaVencimiento: "2026-10-18",
+        monto: 46800,
         estado: "pendiente",
       },
       {
