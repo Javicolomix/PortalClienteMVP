@@ -854,6 +854,15 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   PENDIENTE: los bancos chilenos se agolpan en el azul, así que BancoEstado y
   Caja Los Andes quedan casi iguales. El nombre del acreedor los separa, pero si
   molesta hay que subir la saturación y perder algo de integración.
+- 2026-09-15: **la fila del estado del caso lleva el dibujo de su servicio**: un
+  apretón de manos en renegociación —el servicio es literalmente llegar a un
+  acuerdo— y una goma en liquidación —borrón y cuenta nueva, que es como la
+  propia empresa lo describe—. El hito sigue titulando la sección: el título
+  nombra la sección, la fila nombra de qué es el caso. Los dos dibujos son de
+  lucide y no de Tabler; es la excepción del set.
+- 2026-09-15: **fuera el dibujo del rótulo «Mi servicio»** del bloque de arriba
+  del inicio. Con las listas llenas de marcas, era el que sobraba: el primero
+  que se mira, en el único bloque que no necesitaba uno.
 - 2026-09-15: **el rol va siempre debajo del acreedor**, no solo cuando no cabe.
   Al lado competía por la misma línea de lectura; debajo, la fila se lee en el
   orden en que se pregunta: quién me demanda, cuál de las causas, en qué va. La

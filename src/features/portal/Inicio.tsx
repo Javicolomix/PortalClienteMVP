@@ -12,10 +12,16 @@ import { cn } from "@/shared/lib/utils/cn";
 import { BotonWhatsapp } from "./BotonWhatsapp";
 import { muestraBloque, nombreDelServicioPrincipal } from "./composicion";
 import { ICONOS } from "./iconos";
+import { iconoDelServicio } from "./iconos-de-escritura";
 import { Martillo } from "./iconos-de-escritura";
 import { FilaDesplegable, ListaDeCajas, TituloDeBloque } from "./ListaDeCajas";
 import { CargandoPagina, ErrorDeCarga } from "./PaginaDelPortal";
-import { type DatosInicio, type Etapa, nombreCompleto } from "./portal.types";
+import {
+  type DatosInicio,
+  type Etapa,
+  nombreCompleto,
+  type TipoServicio,
+} from "./portal.types";
 import { cargarInicio } from "./portal-service";
 import { saludoSegunHora } from "./saludo";
 
@@ -251,8 +257,12 @@ function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
       )}
       style={{ boxShadow: "0 8px 24px rgb(11 1 60 / 0.10)" }}
     >
-      <p className="flex items-center gap-1.5 type-meta text-[11px] font-medium tracking-[0.1em] text-[#4a4478] uppercase">
-        <ICONOS.balanza className="size-3.5 shrink-0" strokeWidth={1.75} aria-hidden />
+      {/* Sin dibujo. «Mi servicio» es un rótulo de dos palabras en versalitas
+          dentro de un bloque lila que ya se distingue de todo lo demás de la
+          pantalla: no hay nada que reconocer antes de leerlo. Y con las listas
+          de abajo llenas de marcas, un dibujo más acá arriba era el que sobraba
+          — el primero que se mira, en el único bloque que no necesitaba uno. */}
+      <p className="type-meta text-[11px] font-medium tracking-[0.1em] text-[#4a4478] uppercase">
         Mi servicio
       </p>
 
@@ -303,16 +313,31 @@ function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
  * accesos, este es el único lugar donde se lee la etapa entera, y no puede
  * quedarse contenido afuera sin ninguna pantalla que lo muestre.
  */
-function BloqueDelCaso({ etapa, servicio }: { etapa: Etapa | null; servicio: string }) {
+function BloqueDelCaso({
+  etapa,
+  servicio,
+  tipo,
+}: {
+  etapa: Etapa | null;
+  servicio: string;
+  tipo: TipoServicio;
+}) {
   return (
     <section className="mt-10 md:mt-12">
+      {/* El hito titula la sección: dice «acá va en qué punto del camino
+          estás», que es lo que la sección contesta. */}
       <TituloDeBloque Icono={ICONOS.etapa}>Estado de mi caso</TituloDeBloque>
 
       <div className="mt-3">
+        {/* La fila, en cambio, lleva el dibujo **del servicio**: un apretón de
+            manos si es una renegociación, una goma si es una liquidación. No es
+            el mismo del título a propósito — el título nombra la sección y la
+            fila nombra de qué es el caso, igual que en las listas de abajo, donde
+            el martillo titula y cada fila dice de qué banco es. */}
         <FilaDesplegable
           id="mi-caso"
           identidad={{ principal: servicio, claveDeColor: servicio }}
-          Icono={ICONOS.etapa}
+          Icono={iconoDelServicio(tipo)}
           etapa={etapa}
           completo
         />
@@ -542,6 +567,7 @@ export function Inicio() {
                 <BloqueDelCaso
                   etapa={datos.etapa?.visibleParaCliente ? datos.etapa : null}
                   servicio={nombreDelServicioPrincipal(datos.serviciosPrincipales)}
+                  tipo={datos.composicion.servicioPrincipal[0]}
                 />
               ) : null}
 

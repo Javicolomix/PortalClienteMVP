@@ -1,6 +1,7 @@
+import { Eraser, Handshake } from "lucide-react";
 import type { ComponentType } from "react";
 
-import type { Caja } from "./portal.types";
+import type { Caja, TipoServicio } from "./portal.types";
 
 /**
  * **El banco de dibujos de los tipos de escritura**, uno por cada tipo real que
@@ -261,3 +262,30 @@ export const TIPOS_CON_DIBUJO = Object.keys(POR_TIPO);
  */
 export const iconoDeLaCaja = (caja: Caja): IconoDelPortal =>
   caja.tipo === "proteccionPatrimonial" ? iconoDeEscritura(caja.identificador) : Martillo;
+
+/**
+ * **El dibujo del servicio**, que es el que lleva la fila del estado del caso.
+ * Esa fila no es una causa ni una escritura: es la renegociación o la
+ * liquidación entera, y lo que la nombra es el servicio.
+ *
+ * - **Renegociación, el apretón de manos.** El servicio es literalmente llegar a
+ *   un acuerdo con los acreedores: dos partes que se dan la mano.
+ * - **Liquidación, la goma.** Es lo que el servicio hace y lo que la gente ya
+ *   dice de él —borrón y cuenta nueva—: un liquidador reparte lo que hay y el
+ *   saldo que queda impago se extingue. Se eligieron y descartaron una balanza
+ *   (es de tribunales, no de este trámite en particular) y un visto bueno (dice
+ *   «listo», no dice qué pasó).
+ * - **Defensa en juicio, el martillo**, el mismo de la lista de causas: cuando
+ *   el estado del caso aparece en defensa es porque la persona solo tiene la
+ *   caja de monitoreo, y lo que se está vigilando son juicios.
+ *
+ * Los dos primeros son de lucide y no de Tabler. Es la excepción del set: los
+ * dos tienen el mismo trazo y la misma caja, y traer un dibujo suelto de otra
+ * librería costaba más de lo que ordenaba.
+ */
+export const iconoDelServicio = (tipo: TipoServicio): IconoDelPortal => {
+  if (tipo === "renegociacion") return Handshake;
+  if (tipo === "liquidacion") return Eraser;
+  if (tipo === "defensaEnJuicio") return Martillo;
+  return Documento;
+};
