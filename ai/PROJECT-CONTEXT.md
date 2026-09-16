@@ -837,12 +837,12 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   partido en dos y contradecía el bloque del inicio del que se entra. Los dos
   objetivos van de corrido bajo un solo rótulo y los beneficios en una sola
   lista.
-- 2026-09-15: **el lienzo del portal es un neutro tibio** (`--color-surface-canvas`,
-  #f6f4f0) y las tarjetas levantan con `shadow-raised`. Tres intentos: #edeef3
-  y #f2f2f9 separaban bien pero se veían serios, casi administrativos —el azul
-  enfría, y en una pantalla sobre deudas eso trabaja en contra—. Con más rojo que
-  azul se lee amable, y el índigo de la marca resalta más sobre un neutro tibio
-  que sobre uno de su propia familia. Con el gris casi blanco
+- 2026-09-15: **el lienzo del portal es el gris neutro del sistema**
+  (`--color-surface-canvas`, #f5f5f5) y las tarjetas levantan con
+  `shadow-raised`. Cuatro intentos hasta llegar: #edeef3 y #f2f2f9 con lavanda
+  de marca separaban bien pero se veían serios —el azul enfría—; #f6f4f0 tibio
+  se pasaba al otro lado. El neutro no le impone temperatura a una pantalla cuyo
+  único color con significado es el índigo de la marca. Con el gris casi blanco
   de antes, tarjetas y fondo eran del mismo tono y la pantalla se leía como una
   sola lámina plana. Aplica a todas las pantallas, no solo a «Mi servicio»: una
   sola con otro fondo se habría leído como un error.
