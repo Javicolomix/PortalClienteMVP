@@ -1,19 +1,3 @@
-import {
-  Building2,
-  Car,
-  FileSignature,
-  FileText,
-  Gavel,
-  House,
-  KeyRound,
-  type LucideIcon,
-  ScrollText,
-  ShieldCheck,
-  Split,
-} from "lucide-react";
-
-import type { Caja } from "./portal.types";
-
 /**
  * **La burbuja de color que identifica cada caja en su lista.**
  *
@@ -135,49 +119,3 @@ export const tintasDeLaLista = (
   return indices.map((indice) => TINTAS[indice]);
 };
 
-/**
- * **El dibujo de cada tipo de escritura.** Una casa para una compraventa de
- * inmueble, un auto para una de vehículo. Es lo que pidió el equipo de PP y es
- * mejor que las iniciales para este embudo: los tipos son cosas del mundo —una
- * casa, un auto, una sociedad— y se reconocen antes de leerse.
- *
- * Se resuelve **por palabra clave y no por el nombre exacto**, porque los tipos
- * los mantiene Streak y la lista va a crecer sin avisarnos. Un tipo nuevo que no
- * calce con ninguna cae en el documento genérico, que es un resultado correcto:
- * la fila sigue diciendo su nombre entero al lado.
- *
- * El orden importa. «Liquidación de Sociedad Conyugal» tiene que resolverse
- * antes que «sociedad» a secas, o una separación de bienes saldría con el icono
- * de una empresa.
- */
-const ICONOS_DE_ESCRITURA: [RegExp, LucideIcon][] = [
-  [/veh[íi]culo|autom[óo]vil/i, Car],
-  [/inmueble|propiedad|departamento|casa/i, House],
-  [/sociedad conyugal|separaci[óo]n de bienes/i, Split],
-  [/sociedad|empresa|constituci[óo]n/i, Building2],
-  [/hereditari|herencia|posesi[óo]n efectiva/i, ScrollText],
-  [/bien familiar/i, ShieldCheck],
-  [/usufructo/i, KeyRound],
-  [/mandato|poder/i, FileSignature],
-];
-
-const iconoDeEscritura = (tipo: string): LucideIcon => {
-  const encontrado = ICONOS_DE_ESCRITURA.find(([patron]) => patron.test(tipo));
-  return encontrado ? encontrado[1] : FileText;
-};
-
-/**
- * El dibujo de una caja en su lista.
- *
- * **Las causas llevan todas el mismo martillo.** Antes iban con las iniciales
- * del acreedor —BE, CS— y se leían como el avatar de un contacto, no como un
- * juicio; el martillo dice de una qué es esa fila. Que sea el mismo en las
- * cuatro no le quita nada: lo que distingue una causa de otra es el nombre del
- * banco, que va en grande al lado, y el rol debajo. La tinta acompaña —dos
- * causas del mismo acreedor comparten la suya— pero no es lo que se lee.
- *
- * **Las escrituras llevan el dibujo de su tipo**, porque ahí los tipos son cosas
- * del mundo —una casa, un auto, una sociedad— y se reconocen antes de leerse.
- */
-export const iconoDeLaCaja = (caja: Caja): LucideIcon =>
-  caja.tipo === "proteccionPatrimonial" ? iconoDeEscritura(caja.identificador) : Gavel;

@@ -12,6 +12,7 @@ import { cn } from "@/shared/lib/utils/cn";
 import { BotonWhatsapp } from "./BotonWhatsapp";
 import { muestraBloque, nombreDelServicioPrincipal } from "./composicion";
 import { ICONOS } from "./iconos";
+import { Martillo } from "./iconos-de-escritura";
 import { FilaDesplegable, ListaDeCajas, TituloDeBloque } from "./ListaDeCajas";
 import { CargandoPagina, ErrorDeCarga } from "./PaginaDelPortal";
 import { type DatosInicio, type Etapa, nombreCompleto } from "./portal.types";
@@ -544,7 +545,11 @@ export function Inicio() {
                 />
               ) : null}
 
-              <ListaDeCajas titulo="Mis juicios" Icono={ICONOS.tribunal} items={datos.juicios} />
+              {/* El martillo, el mismo que marca cada causa abajo. No es
+                  repetirse: es lo que dice que las filas de esta sección son de
+                  eso. Reemplaza al tribunal, que nombraba el lugar y no el
+                  asunto. */}
+              <ListaDeCajas titulo="Mis juicios" Icono={Martillo} items={datos.juicios} />
               <ListaDeCajas
                 titulo="Mis escrituras"
                 Icono={ICONOS.documento}

@@ -898,7 +898,14 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   juicio. Lo que distingue una causa de otra es el nombre del banco, que va en
   grande arriba, y el rol debajo. La **etapa sube a gris de texto y medio peso
   de más**: es la segunda línea, pero es lo que la persona vino a leer.
-- 2026-09-15: las escrituras llevan **un dibujo por tipo** —una casa para una
+- 2026-09-15: **el banco de dibujos lo entregó el diseñador**: 25 tipos reales
+  de escritura, uno por icono de Tabler (MIT), más el martillo para «Mis
+  juicios». Viven dibujados en `iconos-de-escritura.tsx` —26 de dos mil, traer
+  el paquete pesaría más que el portal— y el emparejamiento es por nombre
+  normalizado, sin tildes ni mayúsculas, porque el tipo llega escrito a mano
+  desde Streak. Un tipo que no esté cae en un documento genérico. Reemplaza al
+  emparejamiento por palabra clave con iconos de lucide.
+- 2026-09-15 (reemplazado): las escrituras llevaban **un dibujo por tipo** —una casa para una
   compraventa de inmueble, un auto para una de vehículo—, resuelto por palabra
   clave y no por el nombre exacto, porque los tipos los mantiene Streak y la
   lista va a crecer. Las causas siguen con las iniciales del acreedor: no existe

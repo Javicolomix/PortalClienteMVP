@@ -1,4 +1,4 @@
-import { ChevronDown, type LucideIcon } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 
@@ -6,7 +6,8 @@ import { cn } from "@/shared/lib/utils/cn";
 
 import { DetalleDeEtapa } from "./BloquesDelPortal";
 import { aclarar, colorDeAcreedor } from "./color-de-acreedor";
-import { iconoDeLaCaja, tintaDe, tintasDeLaLista } from "./identidad-de-caja";
+import { iconoDeLaCaja,type IconoDelPortal } from "./iconos-de-escritura";
+import { tintaDe, tintasDeLaLista } from "./identidad-de-caja";
 import {
   type CajaConEtapa,
   type Etapa,
@@ -14,8 +15,8 @@ import {
   identidadDeLaCaja,
 } from "./portal.types";
 
-/** Cualquier icono de lucide: los de las secciones y los de los tipos de escritura. */
-type Icono = LucideIcon;
+/** Los de las secciones (lucide) y los del banco propio de escrituras. */
+type Icono = IconoDelPortal;
 
 /**
  * El título de un bloque desplegable del inicio: «Estado de mi caso», «Mis

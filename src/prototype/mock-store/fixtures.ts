@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 34,
+  datasetVersion: 35,
   entities: {
     cliente: [
       {
@@ -206,7 +206,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-002",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Declaración de bien familiar",
+        identificador: "Cancelación y Alzamiento de Hipoteca",
         etapaId: "etp-pp-02",
       },
       {
@@ -350,7 +350,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-006",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Usufructo vitalicio",
+        identificador: "Compraventa de Inmueble y Usufructo",
         etapaId: "etp-pp-01",
       },
       {
@@ -358,7 +358,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-006",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Declaración de bien familiar",
+        identificador: "Cancelación y Alzamiento de Hipoteca",
         etapaId: "etp-pp-02",
       },
       {
@@ -394,7 +394,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-007",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Declaración de bien familiar",
+        identificador: "Cancelación y Alzamiento de Hipoteca",
         etapaId: "etp-pp-02",
       },
       {
@@ -716,7 +716,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-010",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Declaración de bien familiar",
+        identificador: "Cancelación y Alzamiento de Hipoteca",
         etapaId: "etp-pp-03",
       },
       {
