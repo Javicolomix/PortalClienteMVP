@@ -244,12 +244,8 @@ function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
       )}
       style={{ boxShadow: "0 8px 24px rgb(11 1 60 / 0.10)" }}
     >
-      {/* Sin dibujo. «Mi servicio» es un rótulo de dos palabras en versalitas
-          dentro de un bloque lila que ya se distingue de todo lo demás de la
-          pantalla: no hay nada que reconocer antes de leerlo. Y con las listas
-          de abajo llenas de marcas, un dibujo más acá arriba era el que sobraba
-          — el primero que se mira, en el único bloque que no necesitaba uno. */}
-      <p className="type-meta text-[11px] font-medium tracking-[0.1em] text-[#4a4478] uppercase">
+      <p className="flex items-center gap-1.5 type-meta text-[11px] font-medium tracking-[0.1em] text-[#4a4478] uppercase">
+        <ICONOS.balanza className="size-3.5 shrink-0" strokeWidth={1.75} aria-hidden />
         Mi servicio
       </p>
 
@@ -520,7 +516,7 @@ export function Inicio() {
           de la barra de las pantallas de detalle, y el del sistema viene cuatro
           píxeles más alto. */}
       <HeaderBar
-        className="hidden h-14 md:flex"
+        className="hidden h-12 md:flex"
         brand={<Logo className="h-6" />}
         actions={<BotonSalir />}
       />

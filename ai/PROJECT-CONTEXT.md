@@ -865,8 +865,9 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   género y especie. Con el martillo en los dos lugares, el título y sus filas
   decían lo mismo.
 - 2026-09-16: **el login usa el mismo lienzo que el inicio** (`surface-canvas`).
-- 2026-09-16: **las dos barras superiores miden lo mismo y más delgadas**: 56 px
-  en vez de los 64 del sistema, con el logo a 28 px en las dos. En el inicio la
+- 2026-09-16: **las dos barras superiores miden lo mismo y más delgadas**: 48 px
+  en vez de los 64 del sistema, con el logo a 24 px en las dos. Es lo más bajo
+  que quedan sin apretar lo que llevan dentro: el botón de volver mide 32. En el inicio la
   marca abre la barra; en las pantallas de detalle el lugar de la izquierda lo
   ocupa la salida y **la marca cierra por la derecha**. El logo de la derecha no
   es un enlace: quien quiera volver ya tiene el botón al frente.
@@ -930,9 +931,6 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   propia empresa lo describe—. El hito sigue titulando la sección: el título
   nombra la sección, la fila nombra de qué es el caso. Los dos dibujos son de
   lucide y no de Tabler; es la excepción del set.
-- 2026-09-15: **fuera el dibujo del rótulo «Mi servicio»** del bloque de arriba
-  del inicio. Con las listas llenas de marcas, era el que sobraba: el primero
-  que se mira, en el único bloque que no necesitaba uno.
 - 2026-09-15: **el rol va siempre debajo del acreedor**, no solo cuando no cabe.
   Al lado competía por la misma línea de lectura; debajo, la fila se lee en el
   orden en que se pregunta: quién me demanda, cuál de las causas, en qué va. La

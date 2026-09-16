@@ -95,11 +95,12 @@ export function PaginaDelPortal({
           `sticky` es lo que sostiene todo esto: sin eso es un botón arriba más. */}
       <HeaderBar
         sticky
-        // 56 px y no los 64 del sistema: es la misma altura que la barra del
-        // inicio, y más delgada deja la pantalla entera un poco más arriba. En
-        // una barra que solo tiene una salida y un logo, ocho píxeles de más son
-        // ocho píxeles que no hacen nada.
-        className="h-14"
+        // 48 px y no los 64 del sistema: la misma altura que la barra del inicio,
+        // y lo más baja que puede quedar sin apretar lo que lleva dentro —el
+        // botón de volver mide 32 y el logo 24—. Una barra con una salida y una
+        // marca no necesita más; cada píxel de más es uno que le quita a la
+        // pantalla.
+        className="h-12"
         brand={
           <Button asChild variant="ghost" size="sm" className="-ml-2">
             <Link to="/">
