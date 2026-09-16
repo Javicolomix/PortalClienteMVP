@@ -884,8 +884,14 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   expresivas, pero acá va también en «Mis pagos» por decisión del diseñador:
   funciona porque todo el contenido vive dentro de recuadros blancos opacos y la
   trama nunca queda debajo de un texto.
-- 2026-09-16: **«Mi servicio» se titula «La Renegociación»**, con el nombre
-  subrayado en ámbar —el mismo trazo que en el inicio va bajo el nombre de la
+- 2026-09-16: **la próxima cuota va en navy**, no en el lila del sistema. El lila
+  es un tinte de baja intensidad: sobre el lienzo gris y con la trama detrás, el
+  bloque más importante de «Mis pagos» era el que menos se veía. Es el mismo navy
+  de la franja del saludo, que la persona ya tiene visto como «lo que Lexy te
+  está diciendo».
+- 2026-09-16: **la burbuja de WhatsApp sube a 56/64 px** (era 46/52).
+- 2026-09-16: **«Mi servicio» se titula «En qué consiste La Renegociación»**,
+  con el nombre subrayado en ámbar —el mismo trazo que en el inicio va bajo el nombre de la
   persona—. El artículo queda fuera del subrayado: no es parte del nombre.
   Necesita el campo `servicio.nombreEnFrase` («La Renegociación»), que no se
   puede derivar del nombre: «Renegociación de deudas» se titula «La

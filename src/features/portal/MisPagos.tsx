@@ -156,23 +156,33 @@ function PasoDePago({
   );
 }
 
+/**
+ * **Lo único que esta pantalla vino a decir**: cuánto y cuándo. Va en navy y no
+ * en el lila del sistema.
+ *
+ * El lila es un tinte de baja intensidad, pensado para acompañar; sobre el
+ * lienzo gris claro y con la trama detrás, el bloque más importante de la
+ * pantalla era el que menos se veía. El navy es la tinta de la marca y acá es
+ * además lo que ordena la página: lo primero que se mira, y todo lo demás
+ * —cómo pagar, el historial, finanzas— cuelga de eso.
+ *
+ * Es el mismo navy de la franja del saludo, así que la persona ya lo tiene visto
+ * como «lo que Lexy te está diciendo».
+ */
 function ProximaCuota({ cuota }: { cuota: Cuota }) {
   return (
-    <Card className="bg-accent">
-      <CardHeader>
-        <p className="type-supporting text-muted-foreground">Tu próxima cuota</p>
-        <p className="mt-1 type-page-title text-foreground">{FORMATO_PESOS.format(cuota.monto)}</p>
-      </CardHeader>
-      <CardContent>
-        <p className="flex flex-wrap items-center gap-x-4 gap-y-1 type-body text-foreground">
-          <span className="flex items-center gap-2">
-            <CalendarDays className="size-4 shrink-0 text-muted-foreground" aria-hidden />
-            Vence el {formatearFechaCorta(cuota.fechaVencimiento)}
-          </span>
-          <span className="type-supporting text-muted-foreground">Cuota N°{cuota.numero}</span>
-        </p>
-      </CardContent>
-    </Card>
+    <section className="rounded-xl bg-brand-navy p-5 text-white shadow-card md:p-6">
+      <p className="type-supporting text-white/70">Tu próxima cuota</p>
+      <p className="mt-1 type-page-title">{FORMATO_PESOS.format(cuota.monto)}</p>
+
+      <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 type-body text-white/85">
+        <span className="flex items-center gap-2">
+          <CalendarDays className="size-4 shrink-0 text-white/60" aria-hidden />
+          Vence el {formatearFechaCorta(cuota.fechaVencimiento)}
+        </span>
+        <span className="type-supporting text-white/60">Cuota N°{cuota.numero}</span>
+      </p>
+    </section>
   );
 }
 

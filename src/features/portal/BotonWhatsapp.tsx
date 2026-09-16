@@ -16,11 +16,11 @@ import { enlaceWhatsapp, ETIQUETA_ROL, rotuloDelContacto } from "./whatsapp";
  * cambia qué pasa al tocarlo.
  */
 const CLASES_DEL_BOTON =
-  "group flex size-[46px] items-center justify-center rounded-full bg-[#25d366] text-white transition-transform duration-150 ease-out [-webkit-tap-highlight-color:transparent] active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring md:size-[52px]";
+  "group flex size-14 items-center justify-center rounded-full bg-[#25d366] text-white transition-transform duration-150 ease-out [-webkit-tap-highlight-color:transparent] active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring md:size-16";
 
 const SOMBRA = { boxShadow: "0 6px 16px rgb(37 211 102 / 0.4)" } as const;
 
-const Circulo = () => <MarcaWhatsapp className="size-6 md:size-7" />;
+const Circulo = () => <MarcaWhatsapp className="size-7 md:size-8" />;
 
 /**
  * El botón y su rótulo, anclados abajo a la derecha.
