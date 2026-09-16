@@ -312,10 +312,13 @@ function HistorialDeCuotas({
   if (cuotas.length === 0) return null;
 
   return (
-    <section className="mt-10">
+    <section className="mt-3 flex justify-end">
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="outline" className="w-full sm:w-auto">
+          {/* Alineado a la derecha y sin ocupar el ancho: es una consulta de
+              respaldo, no un paso del flujo. A lo ancho pesaba como un botón
+              más de «cómo pagar», que son los que sí hay que apretar. */}
+          <Button variant="outline">
             <Receipt aria-hidden />
             Ver el historial de mis cuotas
           </Button>
@@ -483,13 +486,20 @@ function ContenidoDePagos({ datos }: { datos: DatosMisPagos }) {
   return (
     <>
       <ProximaCuota cuota={datos.proximaCuota} />
-      <ComoPagar
-        configuracion={datos.configuracion}
-        nombreCliente={nombreCompleto(datos.cliente)}
-      />
+
+      {/* Pegado al recuadro de la cuota y a la derecha. Es la pregunta que
+          sigue inmediatamente después de leer cuánto toca este mes —«¿y las
+          anteriores?»— así que va ahí y no al final de la página, donde había
+          que recorrer los dos modos de pago para encontrarla. A la derecha
+          porque no es un paso del flujo: los pasos son los de abajo. */}
       <HistorialDeCuotas
         cuotas={datos.cuotas}
         urlPagoEnLinea={datos.configuracion.urlPagoEnLinea}
+      />
+
+      <ComoPagar
+        configuracion={datos.configuracion}
+        nombreCliente={nombreCompleto(datos.cliente)}
       />
       <DudasDelCobro
         configuracion={datos.configuracion}
@@ -503,7 +513,7 @@ export function MisPagos() {
   const { fase, datos, recargar } = useCarga("mis-pagos", cargarMisPagos);
 
   return (
-    <PaginaDelPortal titulo="Mis pagos" conTramaDeMarca>
+    <PaginaDelPortal titulo="Mis pagos" sobreBlanco>
       {fase === "cargando" ? <CargandoPagina /> : null}
       {fase === "error" ? <ErrorDeCarga onReintentar={recargar} /> : null}
       {fase === "listo" && datos ? <ContenidoDePagos datos={datos} /> : null}

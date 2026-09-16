@@ -14,6 +14,7 @@ import {
 import { HeaderBar } from "@/shared/components/base/HeaderBar";
 import { Logo } from "@/shared/components/base/Logo";
 import { Skeleton } from "@/shared/components/base/Skeleton";
+import { cn } from "@/shared/lib/utils/cn";
 
 /**
  * Shell de las pantallas de detalle: una idea por pantalla y **una sola salida**,
@@ -30,6 +31,7 @@ export function PaginaDelPortal({
   titulo,
   descripcion,
   conTramaDeMarca,
+  sobreBlanco,
   children,
 }: {
   titulo: ReactNode;
@@ -45,10 +47,19 @@ export function PaginaDelPortal({
    * que hay acá, vive dentro de un modal y tampoco la toca.
    */
   conTramaDeMarca?: boolean;
+  /**
+   * Fondo blanco en vez del lienzo gris. Es para «Mis pagos», donde lo que hay
+   * que mirar es un solo bloque —cuánto y cuándo, en navy— y todo lo demás son
+   * instrucciones. Sobre blanco el navy es lo único que pesa; sobre el gris, las
+   * tarjetas blancas de «cómo pagar» levantaban y le hacían coro.
+   */
+  sobreBlanco?: boolean;
   children: ReactNode;
 }) {
   return (
-    <div className="relative isolate min-h-screen bg-surface-canvas">
+    <div
+      className={cn("relative isolate min-h-screen", sobreBlanco ? "bg-background" : "bg-surface-canvas")}
+    >
       {/* Va **fija al viewport**, no al alto de la página. La imagen es
           1920×1080 y estirada sobre una página de cuatro mil píxeles de alto los
           cubos salen deformados; fija, se ve siempre en su proporción y el

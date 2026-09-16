@@ -889,7 +889,14 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   bloque más importante de «Mis pagos» era el que menos se veía. Es el mismo navy
   de la franja del saludo, que la persona ya tiene visto como «lo que Lexy te
   está diciendo».
-- 2026-09-16: **la burbuja de WhatsApp sube a 56/64 px** (era 46/52).
+- 2026-09-16: **la burbuja de WhatsApp sube a 52/58 px** (era 46/52).
+- 2026-09-16: **«Mis pagos» va sobre blanco y sin trama.** Lo que hay que mirar
+  ahí es un solo bloque —la cuota, en navy— y todo lo demás son instrucciones:
+  sobre el gris, las tarjetas blancas de «cómo pagar» levantaban y le hacían
+  coro. El botón del historial se sube a **debajo del recuadro de la cuota y a
+  la derecha**: es la pregunta que sigue inmediatamente a «cuánto toca este
+  mes», y al final de la página había que recorrer los dos modos de pago para
+  encontrarla. A la derecha porque no es un paso del flujo.
 - 2026-09-16: **«Mi servicio» se titula «En qué consiste La Renegociación»**,
   con el nombre subrayado en ámbar —el mismo trazo que en el inicio va bajo el nombre de la
   persona—. El artículo queda fuera del subrayado: no es parte del nombre.
