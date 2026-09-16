@@ -846,13 +846,16 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   de antes, tarjetas y fondo eran del mismo tono y la pantalla se leía como una
   sola lámina plana. Aplica a todas las pantallas, no solo a «Mi servicio»: una
   sola con otro fondo se habría leído como un error.
-- 2026-09-16: **las tintas de las marcas salen de `chart-1..5`**, la serie de
-  datos del sistema: son los cinco colores que Lexy tiene para distinguir
-  categorías sin orden entre sí, que es exactamente el problema de cuatro
-  martillos en una lista. La marca del acreedor solo dice **por cuál de los
-  cinco empezar** —Santander cae en el rosa, BancoEstado en el azul—; si ese ya
-  está tomado, se corre al siguiente libre. Van aclaradas a la mitad del camino
-  al blanco.
+- 2026-09-16: **las cinco tintas de las marcas son tonos tierra** —azul polvo,
+  salvia, arcilla, ciruela, terracota—, elegidas por el diseñador sobre la serie
+  de datos del sistema y otras cuatro candidatas, viéndolas todas con el banco
+  entero encima. Distinguen a 22 px, que es el tamaño real en la fila, y ninguna
+  le quita protagonismo al nombre del acreedor. **No son tokens del sistema**:
+  el tema no tiene una familia apagada para esto —su serie de datos es más vívida,
+  pensada para gráficos— así que viven escritas en `color-de-acreedor.ts`; si el
+  sistema incorpora una escala así, se reemplazan ahí. La marca del acreedor solo
+  dice **por cuál de las cinco empezar**; si esa ya está tomada, se corre a la
+  siguiente libre.
 - 2026-09-16: **el desplegable usa la piel de «Mi servicio»** y con jerarquía:
   arriba «Estado de mi caso» con la explicación entera —el mensaje del capitán y
   lo que el equipo está haciendo, que son la misma respuesta—; abajo los tres

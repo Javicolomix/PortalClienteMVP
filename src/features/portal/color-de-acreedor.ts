@@ -58,31 +58,38 @@ const COLORES: [RegExp, string][] = [
 ];
 
 /**
- * **Las tintas de las marcas salen de la serie de datos del sistema.**
+ * **Las cinco tintas de las marcas: tonos tierra.**
  *
- * Los `chart-1..5` son los cinco colores que Lexy tiene para lo mismo que acá
- * hay que hacer: **distinguir categorías que no tienen orden entre sí**. Están
- * elegidos para verse distintos unos de otros y para convivir en una misma
- * pantalla, que es exactamente el problema de cuatro martillos en una lista.
- * Cualquier paleta que inventáramos acá competiría con esa.
+ * Azul polvo, salvia, arcilla, ciruela y terracota. Cumplen el mismo rol que la
+ * serie de datos del sistema —distinguir categorías que no tienen orden entre
+ * sí, que es el problema de cuatro martillos en una lista— pero apagadas: el
+ * diseñador las eligió sobre la serie de Lexy y sobre otras cuatro candidatas
+ * después de verlas todas con el banco entero encima.
  *
- * Van **aclaradas un tercio del camino al blanco**: el trazo lleno competía con
- * el nombre del acreedor, que es lo que de verdad identifica la causa, pero a la
- * mitad del camino se volvían pasteles y dejaban de leerse como el verde, el
- * azul o el naranja que son. Un tercio les baja el grito sin quitarles el color.
+ * La razón es el equilibrio que la pantalla necesita. Siguen siendo cinco
+ * colores que se distinguen a 22 píxeles, que es el tamaño real del dibujo en la
+ * fila, y ninguno levanta la voz: en una pantalla sobre deudas, un naranja pleno
+ * se lee como una alarma y una paleta pastel se lee como un juguete. Estos se
+ * alejan de lo infantil sin volverse fríos, y sobre todo **no le quitan
+ * protagonismo al nombre del acreedor**, que es lo que de verdad identifica la
+ * causa.
+ *
+ * **No son tokens del sistema.** Van escritos a mano acá porque el tema de Lexy
+ * no tiene una familia para esto: su serie de datos es más vívida, pensada para
+ * gráficos y no para un dibujo al costado de un texto. Si el sistema incorpora
+ * una escala apagada, estos cinco se reemplazan en este archivo y cambia todo el
+ * portal de una vez.
+ *
+ * Van **enteros, sin aclarar**. Los de la serie había que bajarlos porque
+ * gritaban; estos ya nacen bajos, y aclararlos los dejaba sin color.
  */
-const SERIE = ["#2f80ed", "#1aab8a", "#f7630c", "#b14ad1", "#e23f74"] as const;
-
-const aclarar = (hex: string, haciaElBlanco = 0.32): string => {
-  const canal = (desde: number) =>
-    Math.round(
-      parseInt(hex.slice(desde, desde + 2), 16) * (1 - haciaElBlanco) + 255 * haciaElBlanco,
-    );
-
-  return `#${[1, 3, 5].map((d) => canal(d).toString(16).padStart(2, "0")).join("")}`;
-};
-
-const TINTAS = SERIE.map((hex) => aclarar(hex));
+const TINTAS = [
+  "#5b7c99", // azul polvo
+  "#7a9471", // salvia
+  "#c08552", // arcilla
+  "#8a6a8f", // ciruela
+  "#a8705f", // terracota
+] as const;
 
 /** El matiz de un hex, en vueltas de 0 a 1. */
 const matizDe = (hex: string): number => {
@@ -97,7 +104,7 @@ const matizDe = (hex: string): number => {
   return ((r - g) / rango + 4) / 6;
 };
 
-const MATICES_DE_LA_SERIE = SERIE.map(matizDe);
+const MATICES_DE_LAS_TINTAS = TINTAS.map(matizDe);
 
 /** Distancia entre dos matices sobre el círculo, de 0 a 0,5. */
 const distancia = (a: number, b: number): number => {
@@ -106,15 +113,15 @@ const distancia = (a: number, b: number): number => {
 };
 
 /**
- * **De qué color de la serie se acerca más la marca.** Santander es rojo y cae
- * en el naranja de la serie; BancoEstado es azul y cae en el azul. No es el
- * Pantone del logo —no puede serlo, la serie tiene cinco colores— pero conserva
- * lo único que la persona reconoce de lejos: de qué lado del círculo está.
+ * **De qué tinta se acerca más la marca.** Santander es rojo y cae en la
+ * terracota; BancoEstado es azul y cae en el azul polvo. No es el Pantone del
+ * logo —no puede serlo, son cinco tintas— pero conserva lo único que la persona
+ * reconoce de lejos: de qué lado del círculo está.
  */
-const masCercanoDeLaSerie = (matiz: number): number => {
+const masCercanoDeLasTintas = (matiz: number): number => {
   let elegido = 0;
-  MATICES_DE_LA_SERIE.forEach((otro, indice) => {
-    if (distancia(matiz, otro) < distancia(matiz, MATICES_DE_LA_SERIE[elegido])) elegido = indice;
+  MATICES_DE_LAS_TINTAS.forEach((otro, indice) => {
+    if (distancia(matiz, otro) < distancia(matiz, MATICES_DE_LAS_TINTAS[elegido])) elegido = indice;
   });
   return elegido;
 };
@@ -151,7 +158,8 @@ const casillaDeLaClave = (clave: string): number => {
  * ser en todas las cuentas y todos los meses. Un tipo que no esté acá cae en el
  * reparto y queda con un color estable igual, solo que sin significado.
  *
- * Los índices son los de `SERIE`: 0 azul, 1 verde, 2 naranja, 3 magenta, 4 rosa.
+ * Los índices son los de `TINTAS`: 0 azul polvo, 1 salvia, 2 arcilla, 3 ciruela,
+ * 4 terracota.
  */
 const CASILLA_POR_TIPO: [RegExp, number][] = [
   [/inmueble|propiedad|departamento|casa|hipoteca/i, 1],
@@ -179,7 +187,7 @@ export const coloresDeLaLista = (items: (ItemConColor | undefined)[]): string[] 
       : CASILLA_POR_TIPO.find(([patron]) => patron.test(item.claveDeColor));
 
     let casilla = marca
-      ? masCercanoDeLaSerie(matizDe(marca[1]))
+      ? masCercanoDeLasTintas(matizDe(marca[1]))
       : (porTipo?.[1] ?? casillaDeLaClave(item.claveDeColor));
 
     const anterior = fila > 0 ? porClave.get(items[fila - 1]?.claveDeColor ?? "") : undefined;
