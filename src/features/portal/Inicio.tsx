@@ -311,7 +311,7 @@ function BloqueDelCaso({ etapa, servicio }: { etapa: Etapa | null; servicio: str
         <FilaDesplegable
           id="mi-caso"
           identidad={{ principal: servicio, claveDeColor: servicio }}
-          titulo={etapa ? etapa.nombreParaCliente : "Tu caso está avanzando"}
+          Icono={ICONOS.etapa}
           etapa={etapa}
           completo
         />

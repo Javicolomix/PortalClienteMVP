@@ -1,4 +1,4 @@
-import { ChevronDown, HelpCircle } from "lucide-react";
+import { ChevronDown, HelpCircle, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 
@@ -7,8 +7,13 @@ import { Tag } from "@/shared/components/base/Tag";
 import { cn } from "@/shared/lib/utils/cn";
 
 import { DetalleDeEtapa } from "./BloquesDelPortal";
-import type { ICONOS } from "./iconos";
-import { inicialesDe, tonoDe, type TonoDeCaja, tonosDeLaLista } from "./identidad-de-caja";
+import {
+  iconoDeEscritura,
+  inicialesDe,
+  tintaDe,
+  type TintaDeCaja,
+  tintasDeLaLista,
+} from "./identidad-de-caja";
 import { NIVELES, NIVELES_EN_ORDEN } from "./nivel-urgencia";
 import {
   type CajaConEtapa,
@@ -17,7 +22,8 @@ import {
   identidadDeLaCaja,
 } from "./portal.types";
 
-type Icono = (typeof ICONOS)[keyof typeof ICONOS];
+/** Cualquier icono de lucide: los de las secciones y los de los tipos de escritura. */
+type Icono = LucideIcon;
 
 /**
  * **Qué significa cada estado**, en una burbuja que se abre desde el título del
@@ -128,24 +134,46 @@ export function TituloDeBloque({
 }
 
 /**
- * La burbuja de color con que se distingue una caja de otra en su lista. Las
- * iniciales salen siempre del texto que se lee al lado; el color, de la clave
- * que decide `identidadDeLaCaja` —el acreedor en una causa, la caja en una
- * escritura—, que no es lo mismo y está explicado allá.
+ * **La marca de la fila**: el círculo de la izquierda con que se reconoce una
+ * caja entre varias.
  *
- * Va `aria-hidden`: las iniciales no dicen nada que el texto de la fila no diga
- * ya entero, y anunciar «B E» antes de «Banco Estado» solo alarga la escucha.
+ * Lleva un **dibujo** cuando el tipo de gestión es una cosa del mundo —una casa
+ * para una compraventa de inmueble, un auto para una de vehículo— y las
+ * **iniciales del acreedor** cuando no lo es, que es el caso de las causas: no
+ * hay dibujo de «Banco Estado», y lo que la persona reconoce ahí es el nombre.
+ *
+ * El color va **en el dibujo y no en el círculo**, que queda gris para todas.
+ * Cuatro discos de colores en fila pesan como cuatro semáforos, y en esta
+ * pantalla el semáforo ya existe: es la pastilla de urgencia. Teñir solo la
+ * marca alcanza para distinguir dos filas sin disputarle la atención a lo que sí
+ * hay que mirar.
+ *
+ * Va `aria-hidden`: ni el dibujo ni las iniciales dicen nada que el texto de la
+ * fila no diga ya entero, y anunciar «B E» antes de «Banco Estado» solo alarga
+ * la escucha.
  */
-function BurbujaDeCaja({ identidad, tono }: { identidad: IdentidadDeCaja; tono: TonoDeCaja }) {
-  const { fondo, texto } = tono;
-
+function MarcaDeLaCaja({
+  identidad,
+  tinta,
+  Icono,
+}: {
+  identidad: IdentidadDeCaja;
+  tinta: TintaDeCaja;
+  Icono?: Icono;
+}) {
   return (
     <span
       aria-hidden
-      className="flex size-8 shrink-0 items-center justify-center rounded-full type-meta font-semibold tracking-tight md:size-9"
-      style={{ backgroundColor: fondo, color: texto }}
+      className="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface-muted"
+      style={{ color: tinta }}
     >
-      {inicialesDe(identidad.principal)}
+      {Icono ? (
+        <Icono className="size-[18px]" strokeWidth={1.75} />
+      ) : (
+        <span className="type-meta font-semibold tracking-tight">
+          {inicialesDe(identidad.principal)}
+        </span>
+      )}
     </span>
   );
 }
@@ -158,15 +186,17 @@ function BurbujaDeCaja({ identidad, tono }: { identidad: IdentidadDeCaja; tono: 
  * causas: la pregunta que trae la persona es «cuál de todas me pide algo», y esa
  * línea la responde sin abrir ninguna.
  *
- * **Lo que manda en la fila es la etapa, no el identificador.** El acreedor de
- * una causa o el tipo de una escritura sirven para saber de cuál de todas se
- * trata, pero nadie entra al portal a leer un rol: entra a saber en qué va. Por
- * eso la identidad queda arriba y en chico, como rótulo, y el nombre de la etapa
- * ocupa la línea principal.
+ * **Arriba el nombre de la gestión, abajo la etapa.** Estuvo al revés —la etapa
+ * como titular y el identificador como rótulo chico— y con listas de una o dos
+ * filas funcionaba: la única pregunta era «en qué va». Con cuatro escrituras
+ * dejó de funcionar, y el equipo de PP lo dijo mirándolas: la primera pregunta
+ * pasó a ser **cuál de todas es esta**, y eso lo contesta el tipo de gestión, no
+ * la etapa. La etapa quedó debajo y subió a 14 px, porque bajar de jerarquía no
+ * es volverse letra chica: sigue siendo lo que hay que poder leer de corrido.
  *
- * Dentro de ese rótulo, sin embargo, **no todo pesa igual**: el acreedor va con
- * tinta y el rol en gris detrás. Es el orden en que la persona reconoce su
- * causa, y el que el equipo de litigios pidió corregir.
+ * Dentro del titular, **no todo pesa igual**: el acreedor va con tinta y el rol
+ * en gris detrás. Es el orden en que la persona reconoce su causa, y el que el
+ * equipo de litigios pidió corregir.
  *
  * La fila desplegable es **la misma pieza en los tres bloques**: el estado del
  * caso, cada juicio y cada escritura. Antes el estado del caso era una tarjeta
@@ -180,8 +210,8 @@ function BurbujaDeCaja({ identidad, tono }: { identidad: IdentidadDeCaja; tono: 
 export function FilaDesplegable({
   id,
   identidad,
-  tono,
-  titulo,
+  tinta,
+  Icono,
   etapa,
   completo,
 }: {
@@ -192,13 +222,13 @@ export function FilaDesplegable({
    */
   identidad?: IdentidadDeCaja;
   /**
-   * El color de la burbuja. Lo decide la lista y no la fila, porque para que dos
+   * El color de la marca. Lo decide la lista y no la fila, porque para que dos
    * vecinas no salgan iguales hay que mirarlas juntas. Sin lista —el estado del
    * caso, que es una sola— sale de la clave.
    */
-  tono?: TonoDeCaja;
-  /** La línea que manda: la etapa en que va. */
-  titulo: string;
+  tinta?: TintaDeCaja;
+  /** El dibujo de la marca. Sin él, van las iniciales. */
+  Icono?: Icono;
   etapa: Etapa | null;
   /**
    * Solo el estado del caso. En las listas el detalle va breve: la bajada de la
@@ -221,47 +251,82 @@ export function FilaDesplegable({
           className="flex w-full items-center gap-2.5 px-4 py-4 text-left transition-colors md:gap-3 md:px-5 [-webkit-tap-highlight-color:transparent] hover:bg-surface-subtle active:bg-surface-muted focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring"
         >
           {identidad ? (
-            <BurbujaDeCaja identidad={identidad} tono={tono ?? tonoDe(identidad.claveDeColor)} />
+            <MarcaDeLaCaja
+              identidad={identidad}
+              tinta={tinta ?? tintaDe(identidad.claveDeColor)}
+              Icono={Icono}
+            />
           ) : null}
 
           <span className="min-w-0 flex-1">
-            {identidad ? (
-              /* El rótulo es **una fila que envuelve por piezas enteras**, no un
-                 párrafo. Si fuera texto corrido, el navegador parte donde le
-                 cabe y en un teléfono angosto deja «Banco / Estado» arriba y el
-                 rol abajo: el acreedor, que es justo lo que la persona busca
-                 primero, queda cortado por la mitad. Envolviendo por piezas, el
-                 acreedor se mantiene entero y lo que baja de línea es el rol. */
-              <span className="type-meta mb-0.5 flex flex-wrap items-baseline gap-x-1.5 text-muted-foreground">
-                <span className="font-semibold text-foreground">{identidad.principal}</span>
-                {/* El rol va **sin punto de separación y entero**. Sin punto
-                    porque cuando cae en la línea de abajo el punto quedaría
-                    colgando al final de la primera —«Banco Estado ·»— como si
-                    faltara algo; la diferencia de peso y de color ya los separa
-                    cuando entran juntos. Entero porque partido —«Rol N.° C-»
-                    arriba y «1184-2026» abajo— no se reconoce ningún número. */}
-                {identidad.secundario ? (
-                  <span className="whitespace-nowrap">{identidad.secundario}</span>
-                ) : null}
-              </span>
-            ) : null}
-            <span className="type-item-title block text-balance text-foreground">{titulo}</span>
-          </span>
+            {/* **Arriba el tipo de gestión, abajo la etapa.** Es la vuelta que
+                pidió el equipo de PP después de ver la lista larga: con cuatro
+                escrituras, la primera pregunta no es «en qué va esto» sino «cuál
+                de todas es esta», y eso lo contesta el tipo. La etapa queda
+                debajo, en 14 px, que es un punto más de lo que tenía: tiene que
+                leerse de corrido, no buscarse.
 
-          {/* El nivel, con la fila cerrada: **el punto del semáforo y una
-              palabra**, en su pastilla. Con dos o tres causas abiertas la
-              pregunta es «cuál de todas me pide algo», y eso se compara de un
-              vistazo; una frase en cada fila obliga a leerlas todas para
-              comparar. El punto pleno es lo que deja comparar la columna sin
-              leerla —el relleno de la pastilla es un tinte, y de lejos los tres
-              tintes se parecen—; la palabra queda para quien no distingue los
-              colores. La instrucción completa aparece al desplegar. */}
-          {nivel ? (
-            <Tag tone={nivel.tono} size="xs" shape="rounded" className="shrink-0">
-              <span className={cn("size-1.5 rounded-full", nivel.punto)} aria-hidden />
-              {nivel.etiqueta}
-            </Tag>
-          ) : null}
+                El rótulo es una fila que **envuelve por piezas enteras**, no un
+                párrafo. Si fuera texto corrido el navegador parte donde le cabe
+                y en un teléfono angosto deja «Banco / Estado» arriba y el rol
+                abajo: el acreedor, que es lo que la persona busca primero, queda
+                cortado por la mitad. */}
+            <span className="flex flex-wrap items-baseline gap-x-1.5">
+              <span className="type-item-title font-semibold text-foreground">
+                {identidad?.principal}
+              </span>
+
+              {/* El rol va **sin punto de separación, entero, y en el teléfono
+                  siempre en su propia línea**.
+
+                  Sin punto porque al caer abajo quedaría colgando al final de la
+                  primera —«Banco Estado ·»— como si faltara algo; la diferencia
+                  de tamaño y de color ya los separa cuando entran juntos.
+
+                  Entero porque partido —«Rol N.° C-» arriba y «1184-2026»
+                  abajo— no se reconoce ningún número.
+
+                  Y en su propia línea porque «Banco Estado Rol N.° C-1184-2026»
+                  queda justo en el límite del ancho de un teléfono: entraba en
+                  una fila y en la siguiente no, y cuatro causas del mismo largo
+                  se veían desparejas sin ninguna razón que la persona pudiera
+                  adivinar. Desde `md` sobra el espacio y vuelve a la línea del
+                  acreedor, que es donde mejor se lee. */}
+              {identidad?.secundario ? (
+                <span className="type-meta basis-full whitespace-nowrap text-muted-foreground md:basis-auto">
+                  {identidad.secundario}
+                </span>
+              ) : null}
+            </span>
+
+            {/* **La etapa y la pastilla, en la misma línea.** La pastilla
+                estaba a la derecha de la fila entera, y ahí le quitaba
+                ochenta píxeles al titular: «Constitución de Sociedades» no
+                entraba en una línea de teléfono y la fila terminaba midiendo
+                cuatro. Acá abajo cabe todo y queda al lado de lo que califica,
+                que es la etapa —no la gestión—. Sigue alineada a la derecha en
+                todas las filas, así que la columna se compara igual. */}
+            <span className="mt-0.5 flex items-center gap-2">
+              <span className="type-supporting min-w-0 flex-1 text-muted-foreground">
+                {etapa ? etapa.nombreParaCliente : "Tu caso está avanzando"}
+              </span>
+
+              {/* El nivel, con la fila cerrada: **el punto del semáforo y una
+                  palabra**. Con dos o tres causas abiertas la pregunta es «cuál
+                  de todas me pide algo», y eso se compara de un vistazo; una
+                  frase en cada fila obliga a leerlas todas para comparar. El
+                  punto pleno es lo que deja comparar la columna sin leerla —el
+                  relleno de la pastilla es un tinte, y de lejos los tres tintes
+                  se parecen—; la palabra queda para quien no distingue los
+                  colores. La instrucción completa aparece al desplegar. */}
+              {nivel ? (
+                <Tag tone={nivel.tono} size="xs" shape="rounded" className="shrink-0">
+                  <span className={cn("size-1.5 rounded-full", nivel.punto)} aria-hidden />
+                  {nivel.etiqueta}
+                </Tag>
+              ) : null}
+            </span>
+          </span>
 
           <ChevronDown
             className={cn(
@@ -308,7 +373,7 @@ export function ListaDeCajas({
   vacio?: string;
 }) {
   const identidades = items.map((item) => identidadDeLaCaja(item.caja));
-  const tonos = tonosDeLaLista(identidades.map((identidad) => identidad?.claveDeColor));
+  const tintas = tintasDeLaLista(identidades);
 
   if (items.length === 0 && !vacio) return null;
 
@@ -332,8 +397,15 @@ export function ListaDeCajas({
                 <FilaDesplegable
                   id={item.caja.id}
                   identidad={identidades[fila]}
-                  tono={tonos[fila]}
-                  titulo={etapa ? etapa.nombreParaCliente : "Tu caso está avanzando"}
+                  tinta={tintas[fila]}
+                  // El dibujo es cosa de las escrituras: sus tipos son cosas del
+                  // mundo. Una causa no tiene dibujo —no existe el de «Banco
+                  // Estado»— y va con las iniciales del acreedor.
+                  Icono={
+                    item.caja.tipo === "proteccionPatrimonial"
+                      ? iconoDeEscritura(item.caja.identificador)
+                      : undefined
+                  }
                   etapa={etapa}
                 />
               </li>

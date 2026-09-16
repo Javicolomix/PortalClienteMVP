@@ -842,8 +842,22 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   La persona reconoce su juicio por a quién le debe, no por el número del
   expediente. El rol se mantiene, en gris y detrás, porque es lo único que
   distingue dos causas del mismo banco.
-- 2026-09-15 (misma reunión): cada caja de las listas lleva una **burbuja de
-  color con sus iniciales** —propuesta de Javi—. Nace de que dos escrituras del
+- 2026-09-15: **arriba el nombre de la gestión, abajo la etapa.** Estaba al
+  revés. Con listas de una o dos filas la única pregunta era «en qué va»; con
+  cuatro escrituras pasó a ser **cuál de todas es esta**, y eso lo contesta el
+  tipo, no la etapa. La etapa baja de jerarquía pero **sube a 14 px**: bajar de
+  jerarquía no es volverse letra chica. La pastilla de urgencia se muda a la
+  línea de la etapa, que es a lo que califica, y de paso le devuelve al titular
+  los ochenta píxeles que le faltaban para entrar en una línea de teléfono.
+- 2026-09-15: las escrituras llevan **un dibujo por tipo** —una casa para una
+  compraventa de inmueble, un auto para una de vehículo—, resuelto por palabra
+  clave y no por el nombre exacto, porque los tipos los mantiene Streak y la
+  lista va a crecer. Las causas siguen con las iniciales del acreedor: no existe
+  el dibujo de «Banco Estado».
+- 2026-09-15 (misma reunión): cada caja de las listas lleva una **marca de color
+  con sus iniciales o su dibujo** —propuesta de Javi—. El color va **en la marca
+  y no en el círculo**, que queda gris: cuatro discos de colores en fila pesan
+  como cuatro semáforos y en esta pantalla el semáforo ya existe. Nace de que dos escrituras del
   mismo tipo, o dos causas del mismo acreedor, se leían como un dato repetido por
   error. El color sale del **acreedor** en las causas (dos del mismo banco
   comparten burbuja a propósito) y de la **caja** en las escrituras (donde no hay
