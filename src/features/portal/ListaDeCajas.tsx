@@ -5,8 +5,9 @@ import { useState } from "react";
 import { cn } from "@/shared/lib/utils/cn";
 
 import { DetalleDeEtapa } from "./BloquesDelPortal";
-import { colorDe, coloresDeLaLista } from "./color-de-acreedor";
+import { colorDe, coloresDeLaLista } from "./degrade-de-la-lista";
 import { iconoDeLaCaja,type IconoDelPortal } from "./iconos-de-escritura";
+import { NIVELES } from "./nivel-urgencia";
 import {
   type CajaConEtapa,
   type Etapa,
@@ -148,6 +149,7 @@ export function FilaDesplegable({
   etapa: Etapa | null;
 }) {
   const [abierto, setAbierto] = useState(false);
+  const nivel = etapa ? NIVELES[etapa.nivelUrgencia] : null;
   const panelId = `detalle-${id}`;
 
   return (
@@ -161,7 +163,7 @@ export function FilaDesplegable({
           className="flex w-full items-center gap-2.5 px-4 py-4 text-left transition-colors md:gap-3 md:px-5 [-webkit-tap-highlight-color:transparent] hover:bg-surface-subtle active:bg-surface-muted focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring"
         >
           {Icono && identidad ? (
-            <MarcaDeLaCaja Icono={Icono} tinta={tinta ?? colorDe(identidad)} />
+            <MarcaDeLaCaja Icono={Icono} tinta={tinta ?? colorDe()} />
           ) : null}
 
           <span className="min-w-0 flex-1">
@@ -177,6 +179,8 @@ export function FilaDesplegable({
                 y en un teléfono angosto deja «Banco / Estado» arriba y el rol
                 abajo: el acreedor, que es lo que la persona busca primero, queda
                 cortado por la mitad. */}
+            {nivel ? <span className="sr-only">{nivel.hablado}. </span> : null}
+
             <span className="type-meta block">
               <span className="block font-semibold text-foreground-secondary">
                 {identidad?.principal}
@@ -206,6 +210,33 @@ export function FilaDesplegable({
 
             </span>
           </span>
+
+          {/* **El aviso aparece solo cuando la fila pide algo.** Nada cuando el
+              caso avanza solo; un punto y una palabra cuando puede que
+              necesitemos una gestión, y lo mismo en rojo cuando no avanza sin
+              ella.
+
+              Se probó marcar los tres niveles —una franja de color en el canto
+              de cada fila— y el resultado era un semáforo: con todo pintado, una
+              lista entera tranquila se veía tan cargada como una que arde, y
+              había que interpretar tres colores para descubrir que no pasaba
+              nada. Marcando solo lo que pide algo, **lo que salta es exactamente
+              lo que hay que mirar**, y el resto de la lista se lee como lo que
+              es: casos que van solos.
+
+              Lleva la palabra y no solo el color: así lo entiende también quien
+              no distingue el rojo del verde, sin depender del texto hablado. */}
+          {nivel?.avisa ? (
+            <span
+              className={cn(
+                "flex shrink-0 items-center gap-1.5 type-meta font-semibold",
+                nivel.color,
+              )}
+            >
+              <span className="size-[7px] rounded-full bg-current" aria-hidden />
+              {nivel.etiqueta}
+            </span>
+          ) : null}
 
           <ChevronDown
             className={cn(
@@ -253,13 +284,10 @@ export function ListaDeCajas({
 }) {
   const identidades = items.map((item) => identidadDeLaCaja(item.caja));
 
-  // El color se reparte mirando la lista entera: dos acreedores distintos nunca
-  // salen del mismo, aunque sus marcas sean las dos rojas.
-  const colores = coloresDeLaLista(
-    identidades.map((identidad, fila) =>
-      identidad ? { ...identidad, acreedor: items[fila].caja.acreedor } : undefined,
-    ),
-  );
+  // El degradé se calcula mirando la lista entera: cada paso depende de cuántas
+  // filas hay, así que una lista de tres y una de seis no pueden compartir
+  // cálculo.
+  const colores = coloresDeLaLista(identidades);
 
   if (items.length === 0 && !vacio) return null;
 

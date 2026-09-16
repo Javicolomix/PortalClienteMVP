@@ -846,7 +846,22 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   de antes, tarjetas y fondo eran del mismo tono y la pantalla se leía como una
   sola lámina plana. Aplica a todas las pantallas, no solo a «Mi servicio»: una
   sola con otro fondo se habría leído como un error.
-- 2026-09-16: **las cinco tintas de las marcas son tonos tierra** —azul polvo,
+- 2026-09-16: **el color de las listas pasa a ser un degradé.** Cada lista va de
+  índigo profundo a lavanda clara, con los pasos repartidos parejo: con tres
+  filas, tres pasos. Un degradé solo existe dentro de una familia, así que la
+  rampa obliga a la línea índigo de Lexy y **el color deja de significar quién y
+  qué, y pasa a significar dónde**: en qué lugar de la lista va esta fila. Se va
+  la tabla de 24 marcas de acreedor; `color-de-acreedor.ts` pasa a ser
+  `degrade-de-la-lista.ts`.
+- 2026-09-16: **el nivel de urgencia vuelve, y avisa solo cuando pide algo.** Un
+  punto y una palabra —«Atención», «Urgente»— a la derecha de la fila; nada
+  cuando el caso avanza solo. Se probó una franja de color en el canto de las
+  tres filas y era un semáforo: con todo pintado hay que interpretar el color
+  para descubrir que no pasa nada, y una cartera entera en orden se veía tan
+  cargada como una que arde. El aviso lleva palabra y no solo color, así lo
+  entiende también quien no distingue el rojo del verde.
+- 2026-09-16 (reemplazado por el degradé): **las cinco tintas eran tonos
+  tierra** —azul polvo,
   salvia, arcilla, ciruela, terracota—, elegidas por el diseñador sobre la serie
   de datos del sistema y otras cuatro candidatas, viéndolas todas con el banco
   entero encima. Distinguen a 22 px, que es el tamaño real en la fila, y ninguna

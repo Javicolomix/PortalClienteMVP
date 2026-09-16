@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 41,
+  datasetVersion: 42,
   entities: {
     cliente: [
       {
@@ -164,6 +164,15 @@ export const fixtures: Fixtures = {
         apellido: "Carrasco",
         correo: "esteban.carrasco@example.com",
         rut: "14.208.753-K",
+        servicioId: "srv-defensa-juicio",
+        etapaActualId: "etp-lit-01",
+      },
+      {
+        id: "cli-019",
+        nombre: "Francisca",
+        apellido: "Miranda",
+        correo: "francisca.miranda@example.com",
+        rut: "13.045.672-1",
         servicioId: "srv-defensa-juicio",
         etapaActualId: "etp-lit-01",
       },
@@ -513,6 +522,78 @@ export const fixtures: Fixtures = {
         estado: "monitoreo",
         identificador: "",
         etapaId: "etp-lit-00",
+      },
+
+      // Francisca: **tres causas y tres escrituras**. Es la cartera pareja, la
+      // que deja ver el degradé completo en los dos bloques: tres pasos arriba y
+      // tres abajo, cada uno arrancando del índigo profundo y terminando en la
+      // lavanda clara.
+      {
+        id: "caj-074",
+        clienteId: "cli-019",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-2840-2026",
+        acreedor: "Banco de Chile",
+        etapaId: "etp-lit-04",
+      },
+      {
+        id: "caj-075",
+        clienteId: "cli-019",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-6157-2025",
+        acreedor: "Banco Ripley",
+        etapaId: "etp-lit-01",
+      },
+      {
+        id: "caj-076",
+        clienteId: "cli-019",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-8093-2026",
+        acreedor: "Tricot",
+        etapaId: "etp-lit-02",
+      },
+      {
+        id: "caj-077",
+        clienteId: "cli-019",
+        tipo: "defensaEnJuicio",
+        estado: "monitoreo",
+        identificador: "",
+        etapaId: "etp-lit-00",
+      },
+      {
+        id: "caj-078",
+        clienteId: "cli-019",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Compraventa de Inmueble",
+        etapaId: "etp-pp-03",
+      },
+      {
+        id: "caj-079",
+        clienteId: "cli-019",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Constitución de Sociedades",
+        etapaId: "etp-pp-02",
+      },
+      {
+        id: "caj-080",
+        clienteId: "cli-019",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Mandato",
+        etapaId: "etp-pp-04",
+      },
+      {
+        id: "caj-081",
+        clienteId: "cli-019",
+        tipo: "proteccionPatrimonial",
+        estado: "madre",
+        identificador: "",
+        etapaId: "etp-pp-01",
       },
 
       // Esteban: el compuesto en su forma más cargada —cuatro causas y dos
@@ -1516,6 +1597,20 @@ export const fixtures: Fixtures = {
         telefonoWhatsapp: "+56 9 7302 6641",
       },
       {
+        id: "con-036",
+        clienteId: "cli-019",
+        nombre: "Camila Rivera",
+        rol: "ejecutiva",
+        telefonoWhatsapp: "+56 9 6721 4488",
+      },
+      {
+        id: "con-037",
+        clienteId: "cli-019",
+        nombre: "Andrés Peña",
+        rol: "abogado",
+        telefonoWhatsapp: "+56 9 7302 6641",
+      },
+      {
         id: "con-033",
         clienteId: "cli-017",
         nombre: "Camila Rivera",
@@ -1883,6 +1978,84 @@ export const fixtures: Fixtures = {
         numero: 6,
         fechaVencimiento: "2027-01-14",
         monto: 132000,
+        estado: "pendiente",
+      },
+
+      // Francisca: nueve cuotas, cuatro pagadas.
+      {
+        id: "cuo-2801",
+        clienteId: "cli-019",
+        numero: 1,
+        fechaVencimiento: "2026-06-18",
+        monto: 124000,
+        estado: "pagada",
+        fechaPago: "2026-06-17",
+      },
+      {
+        id: "cuo-2802",
+        clienteId: "cli-019",
+        numero: 2,
+        fechaVencimiento: "2026-07-18",
+        monto: 124000,
+        estado: "pagada",
+        fechaPago: "2026-07-20",
+      },
+      {
+        id: "cuo-2803",
+        clienteId: "cli-019",
+        numero: 3,
+        fechaVencimiento: "2026-08-18",
+        monto: 124000,
+        estado: "pagada",
+        fechaPago: "2026-08-18",
+      },
+      {
+        id: "cuo-2804",
+        clienteId: "cli-019",
+        numero: 4,
+        fechaVencimiento: "2026-09-18",
+        monto: 124000,
+        estado: "pagada",
+        fechaPago: "2026-09-17",
+      },
+      {
+        id: "cuo-2805",
+        clienteId: "cli-019",
+        numero: 5,
+        fechaVencimiento: "2026-10-18",
+        monto: 124000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2806",
+        clienteId: "cli-019",
+        numero: 6,
+        fechaVencimiento: "2026-11-18",
+        monto: 124000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2807",
+        clienteId: "cli-019",
+        numero: 7,
+        fechaVencimiento: "2026-12-18",
+        monto: 124000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2808",
+        clienteId: "cli-019",
+        numero: 8,
+        fechaVencimiento: "2027-01-18",
+        monto: 124000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2809",
+        clienteId: "cli-019",
+        numero: 9,
+        fechaVencimiento: "2027-02-18",
+        monto: 124000,
         estado: "pendiente",
       },
 

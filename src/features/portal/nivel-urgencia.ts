@@ -45,6 +45,8 @@ export const NIVELES = {
     color: "text-success-strong",
     tono: "success",
     punto: "bg-success-strong",
+    hablado: "Sin acción de tu parte",
+    avisa: false,
   },
   atencion: {
     etiqueta: "Atención",
@@ -54,6 +56,8 @@ export const NIVELES = {
     color: "text-warning-strong",
     tono: "warning",
     punto: "bg-warning-strong",
+    hablado: "Requiere tu atención",
+    avisa: true,
   },
   urgente: {
     etiqueta: "Urgente",
@@ -63,6 +67,8 @@ export const NIVELES = {
     color: "text-destructive",
     tono: "danger",
     punto: "bg-destructive",
+    hablado: "Urgente",
+    avisa: true,
   },
 } as const satisfies Record<
   NivelUrgencia,
@@ -76,6 +82,20 @@ export const NIVELES = {
     tono: "success" | "warning" | "danger";
     /** El relleno del punto del semáforo que va dentro de la pastilla. */
     punto: string;
+    /**
+     * Lo que oye quien no ve la franja. El color no puede ser la única señal, y
+     * acá es la única que hay en la fila cerrada: la frase entera solo aparece al
+     * desplegar.
+     */
+    hablado: string;
+    /**
+     * Si la fila cerrada lleva aviso. **Solo avisan los dos niveles que piden
+     * algo.** Marcar también el tranquilo convertía la lista en un semáforo: con
+     * los tres pintados había que interpretar el color para descubrir que no
+     * pasaba nada, y una cartera entera en orden se veía tan cargada como una
+     * que arde. Sin marca, el silencio es la buena noticia.
+     */
+    avisa: boolean;
   }
 >;
 
