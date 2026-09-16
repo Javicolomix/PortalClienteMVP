@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 39,
+  datasetVersion: 40,
   entities: {
     cliente: [
       {
@@ -568,7 +568,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-018",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Constitución de Sociedades",
+        identificador: "Compraventa de Inmueble",
         etapaId: "etp-pp-03",
       },
       {
@@ -576,7 +576,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-018",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Transferencia de Vehículo (RC)",
+        identificador: "Compraventa de Vehículo",
         etapaId: "etp-pp-04",
       },
       {

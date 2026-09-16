@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { cn } from "@/shared/lib/utils/cn";
+
 import { ICONOS } from "./iconos";
 import { NIVELES } from "./nivel-urgencia";
 import type { Etapa } from "./portal.types";
@@ -230,22 +232,57 @@ export function DetalleDeEtapa({ etapa, completo }: { etapa: Etapa | null; compl
   ];
 
   return (
-    <div className="space-y-2.5">
-      {/* Sin el nombre de la etapa: ya está en el título de la fila, justo
-          arriba y a la vista. Repetido a diez píxeles de distancia y en cuerpo
-          más grande, la persona lee dos veces lo mismo y la segunda parece otra
-          cosa. Queda el rótulo y, debajo, la explicación. */}
-      <BloqueDestacado rotulo="Etapa actual">{etapa.mensajePrincipal}</BloqueDestacado>
+    <div className="space-y-4">
+      {/* **La misma piel que «Mi servicio».** Se abría con un bloque lila y
+          cuatro tarjetas sueltas, y el equipo lo dijo mirándolo: al desplegar,
+          la información se despega del resto del portal y cuesta seguir el hilo.
+          Ahora son dos recuadros con la misma estructura que esa pantalla —un
+          dibujo índigo, un título navy y el contenido adentro—, así abrir una
+          fila no se siente como entrar a otro producto.
 
-      {/* Apiladas, no de lado. Se probaron deslizándose y se volvió atrás: las
-          cuatro no son alternativas entre las que se elige una, son las cuatro
-          partes de una misma explicación, y esconder tres detrás de un gesto
-          obliga a descubrir que existen antes de poder leerlas. */}
-      {tarjetas.map((tarjeta) => (
-        <TarjetaInformativa key={tarjeta.clave} Icono={tarjeta.Icono} titulo={tarjeta.titulo}>
-          {tarjeta.texto}
-        </TarjetaInformativa>
-      ))}
+          Sin el nombre de la etapa: ya está en el título de la fila, a diez
+          píxeles de distancia. Repetido y en cuerpo más grande, la persona lee
+          dos veces lo mismo y la segunda parece otra cosa. */}
+      <TarjetaDeSeccion Icono={ICONOS.etapa} titulo="En qué va">
+        <p className="type-supporting leading-relaxed whitespace-pre-line text-muted-foreground">
+          {etapa.mensajePrincipal}
+        </p>
+      </TarjetaDeSeccion>
+
+      {/* Las respuestas van **de a dos y en cajitas**, igual que los beneficios
+          del servicio. No son alternativas entre las que se elige una: son las
+          partes de una misma explicación, y en dos columnas se ven todas de una
+          mirada en vez de tener que bajar leyéndolas. */}
+      <TarjetaDeSeccion Icono={ICONOS.tarea} titulo="Qué está pasando">
+        <ul className="grid grid-cols-2 gap-2.5">
+          {tarjetas.map((tarjeta, indice) => (
+            <li
+              key={tarjeta.clave}
+              className={cn(
+                "rounded-lg bg-surface-subtle p-3.5 ring-1 ring-border-subtle",
+                // Con tres respuestas —las de una causa o una escritura, que no
+                // llevan «qué puede pasar después»— la última se lleva las dos
+                // columnas. Sola en su fila dejaba media reja vacía al lado, que
+                // se lee como una tarjeta que falta.
+                indice === tarjetas.length - 1 && tarjetas.length % 2 === 1 && "col-span-2",
+              )}
+            >
+              <tarjeta.Icono
+                className="size-[18px] shrink-0 text-primary"
+                strokeWidth={1.9}
+                aria-hidden
+              />
+
+              <h3 className="type-supporting mt-2 font-semibold text-brand-navy">
+                {tarjeta.titulo}
+              </h3>
+              <p className="type-meta mt-1 leading-relaxed whitespace-pre-line text-muted-foreground">
+                {tarjeta.texto}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </TarjetaDeSeccion>
 
       <RefuerzoDeUrgencia etapa={etapa} />
     </div>

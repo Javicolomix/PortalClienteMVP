@@ -846,6 +846,20 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   de antes, tarjetas y fondo eran del mismo tono y la pantalla se leía como una
   sola lámina plana. Aplica a todas las pantallas, no solo a «Mi servicio»: una
   sola con otro fondo se habría leído como un error.
+- 2026-09-16: **las tintas de las marcas salen de `chart-1..5`**, la serie de
+  datos del sistema: son los cinco colores que Lexy tiene para distinguir
+  categorías sin orden entre sí, que es exactamente el problema de cuatro
+  martillos en una lista. La marca del acreedor solo dice **por cuál de los
+  cinco empezar** —Santander cae en el rosa, BancoEstado en el azul—; si ese ya
+  está tomado, se corre al siguiente libre. Van aclaradas a la mitad del camino
+  al blanco.
+- 2026-09-16: **el desplegable usa la piel de «Mi servicio»**: dos recuadros con
+  dibujo índigo y título navy, y las respuestas en cajitas de a dos. Se abría con
+  un bloque lila y cuatro tarjetas sueltas, y el equipo dijo que ahí se perdía el
+  hilo con el resto del portal.
+- 2026-09-16: **en la fila, una línea por pregunta**: acreedor, rol, etapa. Los
+  dos primeros juntos entraban justo, y en los acreedores largos el rol caía al
+  renglón siguiente en unas filas sí y en otras no.
 - 2026-09-16: **dos acreedores distintos nunca comparten color.** El matiz de
   marca es la preferencia, no la última palabra: si cae a menos de 40° de uno ya
   repartido en esa lista, se corre hasta separarse. Los acreedores chilenos se

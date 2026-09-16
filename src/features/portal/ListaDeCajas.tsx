@@ -183,25 +183,20 @@ export function FilaDesplegable({
                 y en un teléfono angosto deja «Banco / Estado» arriba y el rol
                 abajo: el acreedor, que es lo que la persona busca primero, queda
                 cortado por la mitad. */}
-            <span className="type-meta flex flex-wrap items-baseline gap-x-1.5">
-              <span className="font-semibold text-foreground-secondary">
+            <span className="type-meta block">
+              <span className="block font-semibold text-foreground-secondary">
                 {identidad?.principal}
               </span>
 
-              {/* El rol va **sin punto de separación y entero**. Sin punto
-                  porque cuando no cabe y baja de línea quedaría colgando al
-                  final de la primera —«Banco Estado ·»— como si faltara algo, y
-                  la diferencia de peso y color ya los separa. Entero porque
-                  partido —«Rol N.° C-» arriba y «1184-2026» abajo— no se
-                  reconoce ningún número.
-
-                  Vuelve a la línea del acreedor ahora que los dos son rótulo
-                  chico: bajarlo era necesario cuando el acreedor iba en 16 px y
-                  entre los dos no cabían. */}
+              {/* **Cada uno en su línea: acreedor, rol, etapa.** Es el orden en
+                  que se pregunta —quién me demanda, cuál de las causas, en qué
+                  va— y una línea por pregunta lo deja leer de corrido. Juntos en
+                  una sola línea entraban justo, y en los acreedores largos el
+                  rol caía al renglón siguiente en unas filas sí y en otras no:
+                  cuatro causas del mismo largo se veían desparejas sin ninguna
+                  razón que la persona pudiera adivinar. */}
               {identidad?.secundario ? (
-                <span className="whitespace-nowrap text-muted-foreground">
-                  {identidad.secundario}
-                </span>
+                <span className="block text-muted-foreground">{identidad.secundario}</span>
               ) : null}
             </span>
 

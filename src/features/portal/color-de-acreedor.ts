@@ -58,25 +58,33 @@ const COLORES: [RegExp, string][] = [
 ];
 
 /**
- * **El color de la marca, traído al sistema.**
+ * **Las tintas de las marcas salen de la serie de datos del sistema.**
  *
- * Los colores corporativos vienen de veinticuatro manuales distintos y no se
- * hablan entre sí: el rojo de Santander es mucho más saturado que el azul de
- * BancoEstado, que es más oscuro que el celeste de Caja Los Andes. Puestos
- * crudos en una lista, cada fila pesa distinto y el conjunto se ve como un
- * mosaico de logos pegados encima de la pantalla, no como una pantalla.
+ * Los `chart-1..5` son los cinco colores que Lexy tiene para lo mismo que acá
+ * hay que hacer: **distinguir categorías que no tienen orden entre sí**. Están
+ * elegidos para verse distintos unos de otros y para convivir en una misma
+ * pantalla, que es exactamente el problema de cuatro martillos en una lista.
+ * Cualquier paleta que inventáramos acá competiría con esa.
  *
- * Así que de cada marca **se conserva el matiz y se descartan la saturación y la
- * luminosidad**, que pasan a ser las mismas para todas. El matiz es lo que la
- * persona reconoce —el rojo Santander sigue siendo rojo y el celeste de Los
- * Andes sigue siendo celeste—; la intensidad es lo que hacía que unas gritaran
- * más que otras. 45 % de saturación y 68 % de luz es donde el acento de marca se
- * apoya sobre blanco sin pesar, y ahí entran todas.
+ * Van **aclaradas a la mitad del camino al blanco**, que es donde quedaron
+ * cuando el diseñador las aprobó: el trazo lleno competía con el nombre del
+ * acreedor, que es lo que de verdad identifica la causa, y un naranja pleno en
+ * una pantalla sobre deudas se lee como una alarma.
  */
-const SATURACION = 0.45;
-const LUMINOSIDAD = 0.68;
+const SERIE = ["#2f80ed", "#1aab8a", "#f7630c", "#b14ad1", "#e23f74"] as const;
 
-/** El matiz de un hex, en vueltas de 0 a 1. Lo único que se conserva. */
+const aclarar = (hex: string, haciaElBlanco = 0.5): string => {
+  const canal = (desde: number) =>
+    Math.round(
+      parseInt(hex.slice(desde, desde + 2), 16) * (1 - haciaElBlanco) + 255 * haciaElBlanco,
+    );
+
+  return `#${[1, 3, 5].map((d) => canal(d).toString(16).padStart(2, "0")).join("")}`;
+};
+
+const TINTAS = SERIE.map((hex) => aclarar(hex));
+
+/** El matiz de un hex, en vueltas de 0 a 1. */
 const matizDe = (hex: string): number => {
   const [r, g, b] = [1, 3, 5].map((d) => parseInt(hex.slice(d, d + 2), 16) / 255);
   const max = Math.max(r, g, b);
@@ -89,21 +97,26 @@ const matizDe = (hex: string): number => {
   return ((r - g) / rango + 4) / 6;
 };
 
-const canal = (p: number, q: number, t: number): number => {
-  const v = (t + 1) % 1;
-  if (v < 1 / 6) return p + (q - p) * 6 * v;
-  if (v < 1 / 2) return q;
-  if (v < 2 / 3) return p + (q - p) * (2 / 3 - v) * 6;
-  return p;
+const MATICES_DE_LA_SERIE = SERIE.map(matizDe);
+
+/** Distancia entre dos matices sobre el círculo, de 0 a 0,5. */
+const distancia = (a: number, b: number): number => {
+  const bruta = Math.abs(a - b);
+  return Math.min(bruta, 1 - bruta);
 };
 
-/** Un matiz, vestido con la saturación y la luz del sistema. */
-const armonizar = (h: number): string => {
-  const q = LUMINOSIDAD + SATURACION * Math.min(LUMINOSIDAD, 1 - LUMINOSIDAD);
-  const p = 2 * LUMINOSIDAD - q;
-  const rgb = [h + 1 / 3, h, h - 1 / 3].map((t) => Math.round(canal(p, q, t) * 255));
-
-  return `#${rgb.map((v) => v.toString(16).padStart(2, "0")).join("")}`;
+/**
+ * **De qué color de la serie se acerca más la marca.** Santander es rojo y cae
+ * en el naranja de la serie; BancoEstado es azul y cae en el azul. No es el
+ * Pantone del logo —no puede serlo, la serie tiene cinco colores— pero conserva
+ * lo único que la persona reconoce de lejos: de qué lado del círculo está.
+ */
+const masCercanoDeLaSerie = (matiz: number): number => {
+  let elegido = 0;
+  MATICES_DE_LA_SERIE.forEach((otro, indice) => {
+    if (distancia(matiz, otro) < distancia(matiz, MATICES_DE_LA_SERIE[elegido])) elegido = indice;
+  });
+  return elegido;
 };
 
 /**
@@ -113,73 +126,51 @@ const armonizar = (h: number): string => {
  *
  * 1. **Dos acreedores distintos nunca comparten color.** Ese es el trabajo del
  *    color acá. Los acreedores chilenos se agolpan en dos familias —los azules y
- *    los rojos— y con la saturación bajada para que todo combine, Santander y
- *    Coopeuch salían del mismo rojo y BancoEstado del mismo azul que Caja Los
- *    Andes. El matiz de marca es la **preferencia**, no la última palabra: si
- *    cae demasiado cerca de uno ya repartido, se corre hasta separarse.
+ *    los rojos— así que la marca solo dice **por cuál de los cinco empezar**: si
+ *    ese ya está tomado, se corre al siguiente libre.
  * 2. **El mismo acreedor sí comparte color**, esté donde esté en la lista. Eso
  *    es lo que dice que dos causas son del mismo banco, y ahí lo que las separa
  *    es el rol, que va escrito.
- * 3. **Sin acreedor —las escrituras— el matiz sale de la caja.** No hay marca
+ * 3. **Sin acreedor —las escrituras— la casilla sale de la caja.** No hay marca
  *    que respetar, así que la regla 1 reparte libre: dos escrituras del mismo
  *    tipo, que llevan el mismo dibujo y dicen lo mismo, quedan separadas.
  *
- * Correrse cuesta poco: lo que la persona reconoce es que su causa del banco rojo
- * es una y la del banco azul es otra, no el Pantone exacto de cada logo.
+ * Con más de cinco cajas distintas en una lista los colores se repiten; para que
+ * la repetición no caiga en vecinas, el reparto arranca de la casilla siguiente
+ * a la última usada.
  */
-const SEPARACION_MINIMA = 0.11;
-const PASO = 0.037;
-
-/** Distancia entre dos matices sobre el círculo, de 0 a 0,5. */
-const distancia = (a: number, b: number): number => {
-  const bruta = Math.abs(a - b);
-  return Math.min(bruta, 1 - bruta);
-};
-
-const separar = (preferido: number, repartidos: number[]): number => {
-  const libre = (matiz: number) =>
-    repartidos.every((otro) => distancia(matiz, otro) >= SEPARACION_MINIMA);
-
-  if (libre(preferido)) return preferido;
-
-  for (let vuelta = 1; vuelta * PASO < 1; vuelta += 1) {
-    for (const lado of [1, -1]) {
-      const candidato = (preferido + lado * vuelta * PASO + 1) % 1;
-      if (libre(candidato)) return candidato;
-    }
-  }
-
-  // Con más acreedores que lugares en el círculo ya no hay cómo separarlos.
-  // Pasa sobre las nueve causas de acreedores distintos, que no es un caso real.
-  return preferido;
-};
-
-/** Misma clave, mismo matiz. No es un hash de verdad: reparte un círculo. */
-const matizDeLaClave = (clave: string): number => {
+const casillaDeLaClave = (clave: string): number => {
   let suma = 0;
   for (let i = 0; i < clave.length; i += 1) suma += clave.charCodeAt(i) * (i + 1);
-  return (suma % 360) / 360;
+  return suma % TINTAS.length;
 };
 
 export type ItemConColor = { claveDeColor: string; acreedor?: string };
 
 export const coloresDeLaLista = (items: (ItemConColor | undefined)[]): string[] => {
   const porClave = new Map<string, number>();
-  const repartidos: number[] = [];
+  const usadas = new Set<number>();
 
-  return items.map((item) => {
-    if (!item) return armonizar(0);
+  return items.map((item, fila) => {
+    if (!item) return TINTAS[0];
 
-    const asignado = porClave.get(item.claveDeColor);
-    if (asignado !== undefined) return armonizar(asignado);
+    const asignada = porClave.get(item.claveDeColor);
+    if (asignada !== undefined) return TINTAS[asignada];
 
     const marca = COLORES.find(([patron]) => item.acreedor && patron.test(item.acreedor));
-    const preferido = marca ? matizDe(marca[1]) : matizDeLaClave(item.claveDeColor);
-    const matiz = separar(preferido, repartidos);
+    let casilla = marca
+      ? masCercanoDeLaSerie(matizDe(marca[1]))
+      : casillaDeLaClave(item.claveDeColor);
 
-    porClave.set(item.claveDeColor, matiz);
-    repartidos.push(matiz);
-    return armonizar(matiz);
+    const anterior = fila > 0 ? porClave.get(items[fila - 1]?.claveDeColor ?? "") : undefined;
+    for (let intento = 0; intento < TINTAS.length; intento += 1) {
+      if (!usadas.has(casilla) && casilla !== anterior) break;
+      casilla = (casilla + 1) % TINTAS.length;
+    }
+
+    porClave.set(item.claveDeColor, casilla);
+    usadas.add(casilla);
+    return TINTAS[casilla];
   });
 };
 
