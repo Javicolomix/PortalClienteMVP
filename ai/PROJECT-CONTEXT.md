@@ -854,6 +854,11 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   PENDIENTE: los bancos chilenos se agolpan en el azul, así que BancoEstado y
   Caja Los Andes quedan casi iguales. El nombre del acreedor los separa, pero si
   molesta hay que subir la saturación y perder algo de integración.
+- 2026-09-15: **«Mi servicio» lleva la trama de cubos del manual de marca**
+  (`BrandBackground motif="cubos" tone="blanco"`), fija al viewport para que los
+  cubos no se deformen en una página larga. Va solo ahí: el sistema pide fondo
+  plano en superficies que se operan, y «Mis pagos» —con su tabla de doce
+  cuotas— es exactamente eso. «Mi servicio» se lee, no se opera.
 - 2026-09-15: **la fila del estado del caso lleva el dibujo de su servicio**: un
   apretón de manos en renegociación —el servicio es literalmente llegar a un
   acuerdo— y una goma en liquidación —borrón y cuenta nueva, que es como la

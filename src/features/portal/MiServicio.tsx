@@ -83,6 +83,7 @@ export function MiServicio() {
     <PaginaDelPortal
       titulo={fase === "listo" && datos ? datos.nombre : "Mi servicio"}
       descripcion="Esto es lo que contrataste con nosotros."
+      conTramaDeMarca
     >
       {fase === "cargando" ? <CargandoPagina /> : null}
       {fase === "error" ? <ErrorDeCarga onReintentar={recargar} /> : null}

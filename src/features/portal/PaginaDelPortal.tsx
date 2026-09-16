@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link } from "react-router";
 
+import { BrandBackground } from "@/shared/components/base/BrandBackground";
 import { Button } from "@/shared/components/base/Button";
 import {
   Empty,
@@ -27,14 +28,35 @@ import { Skeleton } from "@/shared/components/base/Skeleton";
 export function PaginaDelPortal({
   titulo,
   descripcion,
+  conTramaDeMarca,
   children,
 }: {
   titulo: string;
   descripcion?: ReactNode;
+  /**
+   * La trama de cubos del manual de marca detrás del contenido. Es para las
+   * pantallas que se **leen** —«Mi servicio» explica qué contrató la persona—,
+   * no para las que se **operan**: el sistema pide fondo plano donde hay
+   * formularios, tablas o un flujo que completar, y «Mis pagos» es exactamente
+   * eso. Una textura detrás de una tabla de doce cuotas es ruido.
+   */
+  conTramaDeMarca?: boolean;
   children: ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-surface-canvas">
+    <div className="relative isolate min-h-screen bg-surface-canvas">
+      {/* Va **fija al viewport**, no al alto de la página. La imagen es
+          1920×1080 y estirada sobre una página de cuatro mil píxeles de alto los
+          cubos salen deformados; fija, se ve siempre en su proporción y el
+          contenido pasa por encima. `-z-10` la deja detrás de todo sin sacarla
+          del apilamiento de la barra superior, que es `sticky`. */}
+      {conTramaDeMarca ? (
+        <BrandBackground
+          motif="cubos"
+          tone="blanco"
+          className="pointer-events-none fixed inset-0 -z-10"
+        />
+      ) : null}
       {/* La vuelta al inicio vive en la barra, **no en el cuerpo de la página**.
           Es lo único que no se va con el scroll: en «Mis pagos», que mide varias
           pantallas en el teléfono, un botón arriba del título queda fuera de
