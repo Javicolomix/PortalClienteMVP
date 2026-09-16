@@ -44,13 +44,14 @@ export type Servicio = {
   /** Como se titula solo: «Renegociación de deudas». */
   nombre: string;
   /**
-   * Cómo se nombra **dentro de una frase**, con su artículo y en minúscula: «la
-   * renegociación». Es otro campo y no una transformación del nombre porque no
-   * hay regla que lleve de uno al otro: «Renegociación de deudas» se dice «la
-   * renegociación» —se pierde la mitad— y «Protección Patrimonial» se dice «la
-   * protección patrimonial», que baja de mayúscula. Cualquier intento de
-   * derivarlo termina escribiendo «la renegociación de deudas» en un título que
-   * ya era largo.
+   * Cómo se titula la pantalla del servicio: «La Renegociación». Lleva su
+   * artículo y su mayúscula, porque es un titular y no un fragmento de frase.
+   *
+   * Es otro campo y no una transformación del nombre porque no hay regla que
+   * lleve de uno al otro: «Renegociación de deudas» se titula «La
+   * Renegociación», que es media frase menos, y «Defensa en juicio» se titula
+   * «La Defensa en Juicio», que sube una mayúscula. Cualquier intento de
+   * derivarlo termina escribiendo «La Renegociación de deudas».
    */
   nombreEnFrase: string;
   resumen: string;
@@ -58,25 +59,19 @@ export type Servicio = {
 };
 
 /**
- * El título de «Mi servicio»: «En qué consiste la defensa en juicio con
- * protección patrimonial».
- *
- * Con el nombre a secas —«Defensa en juicio con Protección Patrimonial»— la
- * pantalla repetía el rótulo del bloque del que se venía y no decía nada nuevo.
- * En forma de pregunta anuncia lo que hay abajo, que es exactamente eso: en qué
- * consiste.
- *
- * Al segundo servicio se le cae el artículo: «la defensa en juicio con
- * protección patrimonial», no «con la protección patrimonial».
+ * El titular de «Mi servicio»: «La Defensa en Juicio con Protección
+ * Patrimonial». Al segundo servicio se le cae el artículo —«con Protección
+ * Patrimonial», no «con La Protección Patrimonial»—, que es lo único que hay que
+ * hacer para unirlos.
  */
 const SIN_ARTICULO = /^(la|el|los|las)\s+/i;
 
-export const tituloDeMiServicio = (servicios: Servicio[]): string => {
+export const servicioEnFrase = (servicios: Servicio[]): string => {
   const [primero, ...resto] = servicios.map((servicio) => servicio.nombreEnFrase);
-  if (!primero) return "En qué consiste tu servicio";
+  if (!primero) return "tu servicio";
 
   const cola = resto.map((nombre) => nombre.replace(SIN_ARTICULO, ""));
-  return `En qué consiste ${[primero, ...cola].join(" con ")}`;
+  return [primero, ...cola].join(" con ");
 };
 
 /**
@@ -309,8 +304,8 @@ export type DatosMiServicio = {
   servicios: ServicioConResultados[];
   /** El nombre del servicio, compuesto cuando son dos. */
   nombre: string;
-  /** «En qué consiste la renegociación»: lo que titula la pantalla. */
-  titulo: string;
+  /** «la liquidación»: la mitad variable del título de la pantalla. */
+  enFrase: string;
 };
 
 export type DatosMisPagos = {

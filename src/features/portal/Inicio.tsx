@@ -9,6 +9,7 @@ import { Logo } from "@/shared/components/base/Logo";
 import { useCarga } from "@/shared/hooks/useCarga";
 import { cn } from "@/shared/lib/utils/cn";
 
+import { Subrayado } from "./BloquesDelPortal";
 import { BotonWhatsapp } from "./BotonWhatsapp";
 import { muestraBloque, nombreDelServicioPrincipal } from "./composicion";
 import { ICONOS } from "./iconos";
@@ -59,19 +60,6 @@ function IconoDeAcceso({ Icono, grande }: { Icono: Icono; grande?: boolean }) {
       strokeWidth={2}
       aria-hidden
     />
-  );
-}
-
-/**
- * El nombre es lo único personal de la pantalla: se subraya para que la persona
- * se reconozca de inmediato, sin tener que leer la frase entera.
- */
-function NombreSubrayado({ children }: { children: ReactNode }) {
-  return (
-    <span className="relative inline-block">
-      {children}
-      <span className="absolute inset-x-0 -bottom-1 h-1 rounded-full bg-warning" aria-hidden />
-    </span>
   );
 }
 
@@ -149,7 +137,7 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
             {saludo}
             {nombre ? (
               <>
-                , <NombreSubrayado>{nombre}</NombreSubrayado>
+                , <Subrayado>{nombre}</Subrayado>
               </>
             ) : null}
           </h1>
@@ -163,7 +151,7 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
             {saludo}
             {nombre ? (
               <>
-                , <NombreSubrayado>{nombre}</NombreSubrayado>
+                , <Subrayado>{nombre}</Subrayado>
               </>
             ) : null}
           </h1>

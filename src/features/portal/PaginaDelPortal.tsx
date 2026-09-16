@@ -32,7 +32,7 @@ export function PaginaDelPortal({
   conTramaDeMarca,
   children,
 }: {
-  titulo: string;
+  titulo: ReactNode;
   descripcion?: ReactNode;
   /**
    * La trama de aspas del manual de marca detrás del contenido.

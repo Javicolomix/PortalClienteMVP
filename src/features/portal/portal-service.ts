@@ -18,7 +18,7 @@ import type {
   ResultadoServicio,
   Servicio,
 } from "./portal.types";
-import { tituloDeMiServicio } from "./portal.types";
+import { servicioEnFrase } from "./portal.types";
 
 async function cargarClienteEnSesion(): Promise<Cliente> {
   const clienteId = sesion.getSnapshot();
@@ -358,7 +358,7 @@ export async function cargarMiServicio(): Promise<DatosMiServicio> {
 
   return {
     nombre: nombreDelServicioPrincipal(principales),
-    titulo: tituloDeMiServicio(principales),
+    enFrase: servicioEnFrase(principales),
     servicios: principales.map((servicio) => ({
       servicio,
       resultados: resultados

@@ -1,6 +1,6 @@
 import { useCarga } from "@/shared/hooks/useCarga";
 
-import { TarjetaDeSeccion } from "./BloquesDelPortal";
+import { Subrayado, TarjetaDeSeccion } from "./BloquesDelPortal";
 import { iconoPorClave,ICONOS } from "./iconos";
 import { CargandoPagina, ErrorDeCarga, PaginaDelPortal } from "./PaginaDelPortal";
 import type { DatosMiServicio, ServicioConResultados } from "./portal.types";
@@ -96,12 +96,32 @@ function DetalleDelServicio({ datos }: { datos: DatosMiServicio }) {
   );
 }
 
+/**
+ * «La **Renegociación**»: el artículo suelto y el nombre subrayado en ámbar, el
+ * mismo trazo que en el inicio va bajo el nombre de la persona. Marca de qué
+ * trata esta pantalla, que es lo único que cambia de un cliente a otro.
+ *
+ * El artículo queda fuera del subrayado porque no es parte del nombre: subrayado
+ * el «La», el trazo empieza antes de lo que señala.
+ */
+function TituloDelServicio({ children }: { children: string }) {
+  const [articulo, ...nombre] = children.split(" ");
+
+  return (
+    <>
+      {articulo} <Subrayado>{nombre.join(" ")}</Subrayado>
+    </>
+  );
+}
+
 export function MiServicio() {
   const { fase, datos, recargar } = useCarga("mi-servicio", cargarMiServicio);
 
   return (
     <PaginaDelPortal
-      titulo={fase === "listo" && datos ? datos.titulo : "Mi servicio"}
+      titulo={
+        fase === "listo" && datos ? <TituloDelServicio>{datos.enFrase}</TituloDelServicio> : "Mi servicio"
+      }
       descripcion="Esto es lo que contrataste con nosotros."
       conTramaDeMarca
     >

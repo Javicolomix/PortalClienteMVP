@@ -69,6 +69,32 @@ export function BloqueDestacado({
 }
 
 /**
+ * **El trazo ámbar bajo una palabra del título.** Es el único naranja del portal
+ * y marca siempre lo mismo: **de qué se trata esta pantalla en particular**. En
+ * el inicio va bajo el nombre de la persona, que es lo único suyo que hay ahí;
+ * en «Mi servicio», bajo el nombre del servicio, que es lo único que cambia de
+ * un cliente a otro en esa página.
+ *
+ * Uno por pantalla, y siempre bajo la parte variable del título. Repartido en
+ * más lugares dejaría de señalar algo y pasaría a ser decoración.
+ */
+export function Subrayado({ children }: { children: ReactNode }) {
+  return (
+    // Subrayado de texto y no una barra puesta debajo. La barra era un bloque
+    // absoluto y funcionaba mientras lo subrayado cupiera en una línea: con «la
+    // defensa en juicio con protección patrimonial», que ocupa tres, la barra se
+    // dibujaba una sola vez y del ancho del bloque entero, cruzando por debajo
+    // de las tres. El subrayado sigue cada línea, que es lo que hace.
+    // `skip-ink:none` para que el trazo no se corte bajo la jota de «juicio» ni
+    // la pe de «protección». Con un subrayado fino los huecos pasan
+    // desapercibidos; con uno de cuatro píxeles se ven como cortes.
+    <span className="underline decoration-[var(--color-warning)] decoration-4 underline-offset-[7px] [text-decoration-skip-ink:none]">
+      {children}
+    </span>
+  );
+}
+
+/**
  * **Un recuadro completo, con su dibujo y su título adentro.** Es la pieza con
  * que se arma «Mi servicio»: uno para el objetivo y otro para los beneficios.
  *

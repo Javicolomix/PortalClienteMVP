@@ -227,7 +227,7 @@ export const prototypeDataContract = definePrototypeDataContract({
         nombreEnFrase: {
           id: "nombreEnFrase",
           productDescription:
-            "Cómo se nombra el servicio dentro de una frase, con artículo y en minúscula: «la renegociación». Titula «Mi servicio» —«En qué consiste la renegociación»— y no se puede derivar del nombre: «Renegociación de deudas» se dice «la renegociación», que es media frase menos.",
+            "Cómo se titula la pantalla del servicio: «La Renegociación», con su artículo y su mayúscula. No se puede derivar del nombre: «Renegociación de deudas» se titula «La Renegociación», que es media frase menos, y «Defensa en juicio» se titula «La Defensa en Juicio», que sube una mayúscula.",
           dataType: "string",
           required: true,
           usage: soloVisible,

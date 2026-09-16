@@ -884,12 +884,13 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   expresivas, pero acá va también en «Mis pagos» por decisión del diseñador:
   funciona porque todo el contenido vive dentro de recuadros blancos opacos y la
   trama nunca queda debajo de un texto.
-- 2026-09-15: **«Mi servicio» se titula «En qué consiste la renegociación»** y
-  no con el nombre del servicio, que repetía el rótulo del bloque del que se
-  entra. Necesita un campo nuevo, `servicio.nombreEnFrase` («la renegociación»),
-  que no se puede derivar del nombre: «Renegociación de deudas» se dice «la
-  renegociación», que es media frase menos. PENDIENTE: quién lo escribe y
-  mantiene.
+- 2026-09-16: **«Mi servicio» se titula «La Renegociación»**, con el nombre
+  subrayado en ámbar —el mismo trazo que en el inicio va bajo el nombre de la
+  persona—. El artículo queda fuera del subrayado: no es parte del nombre.
+  Necesita el campo `servicio.nombreEnFrase` («La Renegociación»), que no se
+  puede derivar del nombre: «Renegociación de deudas» se titula «La
+  Renegociación», media frase menos, y «Defensa en juicio» sube una mayúscula.
+  PENDIENTE: quién lo escribe y mantiene.
 - 2026-09-15: **los beneficios van de a dos, en cajitas**, desde el teléfono. En
   una columna había que llegar al final para saber cuántos eran; en dos se ven
   los cuatro de una mirada. El dibujo va arriba del título y no al costado: con
