@@ -10,13 +10,17 @@ import {
   Handshake,
   House,
   Landmark,
+  ListChecks,
   MessageCircle,
   Milestone,
+  PhoneOff,
   Scale,
   Search,
   ShieldCheck,
   Signpost,
+  Stamp,
   Star,
+  Target,
   TrendingDown,
 } from "lucide-react";
 
@@ -43,8 +47,12 @@ export const ICONOS = {
   reloj: Clock,
   lupa: Search,
   documento: FileText,
+  silencio: PhoneOff,
+  sello: Stamp,
 
   // Secciones del portal
+  objetivo: Target,
+  beneficios: ListChecks,
   equipo: Briefcase,
   tarea: ClipboardCheck,
   camino: Signpost,

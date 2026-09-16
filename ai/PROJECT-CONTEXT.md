@@ -854,11 +854,21 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   PENDIENTE: los bancos chilenos se agolpan en el azul, así que BancoEstado y
   Caja Los Andes quedan casi iguales. El nombre del acreedor los separa, pero si
   molesta hay que subir la saturación y perder algo de integración.
-- 2026-09-15: **«Mi servicio» lleva la trama de cubos del manual de marca**
-  (`BrandBackground motif="cubos" tone="blanco"`), fija al viewport para que los
-  cubos no se deformen en una página larga. Va solo ahí: el sistema pide fondo
-  plano en superficies que se operan, y «Mis pagos» —con su tabla de doce
-  cuotas— es exactamente eso. «Mi servicio» se lee, no se opera.
+- 2026-09-15: **las dos pantallas de detalle llevan la trama de aspas del manual**
+  (`BrandBackground motif="aspas" tone="blanco"`), fija al viewport para que no
+  se deforme en una página larga. El manual la reserva para superficies
+  expresivas, pero acá va también en «Mis pagos» por decisión del diseñador:
+  funciona porque todo el contenido vive dentro de recuadros blancos opacos y la
+  trama nunca queda debajo de un texto.
+- 2026-09-15: **se acabó el lila para el objetivo del servicio.** El lila es el
+  color con que el portal marca lo que escribió el capitán —la etapa del caso—;
+  usarlo también para la explicación del servicio le quitaba ese significado.
+  «Mi servicio» pasa a **dos recuadros blancos completos**: uno de objetivo y
+  otro de beneficios, cada uno con su dibujo en el título, y los beneficios
+  adentro del segundo separados por hairlines en vez de una tarjeta cada uno.
+- 2026-09-15: **cuatro beneficios por servicio, siempre.** Liquidación, defensa
+  en juicio y protección patrimonial tenían tres. Los tres textos nuevos los
+  escribí yo, no vinieron de Lexy: hay que revisarlos.
 - 2026-09-15: **la fila del estado del caso lleva el dibujo de su servicio**: un
   apretón de manos en renegociación —el servicio es literalmente llegar a un
   acuerdo— y una goma en liquidación —borrón y cuenta nueva, que es como la

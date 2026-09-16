@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 35,
+  datasetVersion: 36,
   entities: {
     cliente: [
       {
@@ -855,6 +855,16 @@ export const fixtures: Fixtures = {
       },
 
       {
+        id: "res-liq-04",
+        servicioId: "srv-liquidacion",
+        orden: 4,
+        titulo: "Las llamadas se terminan",
+        texto:
+          "Que las cobranzas dejen de llamarte y pasen a tratarse dentro del procedimiento.",
+        icono: "silencio",
+      },
+
+      {
         id: "res-lit-01",
         servicioId: "srv-defensa-juicio",
         orden: 1,
@@ -881,11 +891,20 @@ export const fixtures: Fixtures = {
       },
       {
         id: "res-lit-04",
+        servicioId: "srv-defensa-juicio",
+        orden: 4,
+        titulo: "Embargos discutidos",
+        texto: "Discutir ante el tribunal los embargos que pidan en tu contra.",
+        icono: "escudo",
+      },
+
+      {
+        id: "res-pp-01",
         servicioId: "srv-proteccion-patrimonial",
         orden: 1,
         titulo: "Bienes expuestos y protegidos",
         texto: "Saber qué bienes tuyos están expuestos y cuáles protege la ley.",
-        icono: "casa",
+        icono: "lupa",
       },
       {
         id: "res-pp-02",
@@ -903,6 +922,15 @@ export const fixtures: Fixtures = {
         titulo: "Tu casa resguardada",
         texto: "Revisar si tu vivienda puede acogerse a las protecciones que contempla la ley.",
         icono: "casa",
+      },
+      {
+        id: "res-pp-04",
+        servicioId: "srv-proteccion-patrimonial",
+        orden: 4,
+        titulo: "Inscrita, no solo firmada",
+        texto:
+          "Dejar cada escritura inscrita en el registro que corresponde, que es cuando queda a firme.",
+        icono: "sello",
       },
     ],
 

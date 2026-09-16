@@ -34,11 +34,14 @@ export function PaginaDelPortal({
   titulo: string;
   descripcion?: ReactNode;
   /**
-   * La trama de cubos del manual de marca detrás del contenido. Es para las
-   * pantallas que se **leen** —«Mi servicio» explica qué contrató la persona—,
-   * no para las que se **operan**: el sistema pide fondo plano donde hay
-   * formularios, tablas o un flujo que completar, y «Mis pagos» es exactamente
-   * eso. Una textura detrás de una tabla de doce cuotas es ruido.
+   * La trama de aspas del manual de marca detrás del contenido.
+   *
+   * El manual la reserva para superficies expresivas y pide fondo plano en las
+   * operativas, pero acá va en las dos pantallas de detalle —«Mi servicio» y
+   * «Mis pagos»— por decisión del diseñador. Funciona porque en las dos el
+   * contenido vive dentro de recuadros blancos opacos: la trama pasa por detrás
+   * y nunca debajo de un texto. La tabla del historial, que es lo más operativo
+   * que hay acá, vive dentro de un modal y tampoco la toca.
    */
   conTramaDeMarca?: boolean;
   children: ReactNode;
@@ -52,7 +55,7 @@ export function PaginaDelPortal({
           del apilamiento de la barra superior, que es `sticky`. */}
       {conTramaDeMarca ? (
         <BrandBackground
-          motif="cubos"
+          motif="aspas"
           tone="blanco"
           className="pointer-events-none fixed inset-0 -z-10"
         />

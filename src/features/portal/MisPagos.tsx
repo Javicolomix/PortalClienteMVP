@@ -489,7 +489,7 @@ export function MisPagos() {
   const { fase, datos, recargar } = useCarga("mis-pagos", cargarMisPagos);
 
   return (
-    <PaginaDelPortal titulo="Mis pagos">
+    <PaginaDelPortal titulo="Mis pagos" conTramaDeMarca>
       {fase === "cargando" ? <CargandoPagina /> : null}
       {fase === "error" ? <ErrorDeCarga onReintentar={recargar} /> : null}
       {fase === "listo" && datos ? <ContenidoDePagos datos={datos} /> : null}

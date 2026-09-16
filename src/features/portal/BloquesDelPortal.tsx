@@ -69,6 +69,38 @@ export function BloqueDestacado({
 }
 
 /**
+ * **Un recuadro completo, con su dibujo y su título adentro.** Es la pieza con
+ * que se arma «Mi servicio»: uno para el objetivo y otro para los beneficios.
+ *
+ * Reemplaza al bloque lila que titulaba el objetivo. El lila es el color con que
+ * el portal marca lo que escribió el capitán —la etapa en que va tu caso— y
+ * usarlo también para la explicación del servicio le quitaba ese significado:
+ * dos cosas distintas pintadas igual dejan de decir algo con el color. Acá los
+ * dos recuadros pesan lo mismo, que es lo correcto: son dos partes de la misma
+ * explicación, no una más importante que la otra.
+ */
+export function TarjetaDeSeccion({
+  Icono,
+  titulo,
+  children,
+}: {
+  Icono: Icono;
+  titulo: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="rounded-xl bg-card p-5 shadow-card ring-1 ring-border-subtle md:p-6">
+      <h2 className="flex items-center gap-2.5 type-item-title font-semibold text-foreground">
+        <Icono className="size-[18px] shrink-0 text-brand-navy" strokeWidth={1.75} aria-hidden />
+        {titulo}
+      </h2>
+
+      <div className="mt-4">{children}</div>
+    </section>
+  );
+}
+
+/**
  * Cada tarjeta responde una pregunta distinta, y todas pesan lo mismo: misma
  * superficie, mismo borde, mismo icono en navy. Ninguna se destaca sobre las
  * otras — ni con color, ni con etiqueta, ni con borde de acento.

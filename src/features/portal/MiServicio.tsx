@@ -1,7 +1,7 @@
 import { useCarga } from "@/shared/hooks/useCarga";
 
-import { BloqueDestacado, TarjetaInformativa } from "./BloquesDelPortal";
-import { iconoPorClave } from "./iconos";
+import { TarjetaDeSeccion } from "./BloquesDelPortal";
+import { iconoPorClave,ICONOS } from "./iconos";
 import { CargandoPagina, ErrorDeCarga, PaginaDelPortal } from "./PaginaDelPortal";
 import type { DatosMiServicio, ServicioConResultados } from "./portal.types";
 import { cargarMiServicio } from "./portal-service";
@@ -32,30 +32,45 @@ function ExplicacionDelServicio({ servicios }: { servicios: ServicioConResultado
   const resultados = servicios.flatMap((item) => item.resultados);
 
   return (
-    <section className="space-y-6">
-      <BloqueDestacado rotulo="Objetivo del servicio">{objetivo}</BloqueDestacado>
+    <div className="space-y-4">
+      <TarjetaDeSeccion Icono={ICONOS.objetivo} titulo="Objetivo del servicio">
+        <p className="type-supporting leading-relaxed whitespace-pre-line text-muted-foreground">
+          {objetivo}
+        </p>
+      </TarjetaDeSeccion>
 
-      {/* Cada resultado es una tarjeta con su icono: son cosas distintas que se
-          pueden lograr, no los puntos de una misma enumeración. El icono deja
-          reconocer cada uno de un vistazo, sin leer la frase entera. */}
-      <section>
-        <h2 className="type-section-title text-foreground">Beneficios que puedes obtener</h2>
-
-        <ul className="mt-3 space-y-2.5">
+      {/* Los beneficios van **dentro de un solo recuadro**, separados por
+          hairlines, y no en una tarjeta cada uno. Son cuatro respuestas a la
+          misma pregunta —qué consigo con esto—, así que son las partes de una
+          lista y no cuatro objetos sueltos: cuatro tarjetas flotando pesaban
+          como cuatro secciones distintas. */}
+      <TarjetaDeSeccion Icono={ICONOS.beneficios} titulo="Beneficios que puedes obtener">
+        <ul className="divide-y divide-border-subtle">
           {resultados.map((resultado) => {
             const Icono = iconoPorClave(resultado.icono);
 
             return (
-              <li key={resultado.id}>
-                <TarjetaInformativa Icono={Icono} titulo={resultado.titulo}>
-                  {resultado.texto}
-                </TarjetaInformativa>
+              <li key={resultado.id} className="flex gap-3 py-3.5 first:pt-0 last:pb-0">
+                <Icono
+                  className="mt-0.5 size-[18px] shrink-0 text-brand-navy"
+                  strokeWidth={1.75}
+                  aria-hidden
+                />
+
+                <div className="min-w-0">
+                  <h3 className="type-supporting font-medium text-foreground">
+                    {resultado.titulo}
+                  </h3>
+                  <p className="mt-1 type-supporting leading-relaxed text-muted-foreground">
+                    {resultado.texto}
+                  </p>
+                </div>
               </li>
             );
           })}
         </ul>
-      </section>
-    </section>
+      </TarjetaDeSeccion>
+    </div>
   );
 }
 
