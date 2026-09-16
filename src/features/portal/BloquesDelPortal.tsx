@@ -110,14 +110,22 @@ export function Subrayado({ children }: { children: ReactNode }) {
 export function TarjetaDeSeccion({
   Icono,
   titulo,
+  antes,
   children,
 }: {
   Icono: Icono;
   titulo: string;
+  /**
+   * Lo que va **antes del título**, dentro del recuadro. Es para lo único que
+   * puede ir ahí: algo que hay que leer incluso antes de saber de qué habla el
+   * recuadro. Hoy solo lo usa la línea de urgencia.
+   */
+  antes?: ReactNode;
   children: ReactNode;
 }) {
   return (
     <section className="rounded-xl bg-card p-5 shadow-card ring-1 ring-border-subtle md:p-6">
+      {antes}
       {/* Título en navy y dibujo en índigo. Es el único color que entra a esta
           pantalla, y entra donde corresponde: en lo que la ordena. El navy es la
           tinta de la marca —más azul que el negro del cuerpo, lo justo para que
@@ -241,9 +249,11 @@ export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
           Sin el nombre de la etapa: ya está en el título de la fila, a diez
           píxeles. Repetido y en cuerpo más grande, la persona lee dos veces lo
           mismo y la segunda parece otra cosa. */}
-      <TarjetaDeSeccion Icono={ICONOS.etapa} titulo="Estado de mi caso">
-        <RefuerzoDeUrgencia etapa={etapa} />
-
+      <TarjetaDeSeccion
+        Icono={ICONOS.etapa}
+        titulo="Estado de mi caso"
+        antes={<RefuerzoDeUrgencia etapa={etapa} />}
+      >
         <p className="type-supporting leading-relaxed whitespace-pre-line text-muted-foreground">
           {etapa.mensajePrincipal}
         </p>
@@ -288,8 +298,9 @@ export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
  * Estaba al pie del panel y suelto, fuera de las dos tarjetas, y ahí quedaba
  * como un pie de página: lo último que se lee y lo primero que se salta. Es lo
  * contrario de lo que dice —si el caso no avanza sin ti, eso es lo que hay que
- * leer antes que nada— así que sube a la primera línea del primer recuadro, con
- * la explicación debajo.
+ * leer antes que nada— así que sube a lo más alto del primer recuadro, **incluso
+ * por encima de su título**: qué te toca hacer se lee antes que el rótulo que
+ * anuncia de qué habla el recuadro.
  *
  * Adentro del recuadro y no flotando: suelto sobre el fondo del panel se leía
  * como un mensaje del sistema, de esos que se cierran, y no como parte de lo que
