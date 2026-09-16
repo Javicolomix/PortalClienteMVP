@@ -11,7 +11,7 @@ import { cn } from "@/shared/lib/utils/cn";
 
 import { Subrayado } from "./BloquesDelPortal";
 import { BotonWhatsapp } from "./BotonWhatsapp";
-import { muestraBloque, nombreDelServicioPrincipal } from "./composicion";
+import { type BloqueDelInicio, muestraBloque, nombreDelServicioPrincipal } from "./composicion";
 import { ICONOS } from "./iconos";
 import { iconoDelServicio } from "./iconos-de-escritura";
 import { FilaDesplegable, ListaDeCajas, TituloDeBloque } from "./ListaDeCajas";
@@ -98,13 +98,12 @@ const BAJADA = "Todo lo que debes saber de tu servicio a un solo click.";
 function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
   return (
     <header
-      className="relative isolate -mb-12 overflow-hidden bg-brand-navy pt-5 pb-20 [--arco:3rem] md:pt-7 md:pb-24 md:[--arco:2.5rem]"
+      className="relative isolate overflow-hidden bg-brand-navy pt-5 pb-12 [--arco:3rem] md:pt-7 md:pb-16 md:[--arco:2.5rem]"
       style={{
         // Radio elíptico: el horizontal es media pantalla, así los dos arcos se
         // encuentran al medio y el borde queda como un solo arco continuo. El
-        // vertical es profundo a propósito: con la tarjeta del servicio encima,
-        // lo único que asoma de la curva son los costados, y ahí tiene que
-        // notarse.
+        // vertical es profundo a propósito: es lo único que separa la franja del
+        // contenido, así que tiene que notarse.
         borderBottomLeftRadius: "50% var(--arco)",
         borderBottomRightRadius: "50% var(--arco)",
       }}
@@ -169,8 +168,14 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
 }
 
 /**
- * **Bloque A — Mi servicio.** Dice qué contrató la persona, y nada más: no se
- * despliega, no lleva a ninguna parte, no tiene chevron ni cursor de enlace.
+ * **Bloque A — Mi servicio.** Dice qué contrató la persona y **lleva a la
+ * pantalla que lo explica**. Estuvo un tiempo inerte, sin enlace: el argumento
+ * era que ser el bloque más grande y además tocable lo convertía en el centro de
+ * gravedad de la pantalla, por encima de lo que la persona viene a ver. Dejó de
+ * valer cuando la tarjeta bajó a media pantalla y al lado quedó el estado del
+ * caso: ahí ya no compite con nada, y un rectángulo que nombra el servicio
+ * mientras la explicación vive a un clic de distancia era una puerta cerrada por
+ * nada.
  *
  * Es **lo primero y lo más grande** de la página después del saludo, porque es
  * la respuesta a la primera pregunta que trae alguien que entra: qué contraté.
@@ -239,15 +244,10 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
  */
 function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
   return (
-    <section
-      className={cn(
-        "mx-auto w-full rounded-xl bg-[#e4e1fa] px-6 py-5 text-center md:w-fit md:min-w-[24rem] md:max-w-2xl md:px-9 md:py-6",
-        // Con un nombre de una línea la tarjeta queda baja al lado de la del
-        // nombre compuesto, que ocupa dos. Se le suma aire abajo para acercarlas
-        // de porte. Es aire y no una línea de texto reservada: reservada dejaba
-        // medio bloque de lila vacío, que era peor que la diferencia de alto.
-        nombres.length === 1 && "pb-8 md:pb-9",
-      )}
+    <Link
+      to="/mi-servicio"
+      aria-label="Ver en qué consiste mi servicio"
+      className="group block w-full rounded-xl bg-[#e4e1fa] px-6 py-5 text-center transition-[background-color,transform] duration-150 ease-out [-webkit-tap-highlight-color:transparent] hover:bg-[#dcd8f7] active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring md:px-8 md:py-6"
       style={{ boxShadow: "0 8px 24px rgb(11 1 60 / 0.10)" }}
     >
       <p className="flex items-center justify-center gap-1.5 type-meta text-[11px] font-medium tracking-[0.1em] text-[#4a4478] uppercase">
@@ -273,7 +273,16 @@ function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
           </span>
         ))}
       </p>
-    </section>
+
+      {/* La invitación a entrar, abajo y en chico. Sin ella la tarjeta se ve
+          igual que antes —un rótulo y un nombre— y nada dice que ahora lleva a
+          alguna parte: el cursor solo lo descubre quien pasa por encima, y en un
+          teléfono no hay cursor. */}
+      <span className="mt-3 inline-flex items-center gap-1 type-meta font-medium text-[#4a4478] transition-transform duration-150 ease-out group-hover:translate-x-0.5">
+        Ver en qué consiste
+        <ChevronRight className="size-3.5" aria-hidden />
+      </span>
+    </Link>
   );
 }
 
@@ -312,7 +321,7 @@ function BloqueDelCaso({
   tipo: TipoServicio;
 }) {
   return (
-    <section className="mt-10 md:mt-12">
+    <section>
       {/* El hito titula la sección: dice «acá va en qué punto del camino
           estás», que es lo que la sección contesta. */}
       <TituloDeBloque Icono={ICONOS.etapa}>Estado de mi caso</TituloDeBloque>
@@ -509,6 +518,86 @@ function AccesosEnLista({ opciones }: { opciones: Opcion[] }) {
   );
 }
 
+/**
+ * **Dos columnas arriba, una abajo.** A la izquierda qué contrató; a la derecha,
+ * lo que le está pasando a eso que contrató. Son las dos preguntas con que se
+ * entra al portal y ahora se contestan de una mirada, sin bajar.
+ *
+ * **Qué va a la derecha lo decide la composición**, no esta pantalla: es el
+ * bloque que el servicio principal manda —el estado del caso en una
+ * renegociación, la lista de causas en una defensa en juicio, la de escrituras
+ * en protección patrimonial—. `bloques` ya viene en ese orden, así que el
+ * primero después del servicio es el que va al lado y los demás bajan enteros.
+ *
+ * Lo que baja es lo que **se le suma** al servicio principal: las escrituras de
+ * quien además tiene juicios, los juicios de quien tiene una renegociación. Van
+ * a ancho completo porque son listas que pueden crecer, y media pantalla es poco
+ * para una lista de cuatro.
+ *
+ * En el teléfono la reja se apila sola y queda el orden de siempre: servicio,
+ * después lo suyo, después lo que se le suma.
+ */
+function BloquesDelInicio({ datos }: { datos: DatosInicio }) {
+  const [principal, ...secundarios] = datos.composicion.bloques.filter(
+    (bloque) => bloque !== "servicio",
+  );
+
+  const bloque = (clave: BloqueDelInicio) => {
+    if (clave === "caso") {
+      return (
+        <BloqueDelCaso
+          etapa={datos.etapa?.visibleParaCliente ? datos.etapa : null}
+          servicio={nombreDelServicioPrincipal(datos.serviciosPrincipales)}
+          tipo={datos.composicion.servicioPrincipal[0]}
+        />
+      );
+    }
+
+    if (clave === "juicios") {
+      // El tribunal titula y el martillo marca cada fila: género y especie. La
+      // sección es el lugar donde pasan todas, y cada fila un asunto que se
+      // resuelve ahí.
+      return <ListaDeCajas titulo="Mis juicios" Icono={ICONOS.tribunal} items={datos.juicios} />;
+    }
+
+    return (
+      <ListaDeCajas
+        titulo="Mis escrituras"
+        Icono={ICONOS.documento}
+        items={datos.escrituras}
+        // Solo cuando las escrituras son el servicio principal: ahí el bloque
+        // está aunque no haya ninguna en marcha todavía. Como aditivo de una
+        // renegociación, si no hay nada no aparece.
+        vacio={
+          muestraBloque(datos.composicion, "escrituras")
+            ? "Todavía no hay ninguna escritura en marcha. Cuando empecemos con la primera, la vas a ver acá con la etapa en que va."
+            : undefined
+        }
+      />
+    );
+  };
+
+  return (
+    <>
+      <div className="grid gap-5 md:grid-cols-2 md:items-start">
+        <TarjetaDelServicio
+          nombres={datos.serviciosPrincipales.map((servicio) => servicio.nombre)}
+        />
+
+        {principal ? bloque(principal) : null}
+      </div>
+
+      {secundarios.length > 0 ? (
+        <div className="mt-10 space-y-10 md:mt-12 md:space-y-12">
+          {secundarios.map((clave) => (
+            <div key={clave}>{bloque(clave)}</div>
+          ))}
+        </div>
+      ) : null}
+    </>
+  );
+}
+
 export function Inicio() {
   const { fase, datos, recargar } = useCarga("inicio", cargarInicio);
   const saludo = saludoSegunHora(new Date());
@@ -551,42 +640,7 @@ export function Inicio() {
 
           {fase === "listo" && datos ? (
             <>
-              {/* Arriba, sola, la etiqueta de qué contrató. Después los bloques
-                  desplegables, todos con la misma piel y en el orden de la
-                  composición: primero el que reemplaza al caso, después el que
-                  se le suma. Cada caja va por su propia etapa, así que los
-                  juicios y las escrituras se listan por separado. */}
-              <TarjetaDelServicio
-                nombres={datos.serviciosPrincipales.map((servicio) => servicio.nombre)}
-              />
-
-              {muestraBloque(datos.composicion, "caso") ? (
-                <BloqueDelCaso
-                  etapa={datos.etapa?.visibleParaCliente ? datos.etapa : null}
-                  servicio={nombreDelServicioPrincipal(datos.serviciosPrincipales)}
-                  tipo={datos.composicion.servicioPrincipal[0]}
-                />
-              ) : null}
-
-              {/* El tribunal titula y el martillo marca cada fila: género y
-                  especie. La sección es el lugar donde pasan todas —el
-                  tribunal—, y cada fila es un asunto que se resuelve ahí. Con el
-                  martillo arriba y abajo, el título y sus filas decían lo mismo
-                  y la sección dejaba de nombrar nada. */}
-              <ListaDeCajas titulo="Mis juicios" Icono={ICONOS.tribunal} items={datos.juicios} />
-              <ListaDeCajas
-                titulo="Mis escrituras"
-                Icono={ICONOS.documento}
-                items={datos.escrituras}
-                // Solo cuando las escrituras son el servicio principal: ahí el
-                // bloque está aunque no haya ninguna en marcha todavía. Como
-                // aditivo de una renegociación, si no hay nada no aparece.
-                vacio={
-                  muestraBloque(datos.composicion, "escrituras")
-                    ? "Todavía no hay ninguna escritura en marcha. Cuando empecemos con la primera, la vas a ver acá con la etapa en que va."
-                    : undefined
-                }
-              />
+              <BloquesDelInicio datos={datos} />
 
               <section className="mt-10 md:mt-12">
                 {/* Bajó de 30 a 24 px en el computador: con el nombre del
