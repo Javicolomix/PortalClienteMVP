@@ -1082,6 +1082,11 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   protección patrimonial) son **un ejemplo, no el catálogo definitivo**. No
   inviertas en afinar su contenido hasta que Lexy confirme la lista real.
 
+- 2026-09-16: **una sesión que apunta a un cliente que ya no existe se cierra
+  sola** y lleva al acceso. Pasa cada vez que cambia el set de datos, y el portal
+  lo mostraba como «Revisa tu conexión»: mandaba a revisar lo único que no tenía
+  nada que ver, y reintentar no lo arreglaba nunca.
+
 - 2026-09-16: «Mi servicio» muestra **siempre cuatro beneficios**, también en el
   compuesto. Ahí salían ocho —los cuatro de cada mitad— y la sección dejaba de
   ser una respuesta de una mirada para volverse un catálogo. Se eligen por turnos

@@ -20,6 +20,18 @@ import type {
 } from "./portal.types";
 import { servicioEnFrase } from "./portal.types";
 
+/**
+ * La persona de la sesión, o ninguna.
+ *
+ * Si el id guardado **no corresponde a nadie**, la sesión se cierra antes de
+ * fallar. Pasa cada vez que cambia el set de datos —un cliente que se retira
+ * deja a quien lo tenía abierto apuntando a alguien que ya no está— y sin esto
+ * el portal mostraba «No pudimos cargar esta información. Revisa tu conexión»,
+ * que manda a revisar justo lo que no tiene nada que ver: la persona reintenta,
+ * vuelve a fallar y no hay forma de salir de ahí más que apretar «Salir» de
+ * pura intuición. Con la sesión cerrada, `RutaProtegida` lleva al acceso, que
+ * es la pantalla donde esto sí se arregla: entrando de nuevo.
+ */
 async function cargarClienteEnSesion(): Promise<Cliente> {
   const clienteId = sesion.getSnapshot();
   if (!clienteId) throw new Error("No hay sesión iniciada.");
@@ -42,7 +54,11 @@ async function cargarClienteEnSesion(): Promise<Cliente> {
     },
   );
 
-  if (!cliente) throw new Error("No encontramos el caso de la persona en sesión.");
+  if (!cliente) {
+    sesion.cerrar();
+    throw new Error("La sesión apuntaba a un caso que ya no existe.");
+  }
+
   return cliente;
 }
 
