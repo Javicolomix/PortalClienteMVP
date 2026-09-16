@@ -853,10 +853,16 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   cinco empezar** —Santander cae en el rosa, BancoEstado en el azul—; si ese ya
   está tomado, se corre al siguiente libre. Van aclaradas a la mitad del camino
   al blanco.
-- 2026-09-16: **el desplegable usa la piel de «Mi servicio»**: dos recuadros con
-  dibujo índigo y título navy, y las respuestas en cajitas de a dos. Se abría con
-  un bloque lila y cuatro tarjetas sueltas, y el equipo dijo que ahí se perdía el
-  hilo con el resto del portal.
+- 2026-09-16: **el desplegable usa la piel de «Mi servicio»** y con jerarquía:
+  arriba «Estado de mi caso» con la explicación entera —el mensaje del capitán y
+  lo que el equipo está haciendo, que son la misma respuesta—; abajo los tres
+  detalles apilados y sin título de sección. Una sola versión para las tres
+  filas: «qué viene después» ya no se reserva para el caso único.
+- 2026-09-16: **el color de una escritura sale de su tipo**, no de la caja: una
+  compraventa de inmueble es verde en todas las cuentas. Dos del mismo tipo
+  comparten color, y lo que las separa es la etapa, que es la línea que manda.
+  Las tintas bajan de medio camino al blanco a un tercio: a la mitad se volvían
+  pasteles y dejaban de leerse como el color que son.
 - 2026-09-16: **en la fila, una línea por pregunta**: acreedor, rol, etapa. Los
   dos primeros juntos entraban justo, y en los acreedores largos el rol caía al
   renglón siguiente en unas filas sí y en otras no.

@@ -1,4 +1,5 @@
 import {
+  ArrowRight,
   Briefcase,
   CircleCheck,
   ClipboardCheck,
@@ -58,6 +59,7 @@ export const ICONOS = {
   equipo: Briefcase,
   tarea: ClipboardCheck,
   camino: Signpost,
+  siguiente: ArrowRight,
   etapa: Milestone,
   mensaje: MessageCircle,
   pago: CreditCard,

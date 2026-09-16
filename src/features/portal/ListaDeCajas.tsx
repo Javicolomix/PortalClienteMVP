@@ -129,7 +129,6 @@ export function FilaDesplegable({
   tinta,
   Icono,
   etapa,
-  completo,
 }: {
   id: string;
   /**
@@ -147,11 +146,6 @@ export function FilaDesplegable({
   /** El dibujo de la marca: el martillo de las causas, el tipo de la escritura. */
   Icono?: Icono;
   etapa: Etapa | null;
-  /**
-   * Solo el estado del caso. En las listas el detalle va breve: la bajada de la
-   * etapa y «qué puede pasar después» no ayudan a comparar una causa con otra.
-   */
-  completo?: boolean;
 }) {
   const [abierto, setAbierto] = useState(false);
   const panelId = `detalle-${id}`;
@@ -225,7 +219,7 @@ export function FilaDesplegable({
 
       {abierto ? (
         <div id={panelId} className="border-t border-border-subtle bg-surface-subtle p-3">
-          <DetalleDeEtapa etapa={etapa} completo={completo} />
+          <DetalleDeEtapa etapa={etapa} />
         </div>
       ) : null}
     </div>

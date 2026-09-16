@@ -323,7 +323,6 @@ function BloqueDelCaso({
           identidad={{ principal: servicio, claveDeColor: servicio }}
           Icono={iconoDelServicio(tipo)}
           etapa={etapa}
-          completo
         />
       </div>
     </section>

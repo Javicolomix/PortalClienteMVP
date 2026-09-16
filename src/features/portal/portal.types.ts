@@ -150,12 +150,11 @@ export type IdentidadDeCaja = {
    * - En una **causa** la clave es el acreedor, así que dos causas del mismo
    *   banco salen del mismo color a propósito: son del mismo acreedor y eso es
    *   información. Lo que las separa es el rol, que va escrito al lado.
-   * - En una **escritura** la clave es la caja. Dos compraventas de inmueble
-   *   tienen el mismo texto, el mismo tipo y nada que las distinga —en Streak no
-   *   existe ese dato—, así que una burbuja sacada del tipo les daría el mismo
-   *   color y volvería a dejarlas como un dato repetido por error, que es
-   *   exactamente lo que el color venía a resolver. Sacándola de la caja, las dos
-   *   filas se separan aunque digan lo mismo.
+   * - En una **escritura** la clave es el tipo, así que dos compraventas de
+   *   inmueble salen del mismo verde. Se probó al revés —una tinta por caja, para
+   *   separarlas— y el diseñador lo corrigió: el color de una escritura tiene que
+   *   decir de qué es, no cuál de dos es. Lo que separa dos del mismo tipo es la
+   *   etapa, que es la línea que manda en la fila.
    *
    * El color no significa nada por sí solo en ninguno de los dos casos: sirve
    * para distinguir y para agrupar, no para decir qué pasa. Lo que pasa lo dice
@@ -167,7 +166,7 @@ export type IdentidadDeCaja = {
 export const identidadDeLaCaja = (caja: Caja): IdentidadDeCaja | undefined => {
   if (caja.tipo !== "defensaEnJuicio") {
     return caja.identificador
-      ? { principal: caja.identificador, claveDeColor: caja.id }
+      ? { principal: caja.identificador, claveDeColor: caja.identificador }
       : undefined;
   }
 

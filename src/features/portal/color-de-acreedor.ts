@@ -66,14 +66,14 @@ const COLORES: [RegExp, string][] = [
  * pantalla, que es exactamente el problema de cuatro martillos en una lista.
  * Cualquier paleta que inventáramos acá competiría con esa.
  *
- * Van **aclaradas a la mitad del camino al blanco**, que es donde quedaron
- * cuando el diseñador las aprobó: el trazo lleno competía con el nombre del
- * acreedor, que es lo que de verdad identifica la causa, y un naranja pleno en
- * una pantalla sobre deudas se lee como una alarma.
+ * Van **aclaradas un tercio del camino al blanco**: el trazo lleno competía con
+ * el nombre del acreedor, que es lo que de verdad identifica la causa, pero a la
+ * mitad del camino se volvían pasteles y dejaban de leerse como el verde, el
+ * azul o el naranja que son. Un tercio les baja el grito sin quitarles el color.
  */
 const SERIE = ["#2f80ed", "#1aab8a", "#f7630c", "#b14ad1", "#e23f74"] as const;
 
-const aclarar = (hex: string, haciaElBlanco = 0.5): string => {
+const aclarar = (hex: string, haciaElBlanco = 0.32): string => {
   const canal = (desde: number) =>
     Math.round(
       parseInt(hex.slice(desde, desde + 2), 16) * (1 - haciaElBlanco) + 255 * haciaElBlanco,
@@ -145,6 +145,22 @@ const casillaDeLaClave = (clave: string): number => {
   return suma % TINTAS.length;
 };
 
+/**
+ * **La casilla de un tipo de escritura sale de lo que la escritura es**, no del
+ * azar: una compraventa de inmueble es verde porque una casa es verde, y lo va a
+ * ser en todas las cuentas y todos los meses. Un tipo que no esté acá cae en el
+ * reparto y queda con un color estable igual, solo que sin significado.
+ *
+ * Los índices son los de `SERIE`: 0 azul, 1 verde, 2 naranja, 3 magenta, 4 rosa.
+ */
+const CASILLA_POR_TIPO: [RegExp, number][] = [
+  [/inmueble|propiedad|departamento|casa|hipoteca/i, 1],
+  [/veh[íi]culo|autom[óo]vil/i, 0],
+  [/sociedad|empresa|acciones/i, 3],
+  [/mandato|poder/i, 2],
+  [/hereditari|herencia|conyugal|matrimonial|gananciales/i, 4],
+];
+
 export type ItemConColor = { claveDeColor: string; acreedor?: string };
 
 export const coloresDeLaLista = (items: (ItemConColor | undefined)[]): string[] => {
@@ -158,9 +174,13 @@ export const coloresDeLaLista = (items: (ItemConColor | undefined)[]): string[] 
     if (asignada !== undefined) return TINTAS[asignada];
 
     const marca = COLORES.find(([patron]) => item.acreedor && patron.test(item.acreedor));
+    const porTipo = item.acreedor
+      ? undefined
+      : CASILLA_POR_TIPO.find(([patron]) => patron.test(item.claveDeColor));
+
     let casilla = marca
       ? masCercanoDeLaSerie(matizDe(marca[1]))
-      : casillaDeLaClave(item.claveDeColor);
+      : (porTipo?.[1] ?? casillaDeLaClave(item.claveDeColor));
 
     const anterior = fila > 0 ? porClave.get(items[fila - 1]?.claveDeColor ?? "") : undefined;
     for (let intento = 0; intento < TINTAS.length; intento += 1) {

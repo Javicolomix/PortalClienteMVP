@@ -1,7 +1,5 @@
 import type { ReactNode } from "react";
 
-import { cn } from "@/shared/lib/utils/cn";
-
 import { ICONOS } from "./iconos";
 import { NIVELES } from "./nivel-urgencia";
 import type { Etapa } from "./portal.types";
@@ -181,9 +179,10 @@ export function TarjetaInformativa({
  * otra pregunta. El nombre de la etapa no se repite acá —lo dice el título de la
  * fila, justo arriba—: solo va el rótulo «Etapa actual» y debajo la explicación.
  *
- * Después va en dos versiones. La **completa** —la del estado del caso— trae
- * todo lo que escribió el capitán, «qué puede pasar después» incluida. La
- * **breve** —la de cada juicio y cada escritura— deja fuera el futuro: con dos o
+ * **Una sola versión para las tres filas.** Estuvo en dos —la del estado del
+ * caso con «qué viene después» y la de las listas sin él— y se unificó: si esa
+ * respuesta vale para el caso único, vale igual para cada causa, y dos versiones
+ * del mismo panel obligan a aprender dos veces dónde está cada cosa. Con dos o
  * tres causas abiertas la pregunta es «cuál de todas me pide algo», y eso se
  * responde comparando lo que cada una necesita, no leyendo el futuro de cada
  * una.
@@ -195,7 +194,7 @@ export function TarjetaInformativa({
  * Cuando la etapa es de trabajo interno no hay nada que mostrar, y decirlo es
  * mejor que un panel vacío.
  */
-export function DetalleDeEtapa({ etapa, completo }: { etapa: Etapa | null; completo?: boolean }) {
+export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
   if (!etapa) {
     return (
       <p className="type-supporting px-1 py-1 leading-relaxed text-muted-foreground">
@@ -205,13 +204,7 @@ export function DetalleDeEtapa({ etapa, completo }: { etapa: Etapa | null; compl
     );
   }
 
-  const tarjetas = [
-    {
-      clave: "equipo",
-      Icono: ICONOS.equipo,
-      titulo: "Qué está haciendo tu equipo",
-      texto: etapa.queHaceLexy,
-    },
+  const detalles = [
     {
       clave: "tarea",
       Icono: ICONOS.tarea,
@@ -219,70 +212,67 @@ export function DetalleDeEtapa({ etapa, completo }: { etapa: Etapa | null; compl
       texto: etapa.queNecesitamosDelCliente,
     },
     { clave: "plazo", Icono: ICONOS.reloj, titulo: "Plazo esperado", texto: etapa.plazoEsperado },
-    ...(completo
-      ? [
-          {
-            clave: "camino",
-            Icono: ICONOS.camino,
-            titulo: "Qué puede pasar después",
-            texto: etapa.quePuedePasarDespues,
-          },
-        ]
-      : []),
+    {
+      clave: "camino",
+      // La flecha y no el poste indicador: el poste lo lleva el título del
+      // recuadro de arriba, y dos señales iguales en el mismo panel se leen como
+      // la misma cosa dicha dos veces.
+      Icono: ICONOS.siguiente,
+      titulo: "Qué viene después",
+      texto: etapa.quePuedePasarDespues,
+    },
   ];
 
   return (
-    <div className="space-y-4">
-      {/* **La misma piel que «Mi servicio».** Se abría con un bloque lila y
-          cuatro tarjetas sueltas, y el equipo lo dijo mirándolo: al desplegar,
-          la información se despega del resto del portal y cuesta seguir el hilo.
-          Ahora son dos recuadros con la misma estructura que esa pantalla —un
-          dibujo índigo, un título navy y el contenido adentro—, así abrir una
-          fila no se siente como entrar a otro producto.
+    <div className="space-y-3">
+      {/* **Primero el estado y su explicación; después, los detalles.** Lo de
+          arriba es una sola cosa —qué está pasando— dicha en dos párrafos: el
+          mensaje del capitán y lo que el equipo está haciendo. Iban separados, en
+          dos recuadros del mismo porte, y ahí la persona tenía que armar sola
+          que eran la misma respuesta.
+
+          La piel es la de «Mi servicio»: dibujo índigo, título navy y el
+          contenido adentro. Se abría con un bloque lila y cuatro tarjetas
+          sueltas, un lenguaje que no existía en ninguna otra parte del portal, y
+          al desplegar se perdía el hilo con el resto de la pantalla.
 
           Sin el nombre de la etapa: ya está en el título de la fila, a diez
-          píxeles de distancia. Repetido y en cuerpo más grande, la persona lee
-          dos veces lo mismo y la segunda parece otra cosa. */}
-      <TarjetaDeSeccion Icono={ICONOS.etapa} titulo="En qué va">
+          píxeles. Repetido y en cuerpo más grande, la persona lee dos veces lo
+          mismo y la segunda parece otra cosa. */}
+      <TarjetaDeSeccion Icono={ICONOS.etapa} titulo="Estado de mi caso">
         <p className="type-supporting leading-relaxed whitespace-pre-line text-muted-foreground">
           {etapa.mensajePrincipal}
         </p>
+        <p className="type-supporting mt-3 leading-relaxed whitespace-pre-line text-muted-foreground">
+          {etapa.queHaceLexy}
+        </p>
       </TarjetaDeSeccion>
 
-      {/* Las respuestas van **de a dos y en cajitas**, igual que los beneficios
-          del servicio. No son alternativas entre las que se elige una: son las
-          partes de una misma explicación, y en dos columnas se ven todas de una
-          mirada en vez de tener que bajar leyéndolas. */}
-      <TarjetaDeSeccion Icono={ICONOS.tarea} titulo="Qué está pasando">
-        <ul className="grid grid-cols-2 gap-2.5">
-          {tarjetas.map((tarjeta, indice) => (
-            <li
-              key={tarjeta.clave}
-              className={cn(
-                "rounded-lg bg-surface-subtle p-3.5 ring-1 ring-border-subtle",
-                // Con tres respuestas —las de una causa o una escritura, que no
-                // llevan «qué puede pasar después»— la última se lleva las dos
-                // columnas. Sola en su fila dejaba media reja vacía al lado, que
-                // se lee como una tarjeta que falta.
-                indice === tarjetas.length - 1 && tarjetas.length % 2 === 1 && "col-span-2",
-              )}
-            >
-              <tarjeta.Icono
-                className="size-[18px] shrink-0 text-primary"
+      {/* Los tres detalles, **apilados y sin título de sección**. Apilados
+          porque se leen en orden —qué me toca, para cuándo, qué sigue— y no son
+          tres cosas entre las que elegir; sin título porque ya son la letra
+          chica de lo de arriba, y ponerles encabezado los subiría al mismo nivel
+          que la explicación, que es justo lo que había que deshacer. */}
+      <div className="rounded-xl bg-card p-5 shadow-card ring-1 ring-border-subtle md:p-6">
+        <ul className="divide-y divide-border-subtle">
+          {detalles.map((detalle) => (
+            <li key={detalle.clave} className="flex gap-3 py-3.5 first:pt-0 last:pb-0">
+              <detalle.Icono
+                className="mt-0.5 size-[18px] shrink-0 text-primary"
                 strokeWidth={1.9}
                 aria-hidden
               />
 
-              <h3 className="type-supporting mt-2 font-semibold text-brand-navy">
-                {tarjeta.titulo}
-              </h3>
-              <p className="type-meta mt-1 leading-relaxed whitespace-pre-line text-muted-foreground">
-                {tarjeta.texto}
-              </p>
+              <div className="min-w-0">
+                <h3 className="type-supporting font-semibold text-brand-navy">{detalle.titulo}</h3>
+                <p className="type-supporting mt-1 leading-relaxed whitespace-pre-line text-muted-foreground">
+                  {detalle.texto}
+                </p>
+              </div>
             </li>
           ))}
         </ul>
-      </TarjetaDeSeccion>
+      </div>
 
       <RefuerzoDeUrgencia etapa={etapa} />
     </div>

@@ -89,10 +89,15 @@ const POR_TIPO: Record<string, IconoDelPortal> = {
     "M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6m-6 -6h15m-6 0v-5",
   ]),
 
-  "compraventa de inmueble": dibujo("home", [
+  // Una casa **con una moneda**, y no la casa a secas del banco de Tabler: una
+  // compraventa no es una casa, es una casa que cambia de dueño por plata. El
+  // techo y el cuerpo son los del `home` del banco; la puerta se reemplaza por
+  // la moneda, que es donde el ojo cae.
+  "compraventa de inmueble": dibujo("home-dollar", [
     "M5 12l-2 0l9 -9l9 9l-2 0",
     "M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7",
-    "M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6",
+    "M9.5 16.5a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0",
+    "M12 15v3",
   ]),
 
   "compraventa de bienes muebles": dibujo("armchair", [
