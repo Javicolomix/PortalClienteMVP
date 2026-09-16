@@ -846,7 +846,15 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   de antes, tarjetas y fondo eran del mismo tono y la pantalla se leía como una
   sola lámina plana. Aplica a todas las pantallas, no solo a «Mi servicio»: una
   sola con otro fondo se habría leído como un error.
-- 2026-09-16: **el color de las listas pasa a ser un degradé.** Cada lista va de
+- 2026-09-16: **todos los dibujos de las filas van del mismo índigo.** Lo puso el
+  líder de diseño y cierra el tema del color: en una lista de piezas iguales, el
+  color que cambia de fila en fila no se lee como identidad sino como **estado**
+  —cuatro martillos de cuatro colores hacen pensar que uno está activo y otro
+  no, o que uno se puede tocar y otro no— y acá las cuatro filas son lo mismo y
+  las cuatro se abren igual. El índigo es el color de acción del sistema y estas
+  filas son accionables. Se descartan así los dos sistemas anteriores: el color
+  por acreedor y el degradé por posición. `degrade-de-la-lista.ts` se borra.
+- 2026-09-16 (descartado): **el color de las listas era un degradé.** Cada lista va de
   índigo profundo a lavanda clara, con los pasos repartidos parejo: con tres
   filas, tres pasos. Un degradé solo existe dentro de una familia, así que la
   rampa obliga a la línea índigo de Lexy y **el color deja de significar quién y

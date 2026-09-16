@@ -5,7 +5,6 @@ import { useState } from "react";
 import { cn } from "@/shared/lib/utils/cn";
 
 import { DetalleDeEtapa } from "./BloquesDelPortal";
-import { colorDe, coloresDeLaLista } from "./degrade-de-la-lista";
 import { iconoDeLaCaja,type IconoDelPortal } from "./iconos-de-escritura";
 import { NIVELES } from "./nivel-urgencia";
 import {
@@ -64,28 +63,35 @@ export function TituloDeBloque({
 }
 
 /**
- * **La marca de la fila**: el círculo de la izquierda con que se reconoce de un
+ * **La marca de la fila**: el dibujo de la izquierda, con que se reconoce de un
  * vistazo de qué es cada caja. Un martillo en las causas, el dibujo del tipo en
  * las escrituras —una casa, un auto, una sociedad—.
  *
- * Va **sin fondo**: el dibujo solo, con su color. El círculo gris que tenía
- * detrás lo hacía parecer el avatar de una aplicación de mensajería, y encerraba
- * una figura que no necesita encerrarse para leerse.
+ * **Todas van del mismo color.** Se probaron dos sistemas de color distintos
+ * —uno por acreedor y después un degradé por posición— y los dos se descartaron
+ * por la misma razón, que puso el líder de diseño: en una lista de piezas
+ * iguales, el color que cambia de fila en fila no se lee como identidad, se lee
+ * como **estado**. Cuatro martillos de cuatro colores hacen pensar que uno está
+ * activo y otro no, o que uno se puede tocar y otro no. Y acá las cuatro filas
+ * son exactamente lo mismo y las cuatro se abren igual.
  *
- * En las causas el color sale de **la marca del acreedor** —rojo Santander,
- * celeste Caja Los Andes—, que es lo que la persona tiene visto de la tarjeta y
- * del cajero. En las escrituras, y en cualquier acreedor que no tengamos
- * fichado, sale del reparto de tintas neutras.
+ * El índigo es el color de acción del sistema y estas filas son accionables, así
+ * que además de no mentir, dice la verdad. Es el mismo de los dibujos de los
+ * recuadros del desplegable, así que el portal entero tiene un solo color de
+ * dibujo.
+ *
+ * Lo que distingue una fila de otra es lo que siempre debió distinguirlas: el
+ * nombre del acreedor o el tipo de escritura, escritos arriba, y la forma del
+ * dibujo.
  *
  * Va `aria-hidden`: el dibujo no dice nada que el texto de la fila no diga ya
  * entero.
  */
-function MarcaDeLaCaja({ Icono, tinta }: { Icono: Icono; tinta: string }) {
+function MarcaDeLaCaja({ Icono }: { Icono: Icono }) {
   return (
     <span
       aria-hidden
-      className="flex size-6 shrink-0 items-center justify-center"
-      style={{ color: tinta }}
+      className="flex size-6 shrink-0 items-center justify-center text-primary"
     >
       <Icono className="size-[22px]" strokeWidth={1.75} />
     </span>
@@ -127,7 +133,6 @@ function MarcaDeLaCaja({ Icono, tinta }: { Icono: Icono; tinta: string }) {
 export function FilaDesplegable({
   id,
   identidad,
-  tinta,
   Icono,
   etapa,
 }: {
@@ -137,13 +142,6 @@ export function FilaDesplegable({
    * una sola y no hay de qué distinguirla—, así que va sin burbuja ni rótulo.
    */
   identidad?: IdentidadDeCaja;
-  /**
-   * El color de la marca: el de la marca del acreedor cuando lo tenemos, o el
-   * que le toque del reparto. Lo decide la lista y no la fila, porque para que
-   * dos vecinas no salgan iguales hay que mirarlas juntas. Sin lista —el estado
-   * del caso, que es una sola— sale de la clave.
-   */
-  tinta?: string;
   /** El dibujo de la marca: el martillo de las causas, el tipo de la escritura. */
   Icono?: Icono;
   etapa: Etapa | null;
@@ -163,7 +161,7 @@ export function FilaDesplegable({
           className="flex w-full items-center gap-2.5 px-4 py-4 text-left transition-colors md:gap-3 md:px-5 [-webkit-tap-highlight-color:transparent] hover:bg-surface-subtle active:bg-surface-muted focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring"
         >
           {Icono && identidad ? (
-            <MarcaDeLaCaja Icono={Icono} tinta={tinta ?? colorDe()} />
+            <MarcaDeLaCaja Icono={Icono} />
           ) : null}
 
           <span className="min-w-0 flex-1">
@@ -284,11 +282,6 @@ export function ListaDeCajas({
 }) {
   const identidades = items.map((item) => identidadDeLaCaja(item.caja));
 
-  // El degradé se calcula mirando la lista entera: cada paso depende de cuántas
-  // filas hay, así que una lista de tres y una de seis no pueden compartir
-  // cálculo.
-  const colores = coloresDeLaLista(identidades);
-
   if (items.length === 0 && !vacio) return null;
 
   return (
@@ -311,7 +304,6 @@ export function ListaDeCajas({
                 <FilaDesplegable
                   id={item.caja.id}
                   identidad={identidades[fila]}
-                  tinta={colores[fila]}
                   Icono={iconoDeLaCaja(item.caja)}
                   etapa={etapa}
                 />
