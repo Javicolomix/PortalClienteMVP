@@ -99,15 +99,18 @@ function MarcaDeLaCaja({ Icono, tinta }: { Icono: Icono; tinta: string }) {
  * causas: la pregunta que trae la persona es «cuál de todas me pide algo», y esa
  * línea la responde sin abrir ninguna.
  *
- * **Arriba el nombre de la gestión, abajo la etapa.** Estuvo al revés —la etapa
- * como titular y el identificador como rótulo chico— y con listas de una o dos
- * filas funcionaba: la única pregunta era «en qué va». Con cuatro escrituras
- * dejó de funcionar, y el equipo de PP lo dijo mirándolas: la primera pregunta
- * pasó a ser **cuál de todas es esta**, y eso lo contesta el tipo de gestión, no
- * la etapa. La etapa quedó debajo y subió a 14 px, porque bajar de jerarquía no
- * es volverse letra chica: sigue siendo lo que hay que poder leer de corrido.
+ * **Manda la etapa, y manda en las tres.** Arriba, en chico, de qué caja es
+ * —el servicio, el acreedor con su rol, el tipo de escritura— y abajo, grande,
+ * en qué va. Se probó al revés, con el identificador de titular, y el equipo lo
+ * corrigió: quien abre el portal no viene a leer un rol ni a confirmar que tiene
+ * una compraventa, viene a saber qué está pasando. El identificador sirve para
+ * ubicar cuál de todas es, que es un paso previo y no el asunto.
  *
- * Dentro del titular, **no todo pesa igual**: el acreedor va con tinta y el rol
+ * Las tres filas se ven iguales a propósito. Antes el estado del caso tenía una
+ * jerarquía y las listas otra, y eso obligaba a aprender dos veces a leer la
+ * misma pantalla.
+ *
+ * Dentro del rótulo, **no todo pesa igual**: el acreedor va con tinta y el rol
  * en gris detrás. Es el orden en que la persona reconoce su causa, y el que el
  * equipo de litigios pidió corregir.
  *
@@ -127,7 +130,6 @@ export function FilaDesplegable({
   Icono,
   etapa,
   completo,
-  mandaLaEtapa,
 }: {
   id: string;
   /**
@@ -144,17 +146,6 @@ export function FilaDesplegable({
   tinta?: string;
   /** El dibujo de la marca: el martillo de las causas, el tipo de la escritura. */
   Icono?: Icono;
-  /**
-   * Invierte la jerarquía de la fila: arriba y en chico el nombre, abajo y
-   * grande la etapa. Es para **el estado del caso**, donde el nombre es el del
-   * servicio y ya se leyó en el bloque de arriba de la pantalla: repetirlo en
-   * grande gasta la línea principal en un dato que la persona acaba de ver.
-   *
-   * En las listas no aplica. Ahí el nombre es el acreedor o el tipo de
-   * escritura, que es justo lo que hay que reconocer entre varias, y sin eso la
-   * fila no se sabe de cuál es.
-   */
-  mandaLaEtapa?: boolean;
   etapa: Etapa | null;
   /**
    * Solo el estado del caso. En las listas el detalle va breve: la bajada de la
@@ -192,35 +183,23 @@ export function FilaDesplegable({
                 y en un teléfono angosto deja «Banco / Estado» arriba y el rol
                 abajo: el acreedor, que es lo que la persona busca primero, queda
                 cortado por la mitad. */}
-            <span className="flex flex-wrap items-baseline gap-x-1.5">
-              <span
-                className={cn(
-                  "font-semibold",
-                  mandaLaEtapa
-                    ? "type-meta text-muted-foreground"
-                    : "type-item-title text-foreground",
-                )}
-              >
+            <span className="type-meta flex flex-wrap items-baseline gap-x-1.5">
+              <span className="font-semibold text-foreground-secondary">
                 {identidad?.principal}
               </span>
 
-              {/* El rol va **sin punto de separación, entero, y en el teléfono
-                  siempre en su propia línea**.
+              {/* El rol va **sin punto de separación y entero**. Sin punto
+                  porque cuando no cabe y baja de línea quedaría colgando al
+                  final de la primera —«Banco Estado ·»— como si faltara algo, y
+                  la diferencia de peso y color ya los separa. Entero porque
+                  partido —«Rol N.° C-» arriba y «1184-2026» abajo— no se
+                  reconoce ningún número.
 
-                  Sin punto porque al caer abajo quedaría colgando al final de la
-                  primera —«Banco Estado ·»— como si faltara algo; la diferencia
-                  de tamaño y de color ya los separa cuando entran juntos.
-
-                  Entero porque partido —«Rol N.° C-» arriba y «1184-2026»
-                  abajo— no se reconoce ningún número.
-
-                  Y **siempre en su propia línea**, no solo cuando no cabe. Al
-                  lado del acreedor competía con él por la misma línea de
-                  lectura, y el acreedor es lo que la persona busca; debajo, la
-                  fila se lee de arriba abajo en el orden en que se pregunta:
-                  quién me demanda, cuál de las causas es, en qué va. */}
+                  Vuelve a la línea del acreedor ahora que los dos son rótulo
+                  chico: bajarlo era necesario cuando el acreedor iba en 16 px y
+                  entre los dos no cabían. */}
               {identidad?.secundario ? (
-                <span className="type-meta basis-full whitespace-nowrap text-muted-foreground">
+                <span className="whitespace-nowrap text-muted-foreground">
                   {identidad.secundario}
                 </span>
               ) : null}
@@ -232,14 +211,7 @@ export function FilaDesplegable({
                   no compite con el nombre de la gestión, pero es lo que la
                   persona vino a leer: con el gris claro de un subtítulo se
                   hundía debajo del titular y había que buscarla. */}
-              <span
-                className={cn(
-                  "min-w-0 flex-1 leading-relaxed",
-                  mandaLaEtapa
-                    ? "text-[17px] font-semibold text-foreground"
-                    : "text-[15px] font-medium text-foreground-secondary",
-                )}
-              >
+              <span className="type-item-title min-w-0 flex-1 font-semibold text-foreground">
                 {etapa ? etapa.nombreParaCliente : "Tu caso está avanzando"}
               </span>
 

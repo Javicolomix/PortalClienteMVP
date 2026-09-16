@@ -103,7 +103,7 @@ export function PaginaDelPortal({
         // por el otro lado. Va chico y no es un enlace: quien quiera volver ya
         // tiene el botón al frente, y dos cosas que llevan al mismo sitio en la
         // misma barra son una de más.
-        actions={<Logo className="h-7" />}
+        actions={<Logo className="h-6" />}
       />
 
       <main className="mx-auto w-full max-w-2xl px-4 pt-6 pb-12 md:px-6 md:pt-10 md:pb-16">

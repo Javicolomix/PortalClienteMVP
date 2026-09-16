@@ -333,17 +333,12 @@ function BloqueDelCaso({
             título a propósito — el título nombra la sección y la fila nombra de
             qué es el caso, igual que en las listas de abajo, donde el tribunal
             titula y cada fila dice de qué banco es.
-
-            Y la etapa manda sobre el nombre del servicio: «Liquidación de
-            deudas» ya se leyó dos veces más arriba, en el bloque lila y en el
-            título de la pantalla. Lo que esta fila tiene que decir es en qué va,
-            que es lo único de la pantalla que cambia mes a mes. */}
+ */}
         <FilaDesplegable
           id="mi-caso"
           identidad={{ principal: servicio, claveDeColor: servicio }}
           Icono={iconoDelServicio(tipo)}
           etapa={etapa}
-          mandaLaEtapa
           completo
         />
       </div>
@@ -538,7 +533,7 @@ export function Inicio() {
           píxeles más alto. */}
       <HeaderBar
         className="hidden h-14 md:flex"
-        brand={<Logo className="h-7" />}
+        brand={<Logo className="h-6" />}
         actions={<BotonSalir />}
       />
 
