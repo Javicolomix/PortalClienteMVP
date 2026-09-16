@@ -1,19 +1,12 @@
-import { ChevronDown, HelpCircle, type LucideIcon } from "lucide-react";
+import { ChevronDown, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/shared/components/base/Popover";
-import { Tag } from "@/shared/components/base/Tag";
 import { cn } from "@/shared/lib/utils/cn";
 
 import { DetalleDeEtapa } from "./BloquesDelPortal";
-import {
-  iconoDeLaCaja,
-  tintaDe,
-  type TintaDeCaja,
-  tintasDeLaLista,
-} from "./identidad-de-caja";
-import { NIVELES, NIVELES_EN_ORDEN } from "./nivel-urgencia";
+import { colorDeAcreedor } from "./color-de-acreedor";
+import { iconoDeLaCaja, tintaDe, tintasDeLaLista } from "./identidad-de-caja";
 import {
   type CajaConEtapa,
   type Etapa,
@@ -23,64 +16,6 @@ import {
 
 /** Cualquier icono de lucide: los de las secciones y los de los tipos de escritura. */
 type Icono = LucideIcon;
-
-/**
- * **Qué significa cada estado**, en una burbuja que se abre desde el título del
- * bloque.
- *
- * Tres palabras sueltas no se explican solas: en la reunión del equipo quedó
- * claro que a primera vista nadie sabe qué le pide «Atención» que no le pida
- * «Urgente». La frase entera aparece al desplegar una fila, pero para eso hay
- * que abrirla, y la persona quiere entender la lista antes de decidir cuál
- * abrir.
- *
- * Va **una por bloque y no una por fila**: la duda es sobre el sistema de tres
- * niveles, no sobre esta causa en particular, así que repetirla en cada fila
- * sería contestar tres veces la misma pregunta. Además obligaría a meter un
- * botón dentro del botón que despliega la fila, que ni el navegador ni el
- * lector de pantalla saben interpretar.
- */
-function LeyendaDeNiveles() {
-  return (
-    <Popover>
-      <PopoverTrigger
-        aria-label="Qué significa cada estado"
-        className="-mr-1 flex shrink-0 items-center gap-1 rounded-button px-1 py-1 type-meta text-muted-foreground transition-colors [-webkit-tap-highlight-color:transparent] hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-      >
-        <HelpCircle className="size-[15px] shrink-0" strokeWidth={1.75} aria-hidden />
-        <span className="hidden sm:inline">¿Qué significan?</span>
-      </PopoverTrigger>
-
-      <PopoverContent
-        align="end"
-        sideOffset={8}
-        className="w-[min(20rem,calc(100vw-2rem))] rounded-lg border-border-subtle p-4"
-      >
-        <p className="type-supporting font-medium text-foreground">Qué significa cada estado</p>
-
-        <dl className="mt-3 space-y-3">
-          {NIVELES_EN_ORDEN.map((clave) => {
-            const nivel = NIVELES[clave];
-
-            return (
-              <div key={clave}>
-                <dt>
-                  <Tag tone={nivel.tono} size="xs" shape="rounded">
-                    <span className={cn("size-1.5 rounded-full", nivel.punto)} aria-hidden />
-                    {nivel.etiqueta}
-                  </Tag>
-                </dt>
-                <dd className="mt-1 type-meta leading-relaxed text-muted-foreground">
-                  {nivel.queSignifica}
-                </dd>
-              </div>
-            );
-          })}
-        </dl>
-      </PopoverContent>
-    </Popover>
-  );
-}
 
 /**
  * El título de un bloque desplegable del inicio: «Estado de mi caso», «Mis
@@ -104,9 +39,6 @@ function LeyendaDeNiveles() {
  * bloque que ya explica que no hay nada es decir dos veces lo mismo, y la
  * segunda con un número.
  *
- * A la derecha, la leyenda de los tres estados. Va en la cabecera del bloque
- * porque explica la columna de pastillas que viene abajo, y ese es el sitio
- * donde se mira antes de empezar a leer las filas.
  */
 export function TituloDeBloque({
   Icono,
@@ -126,8 +58,6 @@ export function TituloDeBloque({
           <span className="type-supporting font-normal text-muted-foreground">({contador})</span>
         ) : null}
       </h2>
-
-      <LeyendaDeNiveles />
     </div>
   );
 }
@@ -137,23 +67,26 @@ export function TituloDeBloque({
  * vistazo de qué es cada caja. Un martillo en las causas, el dibujo del tipo en
  * las escrituras —una casa, un auto, una sociedad—.
  *
- * El color va **en el dibujo y no en el círculo**, que queda gris para todas.
- * Cuatro discos de colores en fila pesan como cuatro semáforos, y en esta
- * pantalla el semáforo ya existe: es la pastilla de urgencia. Teñir solo el
- * dibujo alcanza para separar dos filas sin disputarle la atención a lo que sí
- * hay que mirar.
+ * Va **sin fondo**: el dibujo solo, con su color. El círculo gris que tenía
+ * detrás lo hacía parecer el avatar de una aplicación de mensajería, y encerraba
+ * una figura que no necesita encerrarse para leerse.
+ *
+ * En las causas el color sale de **la marca del acreedor** —rojo Santander,
+ * celeste Caja Los Andes—, que es lo que la persona tiene visto de la tarjeta y
+ * del cajero. En las escrituras, y en cualquier acreedor que no tengamos
+ * fichado, sale del reparto de tintas neutras.
  *
  * Va `aria-hidden`: el dibujo no dice nada que el texto de la fila no diga ya
  * entero.
  */
-function MarcaDeLaCaja({ Icono, tinta }: { Icono: Icono; tinta: TintaDeCaja }) {
+function MarcaDeLaCaja({ Icono, tinta }: { Icono: Icono; tinta: string }) {
   return (
     <span
       aria-hidden
-      className="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface-muted"
+      className="flex size-6 shrink-0 items-center justify-center"
       style={{ color: tinta }}
     >
-      <Icono className="size-[18px]" strokeWidth={1.75} />
+      <Icono className="size-[22px]" strokeWidth={1.75} />
     </span>
   );
 }
@@ -202,11 +135,12 @@ export function FilaDesplegable({
    */
   identidad?: IdentidadDeCaja;
   /**
-   * El color de la marca. Lo decide la lista y no la fila, porque para que dos
-   * vecinas no salgan iguales hay que mirarlas juntas. Sin lista —el estado del
-   * caso, que es una sola— sale de la clave.
+   * El color de la marca: el de la marca del acreedor cuando lo tenemos, o el
+   * que le toque del reparto. Lo decide la lista y no la fila, porque para que
+   * dos vecinas no salgan iguales hay que mirarlas juntas. Sin lista —el estado
+   * del caso, que es una sola— sale de la clave.
    */
-  tinta?: TintaDeCaja;
+  tinta?: string;
   /** El dibujo de la marca: el martillo de las causas, el tipo de la escritura. */
   Icono?: Icono;
   etapa: Etapa | null;
@@ -217,7 +151,6 @@ export function FilaDesplegable({
   completo?: boolean;
 }) {
   const [abierto, setAbierto] = useState(false);
-  const nivel = etapa ? NIVELES[etapa.nivelUrgencia] : null;
   const panelId = `detalle-${id}`;
 
   return (
@@ -275,13 +208,6 @@ export function FilaDesplegable({
               ) : null}
             </span>
 
-            {/* **La etapa y la pastilla, en la misma línea.** La pastilla
-                estaba a la derecha de la fila entera, y ahí le quitaba
-                ochenta píxeles al titular: «Constitución de Sociedades» no
-                entraba en una línea de teléfono y la fila terminaba midiendo
-                cuatro. Acá abajo cabe todo y queda al lado de lo que califica,
-                que es la etapa —no la gestión—. Sigue alineada a la derecha en
-                todas las filas, así que la columna se compara igual. */}
             <span className="mt-0.5 flex items-center gap-2">
               {/* La etapa va en **gris de texto y no en gris de metadato**, y
                   con medio peso de más. Es la segunda línea de la fila, así que
@@ -292,20 +218,6 @@ export function FilaDesplegable({
                 {etapa ? etapa.nombreParaCliente : "Tu caso está avanzando"}
               </span>
 
-              {/* El nivel, con la fila cerrada: **el punto del semáforo y una
-                  palabra**. Con dos o tres causas abiertas la pregunta es «cuál
-                  de todas me pide algo», y eso se compara de un vistazo; una
-                  frase en cada fila obliga a leerlas todas para comparar. El
-                  punto pleno es lo que deja comparar la columna sin leerla —el
-                  relleno de la pastilla es un tinte, y de lejos los tres tintes
-                  se parecen—; la palabra queda para quien no distingue los
-                  colores. La instrucción completa aparece al desplegar. */}
-              {nivel ? (
-                <Tag tone={nivel.tono} size="xs" shape="rounded" className="shrink-0">
-                  <span className={cn("size-1.5 rounded-full", nivel.punto)} aria-hidden />
-                  {nivel.etiqueta}
-                </Tag>
-              ) : null}
             </span>
           </span>
 
@@ -354,7 +266,12 @@ export function ListaDeCajas({
   vacio?: string;
 }) {
   const identidades = items.map((item) => identidadDeLaCaja(item.caja));
-  const tintas = tintasDeLaLista(identidades);
+
+  // El reparto de tintas neutras corre para toda la lista, pero solo se usa
+  // donde no hay color de marca: una causa de un acreedor fichado lleva el suyo
+  // —rojo Santander, celeste Caja Los Andes—, y las escrituras y los acreedores
+  // que no tenemos, el que les toque sin repetir el de la fila de arriba.
+  const respaldo = tintasDeLaLista(identidades);
 
   if (items.length === 0 && !vacio) return null;
 
@@ -378,7 +295,7 @@ export function ListaDeCajas({
                 <FilaDesplegable
                   id={item.caja.id}
                   identidad={identidades[fila]}
-                  tinta={tintas[fila]}
+                  tinta={colorDeAcreedor(item.caja.acreedor) ?? respaldo[fila]}
                   Icono={iconoDeLaCaja(item.caja)}
                   etapa={etapa}
                 />

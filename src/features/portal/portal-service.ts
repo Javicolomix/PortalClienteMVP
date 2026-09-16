@@ -279,19 +279,12 @@ export async function cargarMisPagos(): Promise<DatosMisPagos> {
     cuotas.filter((cuota) => cuota.estado === "pendiente").sort((a, b) => a.numero - b.numero)[0] ??
     null;
 
-  // El historial son las cuotas cerradas —pagadas y morosas—, de la más reciente
-  // a la más antigua, que es el orden en que se busca un pago. La morosa va acá
-  // y no arriba porque es un hecho del pasado que hay que poder consultar, no
-  // una acción de hoy.
-  const historial = cuotas
-    .filter((cuota) => cuota.estado !== "pendiente")
-    .sort((a, b) => b.numero - a.numero);
-
-  // Todas, en el orden del plan: es lo que cuentan las bolitas del avance, y ahí
-  // el orden es el de los meses, no el de la búsqueda.
+  // Todas, en el orden del plan. El historial las muestra enteras —pagadas,
+  // morosas y las que vienen— porque la pregunta que se contesta ahí es «cómo va
+  // mi plan completo», y para eso el orden es el de los meses.
   const todas = [...cuotas].sort((a, b) => a.numero - b.numero);
 
-  return { cliente, proximaCuota, historial, cuotas: todas, configuracion };
+  return { cliente, proximaCuota, cuotas: todas, configuracion };
 }
 
 /**

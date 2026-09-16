@@ -1,9 +1,19 @@
-import { CalendarDays, Check, ChevronDown, Copy, ExternalLink } from "lucide-react";
+import { CalendarDays, Check, Copy, ExternalLink, Receipt } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import { Button } from "@/shared/components/base/Button";
 import { Card, CardContent, CardHeader } from "@/shared/components/base/Card";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/shared/components/base/Dialog";
 import {
   Empty,
   EmptyContent,
@@ -12,11 +22,10 @@ import {
   EmptyTitle,
 } from "@/shared/components/base/Empty";
 import { Table } from "@/shared/components/base/Table";
-import { Tag } from "@/shared/components/base/Tag";
 import { useCarga } from "@/shared/hooks/useCarga";
 import { cn } from "@/shared/lib/utils/cn";
 
-import { formatearFechaCorta } from "./fechas";
+import { formatearFechaBreve, formatearFechaCorta } from "./fechas";
 import { MarcaWhatsapp } from "./MarcaWhatsapp";
 import { CargandoPagina, ErrorDeCarga, PaginaDelPortal } from "./PaginaDelPortal";
 import {
@@ -291,143 +300,155 @@ function ComoPagar({
 }
 
 /**
- * Cómo se muestra una cuota que ya pasó. Una sola función para las dos
- * presentaciones del historial —la tabla del computador y la lista del
- * teléfono—, para que no se puedan contradecir.
+ * Cómo se muestra una cuota en el historial. Un solo lugar para los tres
+ * estados, para que no se puedan contradecir.
  *
- * `morosa` es una cuota que venció sin pago. Va en rojo y con su fecha de
- * vencimiento en vez de la de pago, porque la de pago no existe: dejar la celda
- * vacía haría pensar en un dato que falta, cuando lo que falta es el pago.
+ * **La columna de fecha dice dos cosas según el estado**: en una pagada, cuándo
+ * se pagó; en las otras dos, cuándo vence o venció. Por eso se llama «Fecha» y
+ * no «Fecha de pago», que era el rótulo del boceto: ahí la tabla mostraba solo
+ * cuotas pagadas y no había ambigüedad. Con las doce a la vista, una columna
+ * llamada «fecha de pago» con la fecha de vencimiento de una cuota que nadie
+ * pagó dice algo falso. El encabezado corto y la explicación de arriba lo
+ * dejan claro sin gastar los ochenta píxeles que costaría escribir «Vence el»
+ * en cada fila, que es justo lo que dejaba la columna del estado fuera de la
+ * pantalla en un teléfono.
  */
-const presentacionDeCuota = (cuota: Cuota) =>
-  cuota.estado === "morosa"
-    ? {
-        etiqueta: "Morosa",
-        tono: "danger" as const,
-        fecha: `Venció el ${formatearFechaCorta(cuota.fechaVencimiento)}`,
-        fechaEnTabla: `Venció el ${formatearFechaCorta(cuota.fechaVencimiento)}`,
-      }
-    : {
-        etiqueta: "Pagada",
-        tono: "success" as const,
-        fecha: `Pagada el ${formatearFechaCorta(cuota.fechaPago ?? cuota.fechaVencimiento)}`,
-        fechaEnTabla: formatearFechaCorta(cuota.fechaPago ?? cuota.fechaVencimiento),
-      };
+const presentacionDeCuota = (cuota: Cuota) => {
+  if (cuota.estado === "morosa") {
+    return {
+      etiqueta: "Morosa",
+      color: "text-destructive",
+      fecha: formatearFechaCorta(cuota.fechaVencimiento),
+      fechaBreve: formatearFechaBreve(cuota.fechaVencimiento),
+    };
+  }
+
+  if (cuota.estado === "pendiente") {
+    return {
+      etiqueta: "Pendiente",
+      color: "text-muted-foreground",
+      fecha: formatearFechaCorta(cuota.fechaVencimiento),
+      fechaBreve: formatearFechaBreve(cuota.fechaVencimiento),
+    };
+  }
+
+  return {
+    etiqueta: "Pagada",
+    color: "text-success-strong",
+    fecha: formatearFechaCorta(cuota.fechaPago ?? cuota.fechaVencimiento),
+    fechaBreve: formatearFechaBreve(cuota.fechaPago ?? cuota.fechaVencimiento),
+  };
+};
 
 /**
- * Las cuotas que ya pasaron, **cerradas por defecto**. Es información de respaldo:
- * sirve para comprobar que un pago quedó registrado, no para decidir nada hoy.
- * Abierta ocuparía más pantalla que la cuota que sí hay que pagar, que es lo
- * único que esta pantalla vino a resolver.
+ * **El historial completo, en un modal.**
  *
- * Va como lista y no como tabla. Una tabla de cuatro columnas obliga a
- * desplazar de lado en un teléfono, y acá cada fila tiene solo dos cosas que
- * decir: qué cuota fue y cuándo se pagó. El monto va con el número porque se
- * leen juntos.
+ * Es una tabla de doce filas en una pantalla que ya mide varias pantallas de
+ * alto: abierta en la página empujaba todo lo demás hacia abajo y ganaba un
+ * espacio que no le corresponde. Es información de respaldo —se entra a
+ * comprobar que un pago se registró, no a decidir algo hoy— y el modal es
+ * exactamente eso: aparece cuando se pide y se va cuando se cierra, sin dejarle
+ * la página larga a quien solo venía a transferir.
+ *
+ * Están **todas las cuotas, no solo las pagadas**, porque la pregunta que se
+ * contesta acá es cómo va el plan entero. Van en el orden del plan y no al
+ * revés: es un plan de pagos, se lee de la uno a la última.
+ *
+ * La tabla **se desplaza de lado si no cabe** en vez de apilarse en el teléfono.
+ * Cuatro columnas en 358 píxeles quedan justas, pero convertirlas en fichas
+ * apiladas era dejar de ser una tabla, y lo que se viene a hacer acá —seguir la
+ * columna del estado hacia abajo hasta encontrar la que falló— solo lo permite
+ * una tabla.
  */
-function HistorialDePagos({ cuotas }: { cuotas: Cuota[] }) {
-  const [abierto, setAbierto] = useState(false);
-
+function HistorialDeCuotas({
+  cuotas,
+  urlPagoEnLinea,
+}: {
+  cuotas: Cuota[];
+  urlPagoEnLinea: string;
+}) {
   if (cuotas.length === 0) return null;
-
-  const hayMorosas = cuotas.some((cuota) => cuota.estado === "morosa");
 
   return (
     <section className="mt-10">
-      <div className="overflow-hidden rounded-lg bg-card ring-1 ring-border-subtle">
-        <h2>
-          <button
-            type="button"
-            onClick={() => setAbierto((estaba) => !estaba)}
-            aria-expanded={abierto}
-            aria-controls="historial-de-pagos"
-            className="flex w-full items-center gap-3 px-5 py-4 text-left transition-colors [-webkit-tap-highlight-color:transparent] hover:bg-surface-subtle active:bg-surface-muted focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring"
-          >
-            <span className="min-w-0 flex-1">
-              <span className="type-item-title block text-foreground">
-                Historial de pagos{" "}
-                <span className="font-normal text-muted-foreground">({cuotas.length})</span>
-              </span>
-              <span className="type-supporting mt-0.5 block text-muted-foreground">
-                {hayMorosas ? "Lo que pagaste y lo que quedó pendiente" : "Las cuotas que ya pagaste"}
-              </span>
-            </span>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="outline" className="w-full sm:w-auto">
+            <Receipt aria-hidden />
+            Ver el historial de mis cuotas
+          </Button>
+        </DialogTrigger>
 
-            <ChevronDown
-              className={cn(
-                "size-5 shrink-0 text-foreground-faint transition-transform duration-200 motion-reduce:transition-none",
-                abierto && "rotate-180",
-              )}
-              aria-hidden
-            />
-          </button>
-        </h2>
+        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle scale="compact">Historial de tus cuotas</DialogTitle>
+            <DialogDescription>
+              Las {cuotas.length} cuotas de tu plan. En las pagadas, la fecha es la del pago; en
+              las demás, la de vencimiento.
+            </DialogDescription>
+          </DialogHeader>
 
-        {abierto ? (
-          <div id="historial-de-pagos" className="border-t border-border-subtle">
-            {/* Dos presentaciones del mismo dato. Desde `md` la tabla del
-                sistema, con sus encabezados: cuatro columnas se comparan mejor
-                que cuatro filas, y es lo que la persona espera de un historial.
-                En el teléfono no caben —obligarían a desplazar de lado— así que
-                cada cuota se apila: número y monto arriba, fecha abajo, estado a
-                la derecha. */}
-            <div className="hidden md:block">
-              <Table columns="1fr 1.2fr 1.4fr auto" className="rounded-none border-none">
-                <Table.Header>
-                  <Table.Cell>N° de cuota</Table.Cell>
-                  <Table.Cell>Valor cuota</Table.Cell>
-                  <Table.Cell>Fecha de pago</Table.Cell>
-                  <Table.Cell>Estado</Table.Cell>
-                </Table.Header>
-                <Table.Content>
-                  {cuotas.map((cuota) => (
+          <div className="-mx-1 max-h-[55vh] overflow-auto px-1">
+            <Table
+              columns="0.55fr 1fr 1fr 1.15fr"
+              className="min-w-[18rem] text-[13px] sm:text-sm"
+            >
+              {/* Los encabezados y las fechas van cortos en el teléfono y
+                  enteros desde `sm`. Con «N° de cuota» y un año de cuatro
+                  cifras, las cuatro columnas no caben en 390 px y el navegador
+                  corta la última con puntos suspensivos: la del estado, que es
+                  la que se viene a mirar. */}
+              <Table.Header>
+                <Table.Cell>
+                  <span className="sm:hidden">N°</span>
+                  <span className="hidden sm:inline">N° de cuota</span>
+                </Table.Cell>
+                <Table.Cell>
+                  <span className="sm:hidden">Valor</span>
+                  <span className="hidden sm:inline">Valor cuota</span>
+                </Table.Cell>
+                <Table.Cell>Fecha</Table.Cell>
+                <Table.Cell>Estado</Table.Cell>
+              </Table.Header>
+              <Table.Content>
+                {cuotas.map((cuota) => {
+                  const { etiqueta, color, fecha, fechaBreve } = presentacionDeCuota(cuota);
+
+                  return (
                     <Table.Row key={cuota.id}>
                       <Table.Cell>{cuota.numero}</Table.Cell>
                       <Table.Cell>{FORMATO_PESOS.format(cuota.monto)}</Table.Cell>
-                      <Table.Cell>{presentacionDeCuota(cuota).fechaEnTabla}</Table.Cell>
                       <Table.Cell>
-                        <Tag tone={presentacionDeCuota(cuota).tono} size="xs" shape="rounded">
-                          {presentacionDeCuota(cuota).etiqueta}
-                        </Tag>
+                        <span className="sm:hidden">{fechaBreve}</span>
+                        <span className="hidden sm:inline">{fecha}</span>
+                      </Table.Cell>
+                      <Table.Cell>
+                        {/* Sin `type-data`: ese rol fija 14 px y se comía la
+                            reducción a 13 de la tabla en el teléfono, que es lo
+                            que hacía caber las cuatro columnas. Hereda el
+                            tamaño de la tabla y solo agrega el peso. */}
+                        <span className={cn("font-semibold", color)}>{etiqueta}</span>
                       </Table.Cell>
                     </Table.Row>
-                  ))}
-                </Table.Content>
-              </Table>
-            </div>
-
-            <ul className="md:hidden">
-              {cuotas.map((cuota, fila) => (
-                <li
-                  key={cuota.id}
-                  className={cn(
-                    "flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-3.5",
-                    fila > 0 && "border-t border-border-subtle",
-                  )}
-                >
-                  <span className="min-w-0 flex-1">
-                    <span className="type-data block text-foreground">
-                      Cuota N°{cuota.numero} · {FORMATO_PESOS.format(cuota.monto)}
-                    </span>
-                    <span className="type-meta mt-0.5 block text-muted-foreground">
-                      {presentacionDeCuota(cuota).fecha}
-                    </span>
-                  </span>
-
-                  <Tag
-                    tone={presentacionDeCuota(cuota).tono}
-                    size="xs"
-                    shape="rounded"
-                    className="shrink-0"
-                  >
-                    {presentacionDeCuota(cuota).etiqueta}
-                  </Tag>
-                </li>
-              ))}
-            </ul>
+                  );
+                })}
+              </Table.Content>
+            </Table>
           </div>
-        ) : null}
-      </div>
+
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="ghost">Cerrar</Button>
+            </DialogClose>
+            <Button asChild>
+              <a href={urlPagoEnLinea} target="_blank" rel="noreferrer">
+                Ir a pagar en línea
+                <ExternalLink aria-hidden />
+              </a>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
@@ -502,7 +523,10 @@ function ContenidoDePagos({ datos }: { datos: DatosMisPagos }) {
         </Empty>
 
         <AvanceDelPlan cuotas={datos.cuotas} />
-        <HistorialDePagos cuotas={datos.historial} />
+        <HistorialDeCuotas
+          cuotas={datos.cuotas}
+          urlPagoEnLinea={datos.configuracion.urlPagoEnLinea}
+        />
         <DudasDelCobro
           configuracion={datos.configuracion}
           nombreDelCliente={nombreCompleto(datos.cliente)}
@@ -519,7 +543,10 @@ function ContenidoDePagos({ datos }: { datos: DatosMisPagos }) {
         configuracion={datos.configuracion}
         nombreCliente={nombreCompleto(datos.cliente)}
       />
-      <HistorialDePagos cuotas={datos.historial} />
+      <HistorialDeCuotas
+        cuotas={datos.cuotas}
+        urlPagoEnLinea={datos.configuracion.urlPagoEnLinea}
+      />
       <DudasDelCobro
         configuracion={datos.configuracion}
         nombreDelCliente={nombreCompleto(datos.cliente)}

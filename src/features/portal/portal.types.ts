@@ -278,11 +278,9 @@ export type DatosMisPagos = {
   cliente: Cliente;
   proximaCuota: Cuota | null;
   /**
-   * Las cuotas cerradas —pagadas y morosas—, de la más reciente a la más
-   * antigua, que es el orden en que se busca un pago.
+   * Todas las cuotas del plan, en el orden del plan. Es con lo que se cuenta
+   * cuánto falta y lo que muestra el historial.
    */
-  historial: Cuota[];
-  /** Todas las cuotas del plan. Es con lo que se cuenta cuánto falta. */
   cuotas: Cuota[];
   configuracion: ConfiguracionPortal;
 };

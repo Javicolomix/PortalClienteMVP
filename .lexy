@@ -46,6 +46,7 @@
     "select": "0.1.38",
     "brand-background": "0.1.38",
     "popover": "0.1.38",
-    "table": "0.1.38"
+    "table": "0.1.38",
+    "dialog": "0.1.38"
   }
 }

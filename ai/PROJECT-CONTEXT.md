@@ -831,6 +831,27 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   vieja dejaba la pantalla en blanco, sin nada que explicara qué pasó ni cómo
   salir.
 
+- 2026-09-15: **el martillo lleva el color de la marca del acreedor** —rojo
+  Santander, celeste Caja Los Andes, azul BancoEstado—, que es lo que la persona
+  tiene visto de la tarjeta y del cajero. La tabla vive en
+  `color-de-acreedor.ts`, resuelve por palabra clave (el nombre llega escrito a
+  mano en Streak) y un acreedor que no esté cae en el reparto de tintas neutras.
+  PENDIENTE: **de los valores, solo tres están tomados de fuente** —Santander,
+  BancoEstado y Banco de Chile—; el resto están sacados a ojo del logo y hay que
+  confirmarlos. OJO: hay colores de marca rojos y verdes, que son los mismos del
+  nivel de urgencia. Cuando la pastilla vuelva, hay que mirarlo junto.
+- 2026-09-15: **los iconos van sin fondo.** El círculo gris los hacía parecer el
+  avatar de una aplicación de mensajería.
+- 2026-09-15: **la pastilla de urgencia sale de las listas por ahora**, a pedido
+  del diseñador, para verlas sin ella. El nivel sigue en los datos y en el
+  detalle desplegado; volver a mostrarla es revertir un commit.
+- 2026-09-15: el historial de cuotas pasa a **un modal con la tabla completa**
+  —las doce cuotas, no solo las pagadas— con su estado: Pagada en verde, Morosa
+  en rojo, Pendiente en gris. Abierto en la página empujaba todo lo demás hacia
+  abajo, y es información de respaldo. La columna de fecha se llama **«Fecha» y
+  no «Fecha de pago»**: con las pendientes a la vista, ese rótulo sobre una
+  fecha de vencimiento diría algo falso.
+
 - 2026-09-15 (reunión con Litigios y PP): **la pastilla de urgencia deja de
   nombrar emociones.** «Tranquilo» y «Atento» pasan a «Sin acción» y «Atención»;
   «Urgente» queda igual. El equipo objetó que el portal le indicara un estado de
