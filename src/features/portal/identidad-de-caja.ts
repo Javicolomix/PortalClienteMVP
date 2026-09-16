@@ -3,6 +3,7 @@ import {
   Car,
   FileSignature,
   FileText,
+  Gavel,
   House,
   KeyRound,
   type LucideIcon,
@@ -10,6 +11,8 @@ import {
   ShieldCheck,
   Split,
 } from "lucide-react";
+
+import type { Caja } from "./portal.types";
 
 /**
  * **La burbuja de color que identifica cada caja en su lista.**
@@ -38,16 +41,17 @@ import {
  * esta pantalla ya significan algo. Si una marca saliera roja, la fila diría dos
  * cosas con el mismo color y una de las dos sería mentira.
  *
- * Son cuatro y no cinco porque **cuatro matices bien separados distinguen mejor
- * que cinco parecidos**. Con el reparto que evita repetir el de la fila de
- * arriba, alcanzan: lo que hay que distinguir es una fila de su vecina, no todas
- * entre sí.
+ * Son **tres, y las tres se ven como un color**. Hubo una cuarta, un gris
+ * azulado, y con el martillo igual en todas las causas la tinta pasó a ser lo
+ * único que varía en la marca: un martillo gris parecía sin pintar al lado de
+ * uno índigo, como si a esa fila le faltara algo. Tres matices que se distinguen
+ * alcanzan, porque lo que hay que separar es una fila de su vecina, no todas
+ * entre sí — y de eso se encarga el reparto de abajo.
  */
 const TINTAS = [
   "#322d94", // índigo
   "#8f1a57", // magenta
   "#0d5077", // celeste
-  "#33414f", // pizarra
 ] as const;
 
 // El orden no es decorativo: cuando dos filas seguidas chocan, la de abajo se
@@ -56,24 +60,6 @@ const TINTAS = [
 // posición hay que caer en algo que se vea distinto, no en el primo del que ya
 // estaba. Importa sobre todo en las escrituras, donde dos del mismo tipo llevan
 // el mismo dibujo y el color es lo único que las separa.
-
-/**
- * Palabras que no aportan a las iniciales. «Compraventa de Inmueble» tiene que
- * dar CI y no CD: el «de» no distingue nada, y si entrara, casi todas las
- * escrituras empezarían igual.
- */
-const SIN_VALOR = new Set(["de", "del", "la", "las", "los", "el", "y", "e", "en"]);
-
-/** Dos letras con que se reconoce la caja: «Banco Estado» → BE, «Mandato» → MA. */
-export const inicialesDe = (clave: string): string => {
-  const palabras = clave
-    .split(/\s+/)
-    .filter((palabra) => palabra.length > 0 && !SIN_VALOR.has(palabra.toLowerCase()));
-
-  if (palabras.length === 0) return clave.slice(0, 2).toUpperCase();
-  if (palabras.length === 1) return palabras[0].slice(0, 2).toUpperCase();
-  return (palabras[0][0] + palabras[1][0]).toUpperCase();
-};
 
 export type TintaDeCaja = (typeof TINTAS)[number];
 
@@ -91,31 +77,31 @@ const indiceDe = (clave: string): number => {
 export const tintaDe = (clave: string): TintaDeCaja => TINTAS[indiceDe(clave)];
 
 /**
- * Las tintas de una lista entera, con **una corrección que hace falta**: con
- * cinco tonos y un puñado de filas, dos seguidas caen de la misma tinta cada
- * tanto. Cuando eso pasa entre dos cajas distintas, la burbuja deja de hacer su
- * trabajo justo donde más se nota, que es entre vecinas.
+ * Las tintas de una lista entera, repartidas mirando la lista completa y no fila
+ * por fila. Con tres tintas y cuatro filas, dejarlo al azar daba tres martillos
+ * del mismo color en la misma pantalla, y ahí la tinta deja de decir nada.
  *
- * Así que la lista se recorre en orden con tres reglas, en este orden:
+ * Las reglas, en este orden:
  *
- * 1. **Misma clave que la de arriba, misma tinta.** Dos causas del mismo banco
- *    tienen que salir iguales: eso es lo que dice que son del mismo acreedor, y
- *    ahí lo que las separa es el rol, que va escrito.
- * 2. **Mismo nombre que la de arriba, la tinta de al lado.** Dos compraventas de
- *    inmueble seguidas llevan el mismo dibujo y dicen lo mismo: la tinta es lo
- *    único que las separa, así que no se deja al azar.
- * 3. **Si no, la del reparto** —y si choca con la de arriba, la siguiente.
+ * 1. **Misma clave, misma tinta, esté donde esté en la lista.** Dos causas del
+ *    mismo banco tienen que salir iguales: eso es lo que dice que son del mismo
+ *    acreedor, y ahí lo que las separa es el rol, que va escrito.
+ * 2. **Una clave nueva prefiere una tinta que nadie haya usado**, y nunca la de
+ *    la fila de arriba. Con tres acreedores distintos salen tres colores
+ *    distintos, que es lo que la tinta viene a decir.
+ * 3. **Si ya no quedan libres**, la que toque por reparto, corrida si choca con
+ *    la de arriba: dos vecinas iguales es lo único que no puede pasar.
  *
- * El precio es que agregar una escritura puede correrle el color a la de abajo.
- * Se acepta: el color de una escritura no significa nada por sí solo —sirve para
- * separarla de su vecina— así que moverlo no le quita información a nadie. En
- * las causas no ocurre, porque ahí la tinta sale del acreedor y dos acreedores
- * distintos rara vez quedan pegados por azar; si quedan, se corre el de abajo y
- * el acreedor sigue escrito en la fila.
+ * El precio es que abrir una causa nueva puede correrle la tinta a otra. Se
+ * acepta: desde que las causas llevan todas el mismo martillo, **lo que
+ * identifica una fila es el nombre del acreedor**, que va en grande arriba. La
+ * tinta acompaña, no nombra.
  */
 export const tintasDeLaLista = (
   identidades: ({ principal: string; claveDeColor: string } | undefined)[],
 ): TintaDeCaja[] => {
+  const porClave = new Map<string, number>();
+  const usadas = new Set<number>();
   const indices: number[] = [];
 
   identidades.forEach((identidad, fila) => {
@@ -124,29 +110,25 @@ export const tintasDeLaLista = (
       return;
     }
 
-    const anterior = fila > 0 ? identidades[fila - 1] : undefined;
-    const previo = fila > 0 ? indices[fila - 1] : undefined;
-
-    // Misma clave que la de arriba: misma tinta, a propósito. Dos causas del
-    // mismo banco tienen que salir iguales —eso es lo que dice que son del mismo
-    // acreedor— y ahí lo que las separa es el rol, que va escrito.
-    if (anterior && anterior.claveDeColor === identidad.claveDeColor && previo !== undefined) {
-      indices.push(previo);
+    const yaAsignada = porClave.get(identidad.claveDeColor);
+    if (yaAsignada !== undefined) {
+      indices.push(yaAsignada);
       return;
     }
 
-    // Mismo nombre que la de arriba: la tinta de al lado, sin consultar el
-    // reparto. Es el caso que trajo PP —dos compraventas de inmueble seguidas—,
-    // y es el único donde la tinta hace todo el trabajo: llevan el mismo dibujo
-    // y dicen lo mismo. Dejarlo al azar podía darles dos azules parecidos, que
-    // es lo que pasó la primera vez.
-    if (anterior && anterior.principal === identidad.principal && previo !== undefined) {
-      indices.push((previo + 1) % TINTAS.length);
-      return;
-    }
-
+    const previa = fila > 0 ? indices[fila - 1] : undefined;
     let indice = indiceDe(identidad.claveDeColor);
-    if (previo !== undefined && indice === previo) indice = (indice + 1) % TINTAS.length;
+
+    // Primero una libre que no repita la de arriba; si no hay ninguna libre,
+    // basta con que no repita la de arriba.
+    for (let vuelta = 0; vuelta < TINTAS.length; vuelta += 1) {
+      if (!usadas.has(indice) && indice !== previa) break;
+      indice = (indice + 1) % TINTAS.length;
+    }
+    if (indice === previa) indice = (indice + 1) % TINTAS.length;
+
+    porClave.set(identidad.claveDeColor, indice);
+    usadas.add(indice);
     indices.push(indice);
   });
 
@@ -179,7 +161,23 @@ const ICONOS_DE_ESCRITURA: [RegExp, LucideIcon][] = [
   [/mandato|poder/i, FileSignature],
 ];
 
-export const iconoDeEscritura = (tipo: string): LucideIcon => {
+const iconoDeEscritura = (tipo: string): LucideIcon => {
   const encontrado = ICONOS_DE_ESCRITURA.find(([patron]) => patron.test(tipo));
   return encontrado ? encontrado[1] : FileText;
 };
+
+/**
+ * El dibujo de una caja en su lista.
+ *
+ * **Las causas llevan todas el mismo martillo.** Antes iban con las iniciales
+ * del acreedor —BE, CS— y se leían como el avatar de un contacto, no como un
+ * juicio; el martillo dice de una qué es esa fila. Que sea el mismo en las
+ * cuatro no le quita nada: lo que distingue una causa de otra es el nombre del
+ * banco, que va en grande al lado, y el rol debajo. La tinta acompaña —dos
+ * causas del mismo acreedor comparten la suya— pero no es lo que se lee.
+ *
+ * **Las escrituras llevan el dibujo de su tipo**, porque ahí los tipos son cosas
+ * del mundo —una casa, un auto, una sociedad— y se reconocen antes de leerse.
+ */
+export const iconoDeLaCaja = (caja: Caja): LucideIcon =>
+  caja.tipo === "proteccionPatrimonial" ? iconoDeEscritura(caja.identificador) : Gavel;

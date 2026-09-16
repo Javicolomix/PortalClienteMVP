@@ -849,6 +849,11 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   jerarquía no es volverse letra chica. La pastilla de urgencia se muda a la
   línea de la etapa, que es a lo que califica, y de paso le devuelve al titular
   los ochenta píxeles que le faltaban para entrar en una línea de teléfono.
+- 2026-09-15: **las causas llevan todas el mismo martillo.** Iban con las
+  iniciales del acreedor y se leían como el avatar de un contacto, no como un
+  juicio. Lo que distingue una causa de otra es el nombre del banco, que va en
+  grande arriba, y el rol debajo. La **etapa sube a gris de texto y medio peso
+  de más**: es la segunda línea, pero es lo que la persona vino a leer.
 - 2026-09-15: las escrituras llevan **un dibujo por tipo** —una casa para una
   compraventa de inmueble, un auto para una de vehículo—, resuelto por palabra
   clave y no por el nombre exacto, porque los tipos los mantiene Streak y la

@@ -8,8 +8,7 @@ import { cn } from "@/shared/lib/utils/cn";
 
 import { DetalleDeEtapa } from "./BloquesDelPortal";
 import {
-  iconoDeEscritura,
-  inicialesDe,
+  iconoDeLaCaja,
   tintaDe,
   type TintaDeCaja,
   tintasDeLaLista,
@@ -134,46 +133,27 @@ export function TituloDeBloque({
 }
 
 /**
- * **La marca de la fila**: el círculo de la izquierda con que se reconoce una
- * caja entre varias.
- *
- * Lleva un **dibujo** cuando el tipo de gestión es una cosa del mundo —una casa
- * para una compraventa de inmueble, un auto para una de vehículo— y las
- * **iniciales del acreedor** cuando no lo es, que es el caso de las causas: no
- * hay dibujo de «Banco Estado», y lo que la persona reconoce ahí es el nombre.
+ * **La marca de la fila**: el círculo de la izquierda con que se reconoce de un
+ * vistazo de qué es cada caja. Un martillo en las causas, el dibujo del tipo en
+ * las escrituras —una casa, un auto, una sociedad—.
  *
  * El color va **en el dibujo y no en el círculo**, que queda gris para todas.
  * Cuatro discos de colores en fila pesan como cuatro semáforos, y en esta
- * pantalla el semáforo ya existe: es la pastilla de urgencia. Teñir solo la
- * marca alcanza para distinguir dos filas sin disputarle la atención a lo que sí
+ * pantalla el semáforo ya existe: es la pastilla de urgencia. Teñir solo el
+ * dibujo alcanza para separar dos filas sin disputarle la atención a lo que sí
  * hay que mirar.
  *
- * Va `aria-hidden`: ni el dibujo ni las iniciales dicen nada que el texto de la
- * fila no diga ya entero, y anunciar «B E» antes de «Banco Estado» solo alarga
- * la escucha.
+ * Va `aria-hidden`: el dibujo no dice nada que el texto de la fila no diga ya
+ * entero.
  */
-function MarcaDeLaCaja({
-  identidad,
-  tinta,
-  Icono,
-}: {
-  identidad: IdentidadDeCaja;
-  tinta: TintaDeCaja;
-  Icono?: Icono;
-}) {
+function MarcaDeLaCaja({ Icono, tinta }: { Icono: Icono; tinta: TintaDeCaja }) {
   return (
     <span
       aria-hidden
       className="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface-muted"
       style={{ color: tinta }}
     >
-      {Icono ? (
-        <Icono className="size-[18px]" strokeWidth={1.75} />
-      ) : (
-        <span className="type-meta font-semibold tracking-tight">
-          {inicialesDe(identidad.principal)}
-        </span>
-      )}
+      <Icono className="size-[18px]" strokeWidth={1.75} />
     </span>
   );
 }
@@ -227,7 +207,7 @@ export function FilaDesplegable({
    * caso, que es una sola— sale de la clave.
    */
   tinta?: TintaDeCaja;
-  /** El dibujo de la marca. Sin él, van las iniciales. */
+  /** El dibujo de la marca: el martillo de las causas, el tipo de la escritura. */
   Icono?: Icono;
   etapa: Etapa | null;
   /**
@@ -250,12 +230,8 @@ export function FilaDesplegable({
           aria-controls={panelId}
           className="flex w-full items-center gap-2.5 px-4 py-4 text-left transition-colors md:gap-3 md:px-5 [-webkit-tap-highlight-color:transparent] hover:bg-surface-subtle active:bg-surface-muted focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring"
         >
-          {identidad ? (
-            <MarcaDeLaCaja
-              identidad={identidad}
-              tinta={tinta ?? tintaDe(identidad.claveDeColor)}
-              Icono={Icono}
-            />
+          {Icono && identidad ? (
+            <MarcaDeLaCaja Icono={Icono} tinta={tinta ?? tintaDe(identidad.claveDeColor)} />
           ) : null}
 
           <span className="min-w-0 flex-1">
@@ -307,7 +283,12 @@ export function FilaDesplegable({
                 que es la etapa —no la gestión—. Sigue alineada a la derecha en
                 todas las filas, así que la columna se compara igual. */}
             <span className="mt-0.5 flex items-center gap-2">
-              <span className="type-supporting min-w-0 flex-1 text-muted-foreground">
+              {/* La etapa va en **gris de texto y no en gris de metadato**, y
+                  con medio peso de más. Es la segunda línea de la fila, así que
+                  no compite con el nombre de la gestión, pero es lo que la
+                  persona vino a leer: con el gris claro de un subtítulo se
+                  hundía debajo del titular y había que buscarla. */}
+              <span className="type-supporting min-w-0 flex-1 font-medium text-foreground-secondary">
                 {etapa ? etapa.nombreParaCliente : "Tu caso está avanzando"}
               </span>
 
@@ -398,14 +379,7 @@ export function ListaDeCajas({
                   id={item.caja.id}
                   identidad={identidades[fila]}
                   tinta={tintas[fila]}
-                  // El dibujo es cosa de las escrituras: sus tipos son cosas del
-                  // mundo. Una causa no tiene dibujo —no existe el de «Banco
-                  // Estado»— y va con las iniciales del acreedor.
-                  Icono={
-                    item.caja.tipo === "proteccionPatrimonial"
-                      ? iconoDeEscritura(item.caja.identificador)
-                      : undefined
-                  }
+                  Icono={iconoDeLaCaja(item.caja)}
                   etapa={etapa}
                 />
               </li>
