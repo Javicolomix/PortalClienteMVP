@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 37,
+  datasetVersion: 38,
   entities: {
     cliente: [
       {
@@ -148,6 +148,24 @@ export const fixtures: Fixtures = {
         rut: "10.338.771-4",
         servicioId: "srv-proteccion-patrimonial",
         etapaActualId: "etp-pp-01",
+      },
+      {
+        id: "cli-017",
+        nombre: "Claudia",
+        apellido: "Espinoza",
+        correo: "claudia.espinoza@example.com",
+        rut: "12.664.831-5",
+        servicioId: "srv-liquidacion",
+        etapaActualId: "etp-liq-02",
+      },
+      {
+        id: "cli-018",
+        nombre: "Esteban",
+        apellido: "Carrasco",
+        correo: "esteban.carrasco@example.com",
+        rut: "14.208.753-K",
+        servicioId: "srv-defensa-juicio",
+        etapaActualId: "etp-lit-01",
       },
       {
         id: "cli-016",
@@ -476,6 +494,98 @@ export const fixtures: Fixtures = {
         estado: "monitoreo",
         identificador: "",
         etapaId: "etp-lit-00",
+      },
+
+      // Claudia: liquidación y **nada más**. Ni una escritura ni una causa: es el
+      // caso donde el estado del caso ocupa la pantalla entera.
+      {
+        id: "caj-064",
+        clienteId: "cli-017",
+        tipo: "liquidacion",
+        estado: "activa",
+        identificador: "",
+        etapaId: "etp-liq-02",
+      },
+      {
+        id: "caj-065",
+        clienteId: "cli-017",
+        tipo: "defensaEnJuicio",
+        estado: "monitoreo",
+        identificador: "",
+        etapaId: "etp-lit-00",
+      },
+
+      // Esteban: el compuesto en su forma más cargada —cuatro causas y dos
+      // escrituras—. Es la pantalla más larga que puede armar el portal, y sirve
+      // para ver si los dos bloques siguen distinguiéndose cuando los dos son
+      // listas de verdad.
+      {
+        id: "caj-066",
+        clienteId: "cli-018",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-1502-2026",
+        acreedor: "Banco Santander",
+        etapaId: "etp-lit-04",
+      },
+      {
+        id: "caj-067",
+        clienteId: "cli-018",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-3318-2025",
+        acreedor: "Coopeuch",
+        etapaId: "etp-lit-01",
+      },
+      {
+        id: "caj-068",
+        clienteId: "cli-018",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-5740-2026",
+        acreedor: "Banco Falabella",
+        etapaId: "etp-lit-02",
+      },
+      {
+        id: "caj-069",
+        clienteId: "cli-018",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-9126-2026",
+        acreedor: "Caja Los Héroes",
+        etapaId: "etp-lit-02",
+      },
+      {
+        id: "caj-070",
+        clienteId: "cli-018",
+        tipo: "defensaEnJuicio",
+        estado: "monitoreo",
+        identificador: "",
+        etapaId: "etp-lit-00",
+      },
+      {
+        id: "caj-071",
+        clienteId: "cli-018",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Constitución de Sociedades",
+        etapaId: "etp-pp-03",
+      },
+      {
+        id: "caj-072",
+        clienteId: "cli-018",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        identificador: "Transferencia de Vehículo (RC)",
+        etapaId: "etp-pp-04",
+      },
+      {
+        id: "caj-073",
+        clienteId: "cli-018",
+        tipo: "proteccionPatrimonial",
+        estado: "madre",
+        identificador: "",
+        etapaId: "etp-pp-01",
       },
 
       // Nicolás: defensa en juicio con cuatro causas, una en cada nivel de
@@ -1406,6 +1516,27 @@ export const fixtures: Fixtures = {
         telefonoWhatsapp: "+56 9 7302 6641",
       },
       {
+        id: "con-033",
+        clienteId: "cli-017",
+        nombre: "Camila Rivera",
+        rol: "ejecutiva",
+        telefonoWhatsapp: "+56 9 6721 4488",
+      },
+      {
+        id: "con-034",
+        clienteId: "cli-018",
+        nombre: "Daniela Soto",
+        rol: "ejecutiva",
+        telefonoWhatsapp: "+56 9 4418 2036",
+      },
+      {
+        id: "con-035",
+        clienteId: "cli-018",
+        nombre: "Matías Fuenzalida",
+        rol: "abogado",
+        telefonoWhatsapp: "+56 9 5530 9174",
+      },
+      {
         id: "con-031",
         clienteId: "cli-016",
         nombre: "Daniela Soto",
@@ -1703,6 +1834,163 @@ export const fixtures: Fixtures = {
         monto: 89000,
         estado: "pendiente",
       },
+      // Claudia: recién arranca, dos de seis pagadas.
+      {
+        id: "cuo-2601",
+        clienteId: "cli-017",
+        numero: 1,
+        fechaVencimiento: "2026-08-14",
+        monto: 132000,
+        estado: "pagada",
+        fechaPago: "2026-08-13",
+      },
+      {
+        id: "cuo-2602",
+        clienteId: "cli-017",
+        numero: 2,
+        fechaVencimiento: "2026-09-14",
+        monto: 132000,
+        estado: "pagada",
+        fechaPago: "2026-09-14",
+      },
+      {
+        id: "cuo-2603",
+        clienteId: "cli-017",
+        numero: 3,
+        fechaVencimiento: "2026-10-14",
+        monto: 132000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2604",
+        clienteId: "cli-017",
+        numero: 4,
+        fechaVencimiento: "2026-11-14",
+        monto: 132000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2605",
+        clienteId: "cli-017",
+        numero: 5,
+        fechaVencimiento: "2026-12-14",
+        monto: 132000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2606",
+        clienteId: "cli-017",
+        numero: 6,
+        fechaVencimiento: "2027-01-14",
+        monto: 132000,
+        estado: "pendiente",
+      },
+
+      // Esteban: el plan largo del compuesto, doce cuotas y siete pagadas.
+      {
+        id: "cuo-2701",
+        clienteId: "cli-018",
+        numero: 1,
+        fechaVencimiento: "2026-03-08",
+        monto: 148000,
+        estado: "pagada",
+        fechaPago: "2026-03-07",
+      },
+      {
+        id: "cuo-2702",
+        clienteId: "cli-018",
+        numero: 2,
+        fechaVencimiento: "2026-04-08",
+        monto: 148000,
+        estado: "pagada",
+        fechaPago: "2026-04-08",
+      },
+      {
+        id: "cuo-2703",
+        clienteId: "cli-018",
+        numero: 3,
+        fechaVencimiento: "2026-05-08",
+        monto: 148000,
+        estado: "pagada",
+        fechaPago: "2026-05-11",
+      },
+      {
+        id: "cuo-2704",
+        clienteId: "cli-018",
+        numero: 4,
+        fechaVencimiento: "2026-06-08",
+        monto: 148000,
+        estado: "pagada",
+        fechaPago: "2026-06-08",
+      },
+      {
+        id: "cuo-2705",
+        clienteId: "cli-018",
+        numero: 5,
+        fechaVencimiento: "2026-07-08",
+        monto: 148000,
+        estado: "pagada",
+        fechaPago: "2026-07-07",
+      },
+      {
+        id: "cuo-2706",
+        clienteId: "cli-018",
+        numero: 6,
+        fechaVencimiento: "2026-08-08",
+        monto: 148000,
+        estado: "pagada",
+        fechaPago: "2026-08-08",
+      },
+      {
+        id: "cuo-2707",
+        clienteId: "cli-018",
+        numero: 7,
+        fechaVencimiento: "2026-09-08",
+        monto: 148000,
+        estado: "pagada",
+        fechaPago: "2026-09-09",
+      },
+      {
+        id: "cuo-2708",
+        clienteId: "cli-018",
+        numero: 8,
+        fechaVencimiento: "2026-10-08",
+        monto: 148000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2709",
+        clienteId: "cli-018",
+        numero: 9,
+        fechaVencimiento: "2026-11-08",
+        monto: 148000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2710",
+        clienteId: "cli-018",
+        numero: 10,
+        fechaVencimiento: "2026-12-08",
+        monto: 148000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2711",
+        clienteId: "cli-018",
+        numero: 11,
+        fechaVencimiento: "2027-01-08",
+        monto: 148000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-2712",
+        clienteId: "cli-018",
+        numero: 12,
+        fechaVencimiento: "2027-02-08",
+        monto: 148000,
+        estado: "pendiente",
+      },
+
       // Nicolás: el plan de diez cuotas, cinco pagadas y cinco por venir. Es el
       // plan normal, el que ve la mayoría: ninguna morosa y la mitad andada.
       {
@@ -1983,11 +2271,10 @@ export const fixtures: Fixtures = {
         banco: "Banco de Chile",
         numeroCuenta: "00-162-36534-09",
         rutTitular: "77.727.144-K",
-        // Cobranza es una sola persona para toda la cartera, a diferencia de la
-        // ejecutiva y el abogado, que van por caso. Por eso vive acá y no en
-        // `contacto`.
-        nombreCobranza: "Scarlet",
-        telefonoCobranza: "+56 9 8136 4658",
+        // Finanzas atiende a toda la cartera por un solo número, a diferencia
+        // de la ejecutiva y el abogado, que van por caso. Por eso vive acá y no
+        // en `contacto`. Va el número y no el nombre: el portal nombra el cargo.
+        telefonoFinanzas: "+56 9 8136 4658",
       },
     ],
   },

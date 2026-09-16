@@ -882,28 +882,16 @@ export const prototypeDataContract = definePrototypeDataContract({
           usedIn: [PORTAL],
           ...pendienteTi("Confirmar los datos bancarios vigentes con Finanzas.", "lexyConfirmed"),
         },
-        nombreCobranza: {
-          id: "nombreCobranza",
+        telefonoFinanzas: {
+          id: "telefonoFinanzas",
           productDescription:
-            "Nombre de pila de quien ve los cobros en Lexy. Va en «Mis pagos», en el botón con que la persona reclama o pregunta por su cobro: escribirle a alguien con nombre no es lo mismo que escribirle a un departamento.",
+            "WhatsApp de finanzas: por dónde el cliente reclama un cobro. Es el mismo para todos, a diferencia de la ejecutiva y el abogado, que van por caso. El portal nombra el cargo —«nuestra ejecutiva de finanzas»— y no a la persona, así que el nombre de quien atiende no hace falta.",
           dataType: "string",
           required: true,
           usage: soloVisible,
           usedIn: [PORTAL],
           ...desdeUsabilidad(
-            "Confirmar quién queda como contacto de cobranza y qué pasa cuando esa persona cambia o no está: hoy el portal muestra un nombre fijo para toda la cartera.",
-          ),
-        },
-        telefonoCobranza: {
-          id: "telefonoCobranza",
-          productDescription:
-            "WhatsApp de cobranza. Es el mismo para todos los clientes, a diferencia de la ejecutiva y el abogado, que van por caso.",
-          dataType: "string",
-          required: true,
-          usage: soloVisible,
-          usedIn: [PORTAL],
-          ...desdeUsabilidad(
-            "Confirmar si cobranza atiende por un número personal o por uno de la empresa. Si es personal, hay que definir qué se muestra cuando esa persona sale de Lexy.",
+            "Confirmar si finanzas atiende por un número personal o por uno de la empresa. Si es personal, hay que definir qué pasa el día que esa persona sale de Lexy: el texto ya no la nombra, pero el número la sigue apuntando a ella.",
           ),
         },
       },

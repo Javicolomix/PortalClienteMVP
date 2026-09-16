@@ -394,13 +394,13 @@ function HistorialDeCuotas({
  * la dejaba sin nadie a quien preguntarle: el botón flotante del inicio lleva a
  * la ejecutiva y al abogado, que ven el caso pero no los cobros.
  *
- * **El texto nombra el cargo y el botón nombra a la persona.** Es a propósito:
- * el cargo es lo que no cambia —si mañana cobranza la lleva otra persona, el
- * párrafo sigue siendo cierto— y el nombre es lo que hace que escribir no
- * cueste. «Contactar a cobranza» es escribirle a un departamento; «Hablar con
- * Scarlet» es escribirle a alguien, y de eso se trata el portal entero.
+ * **Nombra el cargo y no a la persona.** Se probó con el nombre propio —«Hablar
+ * con Scarlet»— y se volvió atrás: el nombre hace más cálido el botón pero
+ * caduca, y un portal que le presenta al cliente a alguien que ya no trabaja acá
+ * es peor que uno que nombra un cargo. El cargo, además, dice a qué equipo llega
+ * el reclamo, que es lo que la persona necesita saber.
  *
- * Es **la misma persona para todos los clientes**, así que el número vive en la
+ * Es **el mismo número para todos los clientes**, así que vive en la
  * configuración del portal y no en los contactos del caso.
  *
  * Cierra la página a propósito: se llega acá después de haber visto cuánto
@@ -415,7 +415,7 @@ function DudasDelCobro({
   nombreDelCliente: string;
 }) {
   const enlace = enlaceWhatsapp(
-    configuracion.telefonoCobranza,
+    configuracion.telefonoFinanzas,
     nombreDelCliente,
     "Tengo una duda sobre el cobro de mis honorarios.",
   );
@@ -426,14 +426,14 @@ function DudasDelCobro({
       <p className="mt-2 type-body text-muted-foreground">
         Si algo no te cuadra —el monto, una cuota que ya pagaste o cuántas te quedan—, puedes
         escribirle a nuestra{" "}
-        <span className="font-medium text-foreground">ejecutiva de cobranza</span>, quien podrá
+        <span className="font-medium text-foreground">ejecutiva de finanzas</span>, quien podrá
         revisar tu situación y ayudarte con tus dudas sobre los pagos.
       </p>
 
       <Button asChild variant="outline" className="mt-4 w-full sm:w-auto">
         <a href={enlace} target="_blank" rel="noreferrer">
           <MarcaWhatsapp className="size-4 text-[#25d366]" />
-          Hablar con {configuracion.nombreCobranza}
+          Contactar a finanzas
         </a>
       </Button>
     </section>

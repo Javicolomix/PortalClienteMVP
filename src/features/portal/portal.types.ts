@@ -229,12 +229,16 @@ export type ConfiguracionPortal = {
   numeroCuenta: string;
   rutTitular: string;
   /**
-   * Quién ve los cobros en Lexy y por dónde se le escribe. Es **la misma persona
-   * para todos los clientes**, a diferencia de la ejecutiva y el abogado, que
-   * van por caso: por eso vive en la configuración y no en `contacto`.
+   * El WhatsApp de finanzas: por dónde se reclama un cobro. Es **el mismo para
+   * todos los clientes**, a diferencia de la ejecutiva y el abogado, que van por
+   * caso, y por eso vive en la configuración y no en `contacto`.
+   *
+   * Va el número y no el nombre de quien atiende. El portal nombra el **cargo**
+   * —«nuestra ejecutiva de finanzas»— y no a la persona: el cargo es lo que no
+   * cambia, así que el texto sigue siendo cierto el día que finanzas la lleve
+   * otra persona.
    */
-  nombreCobranza: string;
-  telefonoCobranza: string;
+  telefonoFinanzas: string;
 };
 
 export type Cuota = {

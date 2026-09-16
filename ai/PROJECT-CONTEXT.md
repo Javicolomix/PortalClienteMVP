@@ -972,6 +972,14 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   alguien que atiende a cientos de personas: «soy Valentina» obliga a pedir el
   RUT antes de poder ayudar. El cliente gana el campo `apellido`, que el portal
   nunca le muestra a ella.
+- 2026-09-16: el contacto de cobros pasa a llamarse **finanzas** y el portal
+  **nombra el cargo, no a la persona**: «nuestra ejecutiva de finanzas» y
+  «Contactar a finanzas». Se probó con el nombre propio —«Hablar con Scarlet»—
+  y se volvió atrás: el nombre hace más cálido el botón pero caduca, y un portal
+  que le presenta al cliente a alguien que ya no trabaja acá es peor que uno que
+  nombra un cargo. `configuracionPortal.nombreCobranza` se retiró del contrato;
+  `telefonoCobranza` pasó a `telefonoFinanzas`.
+
 - 2026-09-15: «Mis pagos» gana **cuánto llevas del plan, en bolitas** (pagadas,
   morosas y por venir) y un **contacto directo con cobranza** —Scarlet, la misma
   persona para toda la cartera, así que su número vive en la configuración del
