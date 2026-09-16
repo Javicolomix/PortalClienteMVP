@@ -275,7 +275,7 @@ export function ListaDeCajas({
   if (items.length === 0 && !vacio) return null;
 
   return (
-    <section>
+    <section className="mt-10 md:mt-12">
       <TituloDeBloque Icono={Icono} contador={items.length}>
         {titulo}
       </TituloDeBloque>
