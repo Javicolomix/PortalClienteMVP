@@ -328,16 +328,22 @@ function BloqueDelCaso({
       <TituloDeBloque Icono={ICONOS.etapa}>Estado de mi caso</TituloDeBloque>
 
       <div className="mt-3">
-        {/* La fila, en cambio, lleva el dibujo **del servicio**: un apretón de
-            manos si es una renegociación, una goma si es una liquidación. No es
-            el mismo del título a propósito — el título nombra la sección y la
-            fila nombra de qué es el caso, igual que en las listas de abajo, donde
-            el martillo titula y cada fila dice de qué banco es. */}
+        {/* La fila lleva el dibujo **del servicio**: un apretón de manos si es
+            una renegociación, una goma si es una liquidación. No es el mismo del
+            título a propósito — el título nombra la sección y la fila nombra de
+            qué es el caso, igual que en las listas de abajo, donde el tribunal
+            titula y cada fila dice de qué banco es.
+
+            Y la etapa manda sobre el nombre del servicio: «Liquidación de
+            deudas» ya se leyó dos veces más arriba, en el bloque lila y en el
+            título de la pantalla. Lo que esta fila tiene que decir es en qué va,
+            que es lo único de la pantalla que cambia mes a mes. */}
         <FilaDesplegable
           id="mi-caso"
           identidad={{ principal: servicio, claveDeColor: servicio }}
           Icono={iconoDelServicio(tipo)}
           etapa={etapa}
+          mandaLaEtapa
           completo
         />
       </div>

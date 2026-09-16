@@ -854,6 +854,12 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   real cuando choca —Caja Los Andes deja el celeste si BancoEstado ya lo tomó—:
   lo que la persona reconoce es que su causa del banco rojo es una y la del azul
   es otra, no el Pantone del logo.
+- 2026-09-16: **en el estado del caso manda la etapa, no el nombre del
+  servicio.** «Liquidación de deudas» ya se leyó en el bloque lila de arriba:
+  repetirlo en la línea principal gasta el lugar más visible de la fila en un
+  dato que la persona acaba de ver. El nombre baja a rótulo gris y la etapa sube
+  a 17 px. En las listas no cambia: ahí el nombre es el acreedor o el tipo de
+  escritura, que es justo lo que hay que reconocer entre varias.
 - 2026-09-16: **el tribunal titula «Mis juicios» y el martillo marca cada fila**:
   género y especie. Con el martillo en los dos lugares, el título y sus filas
   decían lo mismo.

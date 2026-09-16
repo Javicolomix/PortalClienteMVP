@@ -127,6 +127,7 @@ export function FilaDesplegable({
   Icono,
   etapa,
   completo,
+  mandaLaEtapa,
 }: {
   id: string;
   /**
@@ -143,6 +144,17 @@ export function FilaDesplegable({
   tinta?: string;
   /** El dibujo de la marca: el martillo de las causas, el tipo de la escritura. */
   Icono?: Icono;
+  /**
+   * Invierte la jerarquía de la fila: arriba y en chico el nombre, abajo y
+   * grande la etapa. Es para **el estado del caso**, donde el nombre es el del
+   * servicio y ya se leyó en el bloque de arriba de la pantalla: repetirlo en
+   * grande gasta la línea principal en un dato que la persona acaba de ver.
+   *
+   * En las listas no aplica. Ahí el nombre es el acreedor o el tipo de
+   * escritura, que es justo lo que hay que reconocer entre varias, y sin eso la
+   * fila no se sabe de cuál es.
+   */
+  mandaLaEtapa?: boolean;
   etapa: Etapa | null;
   /**
    * Solo el estado del caso. En las listas el detalle va breve: la bajada de la
@@ -181,7 +193,14 @@ export function FilaDesplegable({
                 abajo: el acreedor, que es lo que la persona busca primero, queda
                 cortado por la mitad. */}
             <span className="flex flex-wrap items-baseline gap-x-1.5">
-              <span className="type-item-title font-semibold text-foreground">
+              <span
+                className={cn(
+                  "font-semibold",
+                  mandaLaEtapa
+                    ? "type-meta text-muted-foreground"
+                    : "type-item-title text-foreground",
+                )}
+              >
                 {identidad?.principal}
               </span>
 
@@ -213,7 +232,14 @@ export function FilaDesplegable({
                   no compite con el nombre de la gestión, pero es lo que la
                   persona vino a leer: con el gris claro de un subtítulo se
                   hundía debajo del titular y había que buscarla. */}
-              <span className="min-w-0 flex-1 text-[15px] leading-relaxed font-medium text-foreground-secondary">
+              <span
+                className={cn(
+                  "min-w-0 flex-1 leading-relaxed",
+                  mandaLaEtapa
+                    ? "text-[17px] font-semibold text-foreground"
+                    : "text-[15px] font-medium text-foreground-secondary",
+                )}
+              >
                 {etapa ? etapa.nombreParaCliente : "Tu caso está avanzando"}
               </span>
 
