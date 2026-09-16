@@ -860,6 +860,23 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   expresivas, pero acá va también en «Mis pagos» por decisión del diseñador:
   funciona porque todo el contenido vive dentro de recuadros blancos opacos y la
   trama nunca queda debajo de un texto.
+- 2026-09-15: **«Mi servicio» se titula «En qué consiste la renegociación»** y
+  no con el nombre del servicio, que repetía el rótulo del bloque del que se
+  entra. Necesita un campo nuevo, `servicio.nombreEnFrase` («la renegociación»),
+  que no se puede derivar del nombre: «Renegociación de deudas» se dice «la
+  renegociación», que es media frase menos. PENDIENTE: quién lo escribe y
+  mantiene.
+- 2026-09-15: **los beneficios van de a dos, en cajitas**, desde el teléfono. En
+  una columna había que llegar al final para saber cuántos eran; en dos se ven
+  los cuatro de una mirada. El dibujo va arriba del título y no al costado: con
+  columnas de 150 px, al costado el título se partía en tres líneas.
+- 2026-09-15: **los títulos de los recuadros van en navy y sus dibujos en
+  índigo.** Es el único color que entra a esa pantalla y entra en lo que la
+  ordena.
+- 2026-09-15: **la trama va difuminada** (`blur-[3px] scale-110`). Nítida, las
+  aspas son líneas largas y rectas que el ojo sigue, y el título de la pantalla
+  competía con ellas. El `scale` saca de cuadro la orla que el desenfoque deja
+  en el borde de la imagen.
 - 2026-09-15: **se acabó el lila para el objetivo del servicio.** El lila es el
   color con que el portal marca lo que escribió el capitán —la etapa del caso—;
   usarlo también para la explicación del servicio le quitaba ese significado.

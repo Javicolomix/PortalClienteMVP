@@ -57,7 +57,16 @@ export function PaginaDelPortal({
         <BrandBackground
           motif="aspas"
           tone="blanco"
-          className="pointer-events-none fixed inset-0 -z-10"
+          // Difuminada: las aspas quedan como una atmósfera y no como un dibujo.
+          // Nítidas, el ojo las seguía —son líneas largas y rectas, que es
+          // exactamente lo que persigue una mirada— y el título de la pantalla
+          // competía con ellas. Desenfocadas dejan la textura y sueltan el
+          // contorno.
+          //
+          // El `scale-110` es por el desenfoque: `blur` difumina también contra
+          // el borde de la imagen y deja una orla clara alrededor de la
+          // pantalla. Agrandándola, esa orla queda fuera de cuadro.
+          className="pointer-events-none fixed inset-0 -z-10 scale-110 blur-[3px]"
         />
       ) : null}
       {/* La vuelta al inicio vive en la barra, **no en el cuerpo de la página**.

@@ -41,9 +41,42 @@ export type TipoServicio =
 export type Servicio = {
   id: string;
   tipo: TipoServicio;
+  /** Como se titula solo: «Renegociación de deudas». */
   nombre: string;
+  /**
+   * Cómo se nombra **dentro de una frase**, con su artículo y en minúscula: «la
+   * renegociación». Es otro campo y no una transformación del nombre porque no
+   * hay regla que lleve de uno al otro: «Renegociación de deudas» se dice «la
+   * renegociación» —se pierde la mitad— y «Protección Patrimonial» se dice «la
+   * protección patrimonial», que baja de mayúscula. Cualquier intento de
+   * derivarlo termina escribiendo «la renegociación de deudas» en un título que
+   * ya era largo.
+   */
+  nombreEnFrase: string;
   resumen: string;
   queEs: string;
+};
+
+/**
+ * El título de «Mi servicio»: «En qué consiste la defensa en juicio con
+ * protección patrimonial».
+ *
+ * Con el nombre a secas —«Defensa en juicio con Protección Patrimonial»— la
+ * pantalla repetía el rótulo del bloque del que se venía y no decía nada nuevo.
+ * En forma de pregunta anuncia lo que hay abajo, que es exactamente eso: en qué
+ * consiste.
+ *
+ * Al segundo servicio se le cae el artículo: «la defensa en juicio con
+ * protección patrimonial», no «con la protección patrimonial».
+ */
+const SIN_ARTICULO = /^(la|el|los|las)\s+/i;
+
+export const tituloDeMiServicio = (servicios: Servicio[]): string => {
+  const [primero, ...resto] = servicios.map((servicio) => servicio.nombreEnFrase);
+  if (!primero) return "En qué consiste tu servicio";
+
+  const cola = resto.map((nombre) => nombre.replace(SIN_ARTICULO, ""));
+  return `En qué consiste ${[primero, ...cola].join(" con ")}`;
 };
 
 /**
@@ -270,8 +303,10 @@ export type DatosMiServicio = {
    * contrataron.
    */
   servicios: ServicioConResultados[];
-  /** El nombre que titula la pantalla, compuesto cuando son dos. */
+  /** El nombre del servicio, compuesto cuando son dos. */
   nombre: string;
+  /** «En qué consiste la renegociación»: lo que titula la pantalla. */
+  titulo: string;
 };
 
 export type DatosMisPagos = {

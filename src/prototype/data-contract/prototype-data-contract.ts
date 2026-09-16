@@ -224,6 +224,18 @@ export const prototypeDataContract = definePrototypeDataContract({
           usedIn: [PORTAL, PANEL],
           ...pendienteTi("Confirmar el nombre comercial de cada servicio.", "lexyConfirmed"),
         },
+        nombreEnFrase: {
+          id: "nombreEnFrase",
+          productDescription:
+            "Cómo se nombra el servicio dentro de una frase, con artículo y en minúscula: «la renegociación». Titula «Mi servicio» —«En qué consiste la renegociación»— y no se puede derivar del nombre: «Renegociación de deudas» se dice «la renegociación», que es media frase menos.",
+          dataType: "string",
+          required: true,
+          usage: soloVisible,
+          usedIn: [PORTAL],
+          ...desdeUsabilidad(
+            "Confirmar quién escribe esta forma del nombre. Es una decisión de redacción, no un dato de sistema: sale del mismo lugar que el nombre del servicio y tiene que mantenerse a la par.",
+          ),
+        },
         resumen: {
           id: "resumen",
           productDescription:

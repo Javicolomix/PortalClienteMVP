@@ -18,6 +18,7 @@ import type {
   ResultadoServicio,
   Servicio,
 } from "./portal.types";
+import { tituloDeMiServicio } from "./portal.types";
 
 async function cargarClienteEnSesion(): Promise<Cliente> {
   const clienteId = sesion.getSnapshot();
@@ -308,7 +309,12 @@ export async function cargarMiServicio(): Promise<DatosMiServicio> {
         trigger: "Al abrir «¿Qué es mi servicio?»",
         reads: {
           entities: ["servicio"],
-          fields: ["servicio.tipo", "servicio.nombre", "servicio.queEs"],
+          fields: [
+            "servicio.tipo",
+            "servicio.nombre",
+            "servicio.nombreEnFrase",
+            "servicio.queEs",
+          ],
         },
       },
     ),
@@ -352,6 +358,7 @@ export async function cargarMiServicio(): Promise<DatosMiServicio> {
 
   return {
     nombre: nombreDelServicioPrincipal(principales),
+    titulo: tituloDeMiServicio(principales),
     servicios: principales.map((servicio) => ({
       servicio,
       resultados: resultados

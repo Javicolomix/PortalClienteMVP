@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 36,
+  datasetVersion: 37,
   entities: {
     cliente: [
       {
@@ -762,6 +762,7 @@ export const fixtures: Fixtures = {
         id: "srv-renegociacion",
         tipo: "renegociacion",
         nombre: "Renegociación de deudas",
+        nombreEnFrase: "la renegociación",
         resumen:
           "Buscamos un acuerdo con tus acreedores para que pagues tus deudas en cuotas que sí puedas cumplir.",
         queEs:
@@ -771,6 +772,7 @@ export const fixtures: Fixtures = {
         id: "srv-liquidacion",
         tipo: "liquidacion",
         nombre: "Liquidación de deudas",
+        nombreEnFrase: "la liquidación",
         resumen:
           "Cuando ya no es posible pagar, buscamos que un tribunal extinga tus deudas para que puedas partir de nuevo.",
         queEs:
@@ -780,6 +782,7 @@ export const fixtures: Fixtures = {
         id: "srv-defensa-juicio",
         tipo: "defensaEnJuicio",
         nombre: "Defensa en juicio",
+        nombreEnFrase: "la defensa en juicio",
         resumen: "Te representamos ante el tribunal en cada causa que tengas abierta.",
         queEs:
           "En una defensa en juicio llevamos tu caso ante el tribunal: preparamos los escritos, presentamos las pruebas y te representamos en cada audiencia. Si tienes más de una causa, cada una avanza por su cuenta.",
@@ -788,6 +791,7 @@ export const fixtures: Fixtures = {
         id: "srv-proteccion-patrimonial",
         tipo: "proteccionPatrimonial",
         nombre: "Protección Patrimonial",
+        nombreEnFrase: "la protección patrimonial",
         resumen:
           "Ordenamos y resguardamos lo que tienes a tu nombre dentro de lo que permite la ley.",
         queEs:
@@ -904,7 +908,10 @@ export const fixtures: Fixtures = {
         orden: 1,
         titulo: "Bienes expuestos y protegidos",
         texto: "Saber qué bienes tuyos están expuestos y cuáles protege la ley.",
-        icono: "lupa",
+        // La lupa la tiene «Tu juicio en palabras simples», y con el servicio
+        // compuesto los ocho beneficios caen en la misma lista: dos iguales ahí
+        // se leen como un dato repetido.
+        icono: "inventario",
       },
       {
         id: "res-pp-02",

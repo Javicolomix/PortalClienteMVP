@@ -39,32 +39,37 @@ function ExplicacionDelServicio({ servicios }: { servicios: ServicioConResultado
         </p>
       </TarjetaDeSeccion>
 
-      {/* Los beneficios van **dentro de un solo recuadro**, separados por
-          hairlines, y no en una tarjeta cada uno. Son cuatro respuestas a la
-          misma pregunta —qué consigo con esto—, así que son las partes de una
-          lista y no cuatro objetos sueltos: cuatro tarjetas flotando pesaban
-          como cuatro secciones distintas. */}
+      {/* Los beneficios van **de a dos**, cada uno en su cajita, desde el
+          teléfono. En una sola columna la lista se leía de arriba abajo como
+          cuatro párrafos y había que llegar al final para saber cuántos eran; en
+          dos columnas se ven los cuatro de una sola mirada, que es lo que
+          contesta la pregunta «qué consigo con esto».
+
+          Cada cajita lleva su dibujo arriba y no al costado del título: al
+          costado, con columnas de 150 px, al título le quedaban sesenta y se
+          partía en tres líneas. */}
       <TarjetaDeSeccion Icono={ICONOS.beneficios} titulo="Beneficios que puedes obtener">
-        <ul className="divide-y divide-border-subtle">
+        <ul className="grid grid-cols-2 gap-2.5">
           {resultados.map((resultado) => {
             const Icono = iconoPorClave(resultado.icono);
 
             return (
-              <li key={resultado.id} className="flex gap-3 py-3.5 first:pt-0 last:pb-0">
+              <li
+                key={resultado.id}
+                className="rounded-lg bg-surface-subtle p-3.5 ring-1 ring-border-subtle"
+              >
                 <Icono
-                  className="mt-0.5 size-[18px] shrink-0 text-brand-navy"
-                  strokeWidth={1.75}
+                  className="size-[18px] shrink-0 text-primary"
+                  strokeWidth={1.9}
                   aria-hidden
                 />
 
-                <div className="min-w-0">
-                  <h3 className="type-supporting font-medium text-foreground">
-                    {resultado.titulo}
-                  </h3>
-                  <p className="mt-1 type-supporting leading-relaxed text-muted-foreground">
-                    {resultado.texto}
-                  </p>
-                </div>
+                <h3 className="type-supporting mt-2 font-semibold text-brand-navy">
+                  {resultado.titulo}
+                </h3>
+                <p className="type-meta mt-1 leading-relaxed text-muted-foreground">
+                  {resultado.texto}
+                </p>
               </li>
             );
           })}
@@ -96,7 +101,7 @@ export function MiServicio() {
 
   return (
     <PaginaDelPortal
-      titulo={fase === "listo" && datos ? datos.nombre : "Mi servicio"}
+      titulo={fase === "listo" && datos ? datos.titulo : "Mi servicio"}
       descripcion="Esto es lo que contrataste con nosotros."
       conTramaDeMarca
     >

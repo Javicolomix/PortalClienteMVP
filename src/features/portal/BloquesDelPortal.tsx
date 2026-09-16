@@ -90,8 +90,13 @@ export function TarjetaDeSeccion({
 }) {
   return (
     <section className="rounded-xl bg-card p-5 shadow-card ring-1 ring-border-subtle md:p-6">
-      <h2 className="flex items-center gap-2.5 type-item-title font-semibold text-foreground">
-        <Icono className="size-[18px] shrink-0 text-brand-navy" strokeWidth={1.75} aria-hidden />
+      {/* Título en navy y dibujo en índigo. Es el único color que entra a esta
+          pantalla, y entra donde corresponde: en lo que la ordena. El navy es la
+          tinta de la marca —más azul que el negro del cuerpo, lo justo para que
+          el título se despegue del párrafo sin gritar— y el índigo es el color
+          de acción del sistema, que acá marca dónde empieza cada parte. */}
+      <h2 className="flex items-center gap-2.5 type-item-title font-semibold text-brand-navy">
+        <Icono className="size-[19px] shrink-0 text-primary" strokeWidth={1.9} aria-hidden />
         {titulo}
       </h2>
 

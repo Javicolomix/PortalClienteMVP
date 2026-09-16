@@ -2,6 +2,7 @@ import {
   Briefcase,
   CircleCheck,
   ClipboardCheck,
+  ClipboardList,
   Clock,
   CreditCard,
   Eraser,
@@ -48,6 +49,7 @@ export const ICONOS = {
   lupa: Search,
   documento: FileText,
   silencio: PhoneOff,
+  inventario: ClipboardList,
   sello: Stamp,
 
   // Secciones del portal
