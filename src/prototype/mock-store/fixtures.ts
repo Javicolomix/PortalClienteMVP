@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 43,
+  datasetVersion: 44,
   entities: {
     cliente: [
       // **Los cuatro casos que el portal tiene que saber armar.** No son
@@ -879,84 +879,85 @@ export const fixtures: Fixtures = {
         estado: "pendiente",
       },
 
-      // Soledad: diez cuotas con **una morosa** en el medio. Es la única
-      // cartera que la tiene: sirve para ver la fila roja del historial.
+      // Soledad: el plan con los **tres estados a la vista** —cuatro pagadas,
+      // dos morosas y cuatro por venir—. Es la cartera que se abre para
+      // comprobar que el historial muestra el plan entero y no solo lo que ya
+      // pasó por caja. Las dos morosas son las dos últimas vencidas; las
+      // pendientes vencen todas después de hoy, que es la única forma de que
+      // una cuota impaga no sea morosa.
       {
         id: "cuo-201",
         clienteId: "cli-002",
         numero: 1,
-        fechaVencimiento: "2026-02-22",
+        fechaVencimiento: "2026-04-05",
         monto: 115000,
         estado: "pagada",
-        fechaPago: "2026-02-21",
+        fechaPago: "2026-04-04",
       },
       {
         id: "cuo-202",
         clienteId: "cli-002",
         numero: 2,
-        fechaVencimiento: "2026-03-22",
+        fechaVencimiento: "2026-05-05",
         monto: 115000,
         estado: "pagada",
-        fechaPago: "2026-03-22",
+        fechaPago: "2026-05-05",
       },
       {
         id: "cuo-203",
         clienteId: "cli-002",
         numero: 3,
-        fechaVencimiento: "2026-04-22",
+        fechaVencimiento: "2026-06-05",
         monto: 115000,
         estado: "pagada",
-        fechaPago: "2026-04-25",
+        fechaPago: "2026-06-08",
       },
       {
         id: "cuo-204",
         clienteId: "cli-002",
         numero: 4,
-        fechaVencimiento: "2026-05-22",
+        fechaVencimiento: "2026-07-05",
         monto: 115000,
-        estado: "morosa",
+        estado: "pagada",
+        fechaPago: "2026-07-03",
       },
       {
         id: "cuo-205",
         clienteId: "cli-002",
         numero: 5,
-        fechaVencimiento: "2026-06-22",
+        fechaVencimiento: "2026-08-05",
         monto: 115000,
-        estado: "pagada",
-        fechaPago: "2026-06-22",
+        estado: "morosa",
       },
       {
         id: "cuo-206",
         clienteId: "cli-002",
         numero: 6,
-        fechaVencimiento: "2026-07-22",
+        fechaVencimiento: "2026-09-05",
         monto: 115000,
-        estado: "pagada",
-        fechaPago: "2026-07-21",
+        estado: "morosa",
       },
       {
         id: "cuo-207",
         clienteId: "cli-002",
         numero: 7,
-        fechaVencimiento: "2026-08-22",
+        fechaVencimiento: "2026-10-05",
         monto: 115000,
-        estado: "pagada",
-        fechaPago: "2026-08-22",
+        estado: "pendiente",
       },
       {
         id: "cuo-208",
         clienteId: "cli-002",
         numero: 8,
-        fechaVencimiento: "2026-09-22",
+        fechaVencimiento: "2026-11-05",
         monto: 115000,
-        estado: "pagada",
-        fechaPago: "2026-09-22",
+        estado: "pendiente",
       },
       {
         id: "cuo-209",
         clienteId: "cli-002",
         numero: 9,
-        fechaVencimiento: "2026-10-22",
+        fechaVencimiento: "2026-12-05",
         monto: 115000,
         estado: "pendiente",
       },
@@ -964,7 +965,7 @@ export const fixtures: Fixtures = {
         id: "cuo-210",
         clienteId: "cli-002",
         numero: 10,
-        fechaVencimiento: "2026-11-22",
+        fechaVencimiento: "2027-01-05",
         monto: 115000,
         estado: "pendiente",
       },

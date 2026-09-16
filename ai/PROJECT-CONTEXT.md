@@ -1082,6 +1082,18 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   protección patrimonial) son **un ejemplo, no el catálogo definitivo**. No
   inviertas en afinar su contenido hasta que Lexy confirme la lista real.
 
+- 2026-09-16: el historial de cuotas muestra **el plan entero, no solo lo que ya
+  pasó por caja**, y lo resume en una línea: «Las 10 cuotas de tu plan: 4
+  pagadas, 2 morosas y 4 pendientes». La pregunta con la que se abre ese modal es
+  cuánto falta, y contar diez filas a mano no la contesta. La cartera de Soledad
+  pasa a ese reparto exacto para que los tres estados se vean en una sola
+  pantalla.
+- 2026-09-16: **el texto del desplegable va justificado.** Es el único lugar del
+  portal donde se apilan varios recuadros de texto seguidos, y el borde derecho
+  suelto los hacía ver como retazos. Va con partición de palabras: justificar sin
+  ella, en la columna de un teléfono, abre zanjas blancas peores que el borde
+  irregular.
+
 - 2026-09-16: **el set de prueba queda en cuatro clientes**, uno por cada regla
   de composición: el compuesto cargado (4 causas, 3 escrituras), un concursal que
   gana el bloque del caso y le cuelga una causa y una escritura, una

@@ -203,11 +203,19 @@ export function TarjetaInformativa({
  *
  * Cuando la etapa es de trabajo interno no hay nada que mostrar, y decirlo es
  * mejor que un panel vacío.
+ *
+ * **El texto va justificado**, que es la única parte del portal donde lo está.
+ * Acá se abren varios recuadros uno debajo del otro y el borde derecho suelto
+ * hacía que el panel se leyera como retazos pegados; con los dos márgenes
+ * parejos, los bloques se ven como un mismo documento. Va con `hyphens-auto`
+ * —el documento declara `lang="es"`— porque justificar sin partir palabras en
+ * una columna angosta de teléfono abre zanjas blancas entre las palabras, y eso
+ * se lee peor que el borde irregular que se vino a arreglar.
  */
 export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
   if (!etapa) {
     return (
-      <p className="type-supporting px-1 py-1 leading-relaxed text-muted-foreground">
+      <p className="type-supporting px-1 py-1 text-justify leading-relaxed hyphens-auto text-muted-foreground">
         Ahora mismo esto está en una etapa de trabajo interno de nuestro equipo, así que no hay
         novedades que mostrarte todavía. Apenas las haya, las vas a ver acá.
       </p>
@@ -261,10 +269,10 @@ export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
         titulo="¿Qué significa esta etapa?"
         antes={<RefuerzoDeUrgencia etapa={etapa} />}
       >
-        <p className="type-supporting leading-relaxed whitespace-pre-line text-muted-foreground">
+        <p className="type-supporting text-justify leading-relaxed whitespace-pre-line hyphens-auto text-muted-foreground">
           {etapa.mensajePrincipal}
         </p>
-        <p className="type-supporting mt-3 leading-relaxed whitespace-pre-line text-muted-foreground">
+        <p className="type-supporting mt-3 text-justify leading-relaxed whitespace-pre-line hyphens-auto text-muted-foreground">
           {etapa.queHaceLexy}
         </p>
       </TarjetaDeSeccion>
@@ -286,7 +294,7 @@ export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
 
               <div className="min-w-0">
                 <h3 className="type-supporting font-semibold text-brand-navy">{detalle.titulo}</h3>
-                <p className="type-supporting mt-1 leading-relaxed whitespace-pre-line text-muted-foreground">
+                <p className="type-supporting mt-1 text-justify leading-relaxed whitespace-pre-line hyphens-auto text-muted-foreground">
                   {detalle.texto}
                 </p>
               </div>
