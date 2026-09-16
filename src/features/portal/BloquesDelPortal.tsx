@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { cn } from "@/shared/lib/utils/cn";
+
 import { ICONOS } from "./iconos";
 import { NIVELES } from "./nivel-urgencia";
 import type { Etapa } from "./portal.types";
@@ -240,6 +242,8 @@ export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
           píxeles. Repetido y en cuerpo más grande, la persona lee dos veces lo
           mismo y la segunda parece otra cosa. */}
       <TarjetaDeSeccion Icono={ICONOS.etapa} titulo="Estado de mi caso">
+        <RefuerzoDeUrgencia etapa={etapa} />
+
         <p className="type-supporting leading-relaxed whitespace-pre-line text-muted-foreground">
           {etapa.mensajePrincipal}
         </p>
@@ -274,22 +278,37 @@ export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
         </ul>
       </div>
 
-      <RefuerzoDeUrgencia etapa={etapa} />
     </div>
   );
 }
 
 /**
- * El refuerzo verbal del nivel, al pie del detalle. Sin caja —una más acá abajo
- * se leería como una tarjeta más— pero en el color de su nivel, el mismo de la
- * pastilla que la persona vio arriba en la fila.
+ * **Qué te toca hacer, arriba de todo y dentro del recuadro.**
+ *
+ * Estaba al pie del panel y suelto, fuera de las dos tarjetas, y ahí quedaba
+ * como un pie de página: lo último que se lee y lo primero que se salta. Es lo
+ * contrario de lo que dice —si el caso no avanza sin ti, eso es lo que hay que
+ * leer antes que nada— así que sube a la primera línea del primer recuadro, con
+ * la explicación debajo.
+ *
+ * Adentro del recuadro y no flotando: suelto sobre el fondo del panel se leía
+ * como un mensaje del sistema, de esos que se cierran, y no como parte de lo que
+ * el equipo escribió sobre este caso.
+ *
+ * Los tres niveles hablan acá, incluido el tranquilo. En la fila cerrada solo
+ * avisan los dos que piden algo —el silencio es la buena noticia—, pero quien
+ * abrió la fila vino a preguntar, y «no necesitas hacer nada por ahora» es una
+ * respuesta, no un ruido.
  */
 function RefuerzoDeUrgencia({ etapa }: { etapa: Etapa }) {
   const { frase, Icono, color } = NIVELES[etapa.nivelUrgencia];
 
   return (
     <p
-      className={`flex items-start gap-2 border-t border-border-subtle px-1 pt-4 type-supporting font-medium ${color}`}
+      className={cn(
+        "mb-3 flex items-start gap-2 border-b border-border-subtle pb-3 type-supporting font-semibold",
+        color,
+      )}
     >
       <Icono className="mt-0.5 size-4 shrink-0" aria-hidden />
       {frase}
