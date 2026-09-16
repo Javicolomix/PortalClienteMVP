@@ -87,11 +87,15 @@
   /* El lienzo del Portal Cliente. Va un paso más oscuro que `surface-subtle`,
      que con las tarjetas blancas encima quedaba casi del mismo tono: todo se
      leía como una sola lámina plana y los recuadros dejaban de ser recuadros.
-     Pero solo un paso: el primer intento (#edeef3) separaba bien y se veía
-     serio, casi administrativo. Este lleva más lavanda de marca y menos gris,
-     que es lo que lo hace amable — un fondo frío en una pantalla sobre deudas
-     trabaja en contra de todo lo demás que dice la pantalla. */
-  --color-surface-canvas: #f2f2f9;
+     Pero solo un paso, y **cálido**. Los dos primeros intentos fueron por el
+     lado frío —#edeef3 y después #f2f2f9, con lavanda de marca— y los dos se
+     veían serios, casi administrativos: el azul enfría, y en una pantalla sobre
+     deudas eso trabaja en contra de todo lo demás que la pantalla dice. Este
+     tiene más rojo que azul, que es lo que se lee como amable, y el índigo de la
+     marca resalta más sobre un neutro tibio que sobre uno de su propia familia.
+     Sostiene la separación con las tarjetas blancas porque además llevan
+     `shadow-raised`: el tono solo no tendría que hacer todo el trabajo. */
+  --color-surface-canvas: #f6f4f0;
   --color-surface-muted: #f1f1f3; /* selección neutral y agrupación secundaria */
   --color-surface-raised: #ffffff; /* popovers y superficies realmente elevadas */
   --color-surface-container: #fafafb; /* zona de contención: agrupa regiones del documento por tono, radio y aire en lugar de hairlines — DEC-014 */
