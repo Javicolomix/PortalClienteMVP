@@ -5,9 +5,8 @@ import { useState } from "react";
 import { cn } from "@/shared/lib/utils/cn";
 
 import { DetalleDeEtapa } from "./BloquesDelPortal";
-import { armonizar, colorDeAcreedor } from "./color-de-acreedor";
+import { colorDe, coloresDeLaLista } from "./color-de-acreedor";
 import { iconoDeLaCaja,type IconoDelPortal } from "./iconos-de-escritura";
-import { tintaDe, tintasDeLaLista } from "./identidad-de-caja";
 import {
   type CajaConEtapa,
   type Etapa,
@@ -85,7 +84,7 @@ function MarcaDeLaCaja({ Icono, tinta }: { Icono: Icono; tinta: string }) {
     <span
       aria-hidden
       className="flex size-6 shrink-0 items-center justify-center"
-      style={{ color: armonizar(tinta) }}
+      style={{ color: tinta }}
     >
       <Icono className="size-[22px]" strokeWidth={1.75} />
     </span>
@@ -165,7 +164,7 @@ export function FilaDesplegable({
           className="flex w-full items-center gap-2.5 px-4 py-4 text-left transition-colors md:gap-3 md:px-5 [-webkit-tap-highlight-color:transparent] hover:bg-surface-subtle active:bg-surface-muted focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring"
         >
           {Icono && identidad ? (
-            <MarcaDeLaCaja Icono={Icono} tinta={tinta ?? tintaDe(identidad.claveDeColor)} />
+            <MarcaDeLaCaja Icono={Icono} tinta={tinta ?? colorDe(identidad)} />
           ) : null}
 
           <span className="min-w-0 flex-1">
@@ -267,11 +266,13 @@ export function ListaDeCajas({
 }) {
   const identidades = items.map((item) => identidadDeLaCaja(item.caja));
 
-  // El reparto de tintas neutras corre para toda la lista, pero solo se usa
-  // donde no hay color de marca: una causa de un acreedor fichado lleva el suyo
-  // —rojo Santander, celeste Caja Los Andes—, y las escrituras y los acreedores
-  // que no tenemos, el que les toque sin repetir el de la fila de arriba.
-  const respaldo = tintasDeLaLista(identidades);
+  // El color se reparte mirando la lista entera: dos acreedores distintos nunca
+  // salen del mismo, aunque sus marcas sean las dos rojas.
+  const colores = coloresDeLaLista(
+    identidades.map((identidad, fila) =>
+      identidad ? { ...identidad, acreedor: items[fila].caja.acreedor } : undefined,
+    ),
+  );
 
   if (items.length === 0 && !vacio) return null;
 
@@ -295,7 +296,7 @@ export function ListaDeCajas({
                 <FilaDesplegable
                   id={item.caja.id}
                   identidad={identidades[fila]}
-                  tinta={colorDeAcreedor(item.caja.acreedor) ?? respaldo[fila]}
+                  tinta={colores[fila]}
                   Icono={iconoDeLaCaja(item.caja)}
                   etapa={etapa}
                 />

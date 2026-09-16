@@ -174,7 +174,7 @@ export function Ingresar() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-surface-subtle p-4 md:p-8">
+    <div className="flex min-h-screen items-center justify-center bg-surface-canvas p-4 md:p-8">
       {clienteEntrando ? <Bienvenida onTerminar={terminarDeEntrar} /> : null}
 
       <div className="grid w-full max-w-4xl overflow-hidden rounded-2xl bg-card shadow-overlay lg:grid-cols-2">

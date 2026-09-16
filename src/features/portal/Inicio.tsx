@@ -13,7 +13,6 @@ import { BotonWhatsapp } from "./BotonWhatsapp";
 import { muestraBloque, nombreDelServicioPrincipal } from "./composicion";
 import { ICONOS } from "./iconos";
 import { iconoDelServicio } from "./iconos-de-escritura";
-import { Martillo } from "./iconos-de-escritura";
 import { FilaDesplegable, ListaDeCajas, TituloDeBloque } from "./ListaDeCajas";
 import { CargandoPagina, ErrorDeCarga } from "./PaginaDelPortal";
 import {
@@ -571,11 +570,12 @@ export function Inicio() {
                 />
               ) : null}
 
-              {/* El martillo, el mismo que marca cada causa abajo. No es
-                  repetirse: es lo que dice que las filas de esta sección son de
-                  eso. Reemplaza al tribunal, que nombraba el lugar y no el
-                  asunto. */}
-              <ListaDeCajas titulo="Mis juicios" Icono={Martillo} items={datos.juicios} />
+              {/* El tribunal titula y el martillo marca cada fila: género y
+                  especie. La sección es el lugar donde pasan todas —el
+                  tribunal—, y cada fila es un asunto que se resuelve ahí. Con el
+                  martillo arriba y abajo, el título y sus filas decían lo mismo
+                  y la sección dejaba de nombrar nada. */}
+              <ListaDeCajas titulo="Mis juicios" Icono={ICONOS.tribunal} items={datos.juicios} />
               <ListaDeCajas
                 titulo="Mis escrituras"
                 Icono={ICONOS.documento}

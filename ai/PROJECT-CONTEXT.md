@@ -846,6 +846,18 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   de antes, tarjetas y fondo eran del mismo tono y la pantalla se leía como una
   sola lámina plana. Aplica a todas las pantallas, no solo a «Mi servicio»: una
   sola con otro fondo se habría leído como un error.
+- 2026-09-16: **dos acreedores distintos nunca comparten color.** El matiz de
+  marca es la preferencia, no la última palabra: si cae a menos de 40° de uno ya
+  repartido en esa lista, se corre hasta separarse. Los acreedores chilenos se
+  agolpan en azules y rojos, y con la saturación bajada Santander y Coopeuch
+  salían del mismo rojo. El precio es que una marca puede alejarse de su color
+  real cuando choca —Caja Los Andes deja el celeste si BancoEstado ya lo tomó—:
+  lo que la persona reconoce es que su causa del banco rojo es una y la del azul
+  es otra, no el Pantone del logo.
+- 2026-09-16: **el tribunal titula «Mis juicios» y el martillo marca cada fila**:
+  género y especie. Con el martillo en los dos lugares, el título y sus filas
+  decían lo mismo.
+- 2026-09-16: **el login usa el mismo lienzo que el inicio** (`surface-canvas`).
 - 2026-09-15: **de cada marca se conserva el matiz y se descartan la saturación
   y la luminosidad** (`armonizar()`, 45 % / 68 % para todas). Veinticuatro
   manuales de marca no se hablan entre sí: crudos, cada fila pesaba distinto y la
