@@ -864,6 +864,11 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   género y especie. Con el martillo en los dos lugares, el título y sus filas
   decían lo mismo.
 - 2026-09-16: **el login usa el mismo lienzo que el inicio** (`surface-canvas`).
+- 2026-09-16: **las dos barras superiores miden lo mismo y más delgadas**: 56 px
+  en vez de los 64 del sistema, con el logo a 28 px en las dos. En el inicio la
+  marca abre la barra; en las pantallas de detalle el lugar de la izquierda lo
+  ocupa la salida y **la marca cierra por la derecha**. El logo de la derecha no
+  es un enlace: quien quiera volver ya tiene el botón al frente.
 - 2026-09-15: **de cada marca se conserva el matiz y se descartan la saturación
   y la luminosidad** (`armonizar()`, 45 % / 68 % para todas). Veinticuatro
   manuales de marca no se hablan entre sí: crudos, cada fila pesaba distinto y la

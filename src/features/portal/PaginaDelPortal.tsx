@@ -12,6 +12,7 @@ import {
   EmptyTitle,
 } from "@/shared/components/base/Empty";
 import { HeaderBar } from "@/shared/components/base/HeaderBar";
+import { Logo } from "@/shared/components/base/Logo";
 import { Skeleton } from "@/shared/components/base/Skeleton";
 
 /**
@@ -83,6 +84,11 @@ export function PaginaDelPortal({
           `sticky` es lo que sostiene todo esto: sin eso es un botón arriba más. */}
       <HeaderBar
         sticky
+        // 56 px y no los 64 del sistema: es la misma altura que la barra del
+        // inicio, y más delgada deja la pantalla entera un poco más arriba. En
+        // una barra que solo tiene una salida y un logo, ocho píxeles de más son
+        // ocho píxeles que no hacen nada.
+        className="h-14"
         brand={
           <Button asChild variant="ghost" size="sm" className="-ml-2">
             <Link to="/">
@@ -91,6 +97,13 @@ export function PaginaDelPortal({
             </Link>
           </Button>
         }
+        // El logo pasa a la derecha. En el inicio la marca abre la barra, porque
+        // esa es la portada; acá el lugar de la izquierda lo ocupa la salida,
+        // que es lo que la pantalla tiene que ofrecer primero, y la marca cierra
+        // por el otro lado. Va chico y no es un enlace: quien quiera volver ya
+        // tiene el botón al frente, y dos cosas que llevan al mismo sitio en la
+        // misma barra son una de más.
+        actions={<Logo className="h-7" />}
       />
 
       <main className="mx-auto w-full max-w-2xl px-4 pt-6 pb-12 md:px-6 md:pt-10 md:pb-16">

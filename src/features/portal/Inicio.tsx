@@ -533,7 +533,14 @@ export function Inicio() {
     <div className="min-h-screen bg-surface-canvas">
       {/* En el teléfono la barra sobra: el saludo ya trae el isotipo y «Salir»,
           que están dentro de la franja navy. */}
-      <HeaderBar className="hidden md:flex" actions={<BotonSalir />} />
+      {/* El logo va explícito y no por defecto: tiene que medir lo mismo que el
+          de la barra de las pantallas de detalle, y el del sistema viene cuatro
+          píxeles más alto. */}
+      <HeaderBar
+        className="hidden h-14 md:flex"
+        brand={<Logo className="h-7" />}
+        actions={<BotonSalir />}
+      />
 
       <Saludo saludo={saludo} nombre={nombre} />
 
