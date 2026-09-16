@@ -1082,6 +1082,12 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   protección patrimonial) son **un ejemplo, no el catálogo definitivo**. No
   inviertas en afinar su contenido hasta que Lexy confirme la lista real.
 
+- 2026-09-16: **el set de prueba queda en cuatro clientes**, uno por cada regla
+  de composición: el compuesto cargado (4 causas, 3 escrituras), un concursal que
+  gana el bloque del caso y le cuelga una causa y una escritura, una
+  renegociación sola y **solo monitoreo**. Eran diecinueve, con formas repetidas
+  que no probaban nada nuevo y hacían difícil saber qué abrir para ver qué.
+
 ## Preguntas abiertas
 
 - ¿Cuál es el catálogo real de servicios del portal?
