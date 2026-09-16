@@ -1,6 +1,6 @@
 import { useCarga } from "@/shared/hooks/useCarga";
 
-import { Subrayado, TarjetaDeSeccion } from "./BloquesDelPortal";
+import { TarjetaDeSeccion } from "./BloquesDelPortal";
 import { iconoPorClave,ICONOS } from "./iconos";
 import { CargandoPagina, ErrorDeCarga, PaginaDelPortal } from "./PaginaDelPortal";
 import type { DatosMiServicio, ServicioConResultados } from "./portal.types";
@@ -101,18 +101,13 @@ export function MiServicio() {
 
   return (
     <PaginaDelPortal
-      // «En qué consiste» anuncia lo que hay abajo; el nombre va subrayado en
-      // ámbar, el mismo trazo que en el inicio va bajo el nombre de la persona.
-      // Se subraya con su artículo porque acá «La Renegociación» es un nombre
-      // propio entero, no un sustantivo con un artículo delante.
+      // Sin subrayado. El trazo ámbar se probó también acá —el mismo que en el
+      // inicio va bajo el nombre de la persona— y sobra: en el saludo marca una
+      // palabra dentro de una frase, y acá el nombre del servicio ocupa dos
+      // tercios del título y a veces dos líneas. Subrayar eso no es señalar,
+      // es rayar.
       titulo={
-        fase === "listo" && datos ? (
-          <>
-            En qué consiste <Subrayado>{datos.enFrase}</Subrayado>
-          </>
-        ) : (
-          "Mi servicio"
-        )
+        fase === "listo" && datos ? `En qué consiste ${datos.enFrase}` : "Mi servicio"
       }
       descripcion="Esto es lo que contrataste con nosotros."
       conTramaDeMarca
