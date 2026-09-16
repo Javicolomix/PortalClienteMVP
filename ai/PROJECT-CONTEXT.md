@@ -944,8 +944,9 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   mes», y al final de la página había que recorrer los dos modos de pago para
   encontrarla. A la derecha porque no es un paso del flujo.
 - 2026-09-16: **«Mi servicio» se titula «En qué consiste La Renegociación»**,
-  con el nombre subrayado en ámbar —el mismo trazo que en el inicio va bajo el nombre de la
-  persona—. El artículo queda fuera del subrayado: no es parte del nombre.
+  **sin subrayado**: el trazo ámbar se probó acá y sobra —en el saludo marca una
+  palabra dentro de una frase, y acá el nombre ocupa dos tercios del título y a
+  veces dos líneas, así que no señala, raya—. El ámbar queda solo en el saludo.
   Necesita el campo `servicio.nombreEnFrase` («La Renegociación»), que no se
   puede derivar del nombre: «Renegociación de deudas» se titula «La
   Renegociación», media frase menos, y «Defensa en juicio» sube una mayúscula.
