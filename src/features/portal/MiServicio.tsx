@@ -3,8 +3,44 @@ import { useCarga } from "@/shared/hooks/useCarga";
 import { TarjetaDeSeccion } from "./BloquesDelPortal";
 import { iconoPorClave,ICONOS } from "./iconos";
 import { CargandoPagina, ErrorDeCarga, PaginaDelPortal } from "./PaginaDelPortal";
-import type { DatosMiServicio, ServicioConResultados } from "./portal.types";
+import type {
+  DatosMiServicio,
+  ResultadoServicio,
+  ServicioConResultados,
+} from "./portal.types";
 import { cargarMiServicio } from "./portal-service";
+
+const CUANTOS_BENEFICIOS = 4;
+
+/**
+ * **Cuatro beneficios, siempre cuatro.**
+ *
+ * Es el número que la pantalla sabe mostrar: dos filas de a dos que se abarcan
+ * de una mirada y contestan «qué consigo con esto» sin scroll. Un servicio
+ * simple trae exactamente esos cuatro; el compuesto traía ocho —los cuatro de
+ * cada mitad— y la lista se volvía un catálogo que había que recorrer, justo lo
+ * contrario de lo que hace esta sección.
+ *
+ * Se eligen **por turnos entre las mitades**, no cortando la lista pegada por
+ * la mitad: así la primera fila ya muestra una cosa de cada lado del servicio.
+ * Con dos mitades salen los dos primeros de cada una; el orden de cada lista
+ * —el campo `orden`— es el que decide cuáles.
+ */
+function cuatroBeneficios(servicios: ServicioConResultados[]): ResultadoServicio[] {
+  const listas = servicios.map((item) => item.resultados);
+  const masLarga = listas.reduce((tope, lista) => Math.max(tope, lista.length), 0);
+  const elegidos: ResultadoServicio[] = [];
+
+  for (let vuelta = 0; vuelta < masLarga && elegidos.length < CUANTOS_BENEFICIOS; vuelta++) {
+    for (const lista of listas) {
+      if (elegidos.length === CUANTOS_BENEFICIOS) break;
+      const resultado = lista[vuelta];
+      if (resultado) elegidos.push(resultado);
+    }
+  }
+
+  return elegidos;
+}
 
 /**
  * **El servicio explicado, siempre como uno solo.**
@@ -17,9 +53,10 @@ import { cargarMiServicio } from "./portal-service";
  * que decía dos.
  *
  * Así que los dos objetivos se leen de corrido, uno debajo del otro, bajo un
- * solo rótulo, y los beneficios se juntan en una sola lista. Da igual de cuál de
- * los dos venga cada uno: lo que la persona pregunta acá es qué puede conseguir
- * con lo que contrató, no a qué mitad del nombre corresponde cada cosa.
+ * solo rótulo, y los beneficios se juntan en una sola lista de cuatro —la misma
+ * cantidad que muestra un servicio simple—. Da igual de cuál de los dos venga
+ * cada uno: lo que la persona pregunta acá es qué puede conseguir con lo que
+ * contrató, no a qué mitad del nombre corresponde cada cosa.
  *
  * Con un servicio simple no cambia nada: la misma pantalla con una sola
  * explicación, que es lo que ya mostraba.
@@ -29,7 +66,7 @@ function ExplicacionDelServicio({ servicios }: { servicios: ServicioConResultado
   // conjunción: son dos párrafos que se sostienen solos, y cosidos en uno
   // quedaría una frase larguísima que nadie escribió.
   const objetivo = servicios.map((item) => item.servicio.queEs).join("\n\n");
-  const resultados = servicios.flatMap((item) => item.resultados);
+  const resultados = cuatroBeneficios(servicios);
 
   return (
     <div className="space-y-4">

@@ -1082,6 +1082,12 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   protección patrimonial) son **un ejemplo, no el catálogo definitivo**. No
   inviertas en afinar su contenido hasta que Lexy confirme la lista real.
 
+- 2026-09-16: «Mi servicio» muestra **siempre cuatro beneficios**, también en el
+  compuesto. Ahí salían ocho —los cuatro de cada mitad— y la sección dejaba de
+  ser una respuesta de una mirada para volverse un catálogo. Se eligen por turnos
+  entre las mitades, así la primera fila ya muestra una cosa de cada lado; el
+  campo `orden` de cada lista decide cuáles.
+
 - 2026-09-16: el historial de cuotas muestra **el plan entero, no solo lo que ya
   pasó por caja**, y lo resume en una línea: «Las 10 cuotas de tu plan: 4
   pagadas, 2 morosas y 4 pendientes». La pregunta con la que se abre ese modal es
