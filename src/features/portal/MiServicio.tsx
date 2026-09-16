@@ -7,41 +7,42 @@ import type { DatosMiServicio, ServicioConResultados } from "./portal.types";
 import { cargarMiServicio } from "./portal-service";
 
 /**
- * Un servicio explicado: misma piel que «Estado de mi caso» —un bloque lila que
- * dice de qué se trata y, debajo, tarjetas neutras todas iguales—, así pasar de
- * una pantalla a la otra no se siente como cambiar de producto.
+ * **El servicio explicado, siempre como uno solo.**
  *
- * El nombre del servicio solo aparece cuando hay más de uno que explicar: con
- * uno solo ya lo dice el título de la pantalla, y repetirlo sería un rótulo de
- * relleno. Con dos, en cambio, es lo que separa una explicación de la otra.
+ * «Defensa en juicio con Protección Patrimonial» es **un** servicio con nombre
+ * propio, no dos contratados por separado, y así lo nombra el bloque de arriba
+ * del inicio. Esta pantalla lo mostraba partido en dos —dos subtítulos, dos
+ * objetivos, dos listas de beneficios— y contradecía lo que la persona acababa
+ * de leer: entraba desde un bloque que decía una cosa y llegaba a una pantalla
+ * que decía dos.
+ *
+ * Así que los dos objetivos se leen de corrido, uno debajo del otro, bajo un
+ * solo rótulo, y los beneficios se juntan en una sola lista. Da igual de cuál de
+ * los dos venga cada uno: lo que la persona pregunta acá es qué puede conseguir
+ * con lo que contrató, no a qué mitad del nombre corresponde cada cosa.
+ *
+ * Con un servicio simple no cambia nada: la misma pantalla con una sola
+ * explicación, que es lo que ya mostraba.
  */
-function ExplicacionDelServicio({
-  item,
-  conNombre,
-}: {
-  item: ServicioConResultados;
-  conNombre: boolean;
-}) {
+function ExplicacionDelServicio({ servicios }: { servicios: ServicioConResultados[] }) {
+  // Los objetivos van separados por una línea en blanco y no pegados con una
+  // conjunción: son dos párrafos que se sostienen solos, y cosidos en uno
+  // quedaría una frase larguísima que nadie escribió.
+  const objetivo = servicios.map((item) => item.servicio.queEs).join("\n\n");
+  const resultados = servicios.flatMap((item) => item.resultados);
+
   return (
     <section className="space-y-6">
-      {conNombre ? (
-        <h2 className="type-subsection-title text-foreground">{item.servicio.nombre}</h2>
-      ) : null}
-
-      <BloqueDestacado rotulo="Objetivo del servicio">{item.servicio.queEs}</BloqueDestacado>
+      <BloqueDestacado rotulo="Objetivo del servicio">{objetivo}</BloqueDestacado>
 
       {/* Cada resultado es una tarjeta con su icono: son cosas distintas que se
           pueden lograr, no los puntos de una misma enumeración. El icono deja
           reconocer cada uno de un vistazo, sin leer la frase entera. */}
       <section>
-        {conNombre ? (
-          <h3 className="type-section-title text-foreground">Beneficios que puedes obtener</h3>
-        ) : (
-          <h2 className="type-section-title text-foreground">Beneficios que puedes obtener</h2>
-        )}
+        <h2 className="type-section-title text-foreground">Beneficios que puedes obtener</h2>
 
         <ul className="mt-3 space-y-2.5">
-          {item.resultados.map((resultado) => {
+          {resultados.map((resultado) => {
             const Icono = iconoPorClave(resultado.icono);
 
             return (
@@ -59,17 +60,13 @@ function ExplicacionDelServicio({
 }
 
 /**
- * La advertencia va una sola vez al cierre, no por servicio: es la misma para
- * todo lo que hace Lexy, y repetida se lee como letra chica.
+ * La advertencia va al cierre y una sola vez: es la misma para todo lo que hace
+ * Lexy, y repetida se lee como letra chica.
  */
 function DetalleDelServicio({ datos }: { datos: DatosMiServicio }) {
-  const varios = datos.servicios.length > 1;
-
   return (
     <div className="space-y-8">
-      {datos.servicios.map((item) => (
-        <ExplicacionDelServicio key={item.servicio.id} item={item} conNombre={varios} />
-      ))}
+      <ExplicacionDelServicio servicios={datos.servicios} />
 
       <p className="type-meta text-muted-foreground">
         Cada caso es distinto: el resultado depende de tu situación y de lo que se acuerde durante

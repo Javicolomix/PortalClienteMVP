@@ -831,8 +831,15 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   vieja dejaba la pantalla en blanco, sin nada que explicara qué pasó ni cómo
   salir.
 
+- 2026-09-15: **«Mi servicio» muestra un solo servicio, aunque sea el
+  compuesto.** «Defensa en juicio con Protección Patrimonial» es un servicio con
+  nombre propio, no dos contratados por separado: la pantalla lo mostraba
+  partido en dos y contradecía el bloque del inicio del que se entra. Los dos
+  objetivos van de corrido bajo un solo rótulo y los beneficios en una sola
+  lista.
 - 2026-09-15: **el lienzo del portal se oscurece** (`--color-surface-canvas`,
-  #edeef3) y las tarjetas levantan con `shadow-raised`. Con el gris casi blanco
+  #f2f2f9 — el primer intento, #edeef3, separaba bien pero se veía frío) y las
+  tarjetas levantan con `shadow-raised`. Con el gris casi blanco
   de antes, tarjetas y fondo eran del mismo tono y la pantalla se leía como una
   sola lámina plana. Aplica a todas las pantallas, no solo a «Mi servicio»: una
   sola con otro fondo se habría leído como un error.
