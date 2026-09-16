@@ -420,7 +420,7 @@ function EnlaceDeAcceso({
 }
 
 const CLASES_DEL_CUADRADO =
-  "relative flex h-full w-full flex-col gap-3 rounded-xl bg-card p-4 shadow-raised ring-1 ring-border-subtle transition-[background-color,transform] duration-150 ease-out [-webkit-tap-highlight-color:transparent] hover:bg-surface-subtle active:scale-[0.98] active:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
+  "relative flex h-full w-full flex-col gap-3 rounded-xl bg-card p-4 shadow-card ring-1 ring-border-subtle transition-[background-color,transform] duration-150 ease-out [-webkit-tap-highlight-color:transparent] hover:bg-surface-subtle active:scale-[0.98] active:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 
 /**
  * Accesos del teléfono: cuadrados que se tocan, en dos columnas.

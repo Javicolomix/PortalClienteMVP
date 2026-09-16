@@ -90,11 +90,13 @@
      Pero solo un paso, y **neutro**. Se probaron cuatro: #edeef3 y #f2f2f9 con
      lavanda de marca, que separaban bien pero se veían serios —el azul enfría—,
      y #f6f4f0 tibio, que se pasaba al otro lado. Este es el gris neutro del
-     sistema: no tira ni a frío ni a cálido, así que no le impone temperatura a
-     una pantalla cuyo único color con significado es el índigo de la marca.
+     sistema, un pelo más claro que #f5f5f5: no tira ni a frío ni a cálido, así
+     que no le impone temperatura a una pantalla cuyo único color con
+     significado es el índigo de la marca. Tan cerca del blanco, la separación
+     con las tarjetas la sostiene `shadow-card` casi entera.
      Sostiene la separación con las tarjetas blancas porque además llevan
      `shadow-raised`: el tono solo no tendría que hacer todo el trabajo. */
-  --color-surface-canvas: #f5f5f5;
+  --color-surface-canvas: #f7f7f7;
   --color-surface-muted: #f1f1f3; /* selección neutral y agrupación secundaria */
   --color-surface-raised: #ffffff; /* popovers y superficies realmente elevadas */
   --color-surface-container: #fafafb; /* zona de contención: agrupa regiones del documento por tono, radio y aire en lugar de hairlines — DEC-014 */
@@ -159,6 +161,11 @@
         El tinte navy es una firma consciente registrada en DEC-010: aparece
         únicamente al elevar, nunca como profundidad permanente de controles. ── */
   --shadow-raised: 0 1px 2px rgb(11 1 60 / 0.06), 0 2px 8px rgb(11 1 60 / 0.04);
+  /* La tarjeta del Portal Cliente. Levanta más que `raised` porque el lienzo
+     está a un pelo del blanco: con tan poca diferencia de tono, la sombra es lo
+     único que hace que el blanco de la tarjeta se lea nítido y no como una
+     mancha del fondo. */
+  --shadow-card: 0 1px 2px rgb(11 1 60 / 0.08), 0 4px 14px rgb(11 1 60 / 0.06);
   --shadow-overlay: 0 8px 24px rgb(11 1 60 / 0.1), 0 2px 8px rgb(11 1 60 / 0.06);
 
   /* ── Sidebar — chrome tenue con marca concentrada en interacción.

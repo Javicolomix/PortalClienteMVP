@@ -5,7 +5,7 @@ import { useState } from "react";
 import { cn } from "@/shared/lib/utils/cn";
 
 import { DetalleDeEtapa } from "./BloquesDelPortal";
-import { aclarar, colorDeAcreedor } from "./color-de-acreedor";
+import { armonizar, colorDeAcreedor } from "./color-de-acreedor";
 import { iconoDeLaCaja,type IconoDelPortal } from "./iconos-de-escritura";
 import { tintaDe, tintasDeLaLista } from "./identidad-de-caja";
 import {
@@ -85,7 +85,7 @@ function MarcaDeLaCaja({ Icono, tinta }: { Icono: Icono; tinta: string }) {
     <span
       aria-hidden
       className="flex size-6 shrink-0 items-center justify-center"
-      style={{ color: aclarar(tinta) }}
+      style={{ color: armonizar(tinta) }}
     >
       <Icono className="size-[22px]" strokeWidth={1.75} />
     </span>
@@ -155,7 +155,7 @@ export function FilaDesplegable({
   const panelId = `detalle-${id}`;
 
   return (
-    <div className="overflow-hidden rounded-lg bg-card shadow-raised ring-1 ring-border-subtle">
+    <div className="overflow-hidden rounded-lg bg-card shadow-card ring-1 ring-border-subtle">
       <h3>
         <button
           type="button"
@@ -196,14 +196,13 @@ export function FilaDesplegable({
                   Entero porque partido —«Rol N.° C-» arriba y «1184-2026»
                   abajo— no se reconoce ningún número.
 
-                  Y en su propia línea porque «Banco Estado Rol N.° C-1184-2026»
-                  queda justo en el límite del ancho de un teléfono: entraba en
-                  una fila y en la siguiente no, y cuatro causas del mismo largo
-                  se veían desparejas sin ninguna razón que la persona pudiera
-                  adivinar. Desde `md` sobra el espacio y vuelve a la línea del
-                  acreedor, que es donde mejor se lee. */}
+                  Y **siempre en su propia línea**, no solo cuando no cabe. Al
+                  lado del acreedor competía con él por la misma línea de
+                  lectura, y el acreedor es lo que la persona busca; debajo, la
+                  fila se lee de arriba abajo en el orden en que se pregunta:
+                  quién me demanda, cuál de las causas es, en qué va. */}
               {identidad?.secundario ? (
-                <span className="type-meta basis-full whitespace-nowrap text-muted-foreground md:basis-auto">
+                <span className="type-meta basis-full whitespace-nowrap text-muted-foreground">
                   {identidad.secundario}
                 </span>
               ) : null}
@@ -215,7 +214,7 @@ export function FilaDesplegable({
                   no compite con el nombre de la gestión, pero es lo que la
                   persona vino a leer: con el gris claro de un subtítulo se
                   hundía debajo del titular y había que buscarla. */}
-              <span className="type-supporting min-w-0 flex-1 font-medium text-foreground-secondary">
+              <span className="min-w-0 flex-1 text-[15px] leading-relaxed font-medium text-foreground-secondary">
                 {etapa ? etapa.nombreParaCliente : "Tu caso está avanzando"}
               </span>
 
@@ -283,7 +282,7 @@ export function ListaDeCajas({
       </TituloDeBloque>
 
       {items.length === 0 ? (
-        <p className="mt-3 rounded-lg bg-card p-4 type-supporting leading-relaxed text-muted-foreground shadow-raised ring-1 ring-border-subtle">
+        <p className="mt-3 rounded-lg bg-card p-4 type-supporting leading-relaxed text-muted-foreground shadow-card ring-1 ring-border-subtle">
           {vacio}
         </p>
       ) : (

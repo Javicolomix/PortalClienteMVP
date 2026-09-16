@@ -419,7 +419,7 @@ function DudasDelCobro({
   );
 
   return (
-    <section className="mt-10 rounded-lg bg-card p-5 shadow-raised ring-1 ring-border-subtle">
+    <section className="mt-10 rounded-lg bg-card p-5 shadow-card ring-1 ring-border-subtle">
       <h2 className="type-item-title text-foreground">¿Tienes dudas de tu cobro?</h2>
       <p className="mt-2 type-body text-muted-foreground">
         Si algo no te cuadra —el monto, una cuota que ya pagaste, cuántas te quedan—, escríbele a{" "}

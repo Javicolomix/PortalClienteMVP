@@ -65,23 +65,53 @@ export const colorDeAcreedor = (acreedor?: string): string | undefined => {
 };
 
 /**
- * **El mismo color, muy aclarado.** El dibujo va en una versión pálida de la
- * marca —la mitad de camino hacia el blanco— y no en el color pleno.
+ * **El color de la marca, traído al sistema.**
  *
- * El pleno era demasiado: cuatro martillos saturados en fila competían con el
- * nombre del acreedor, que es lo que de verdad identifica la causa, y en una
- * pantalla sobre deudas un rojo Santander a plena intensidad se lee como una
- * alarma. Aclarado sigue diciendo de qué banco es —el matiz es lo que se
- * reconoce, no la intensidad— sin gritar.
+ * Los colores corporativos vienen de veinticuatro manuales distintos y no se
+ * hablan entre sí: el rojo de Santander es mucho más saturado que el azul de
+ * BancoEstado, que es más oscuro que el celeste de Caja Los Andes. Puestos
+ * crudos en una lista, cada fila pesa distinto y el conjunto se ve como un
+ * mosaico de logos pegados encima de la pantalla, no como una pantalla.
  *
- * Se mezcla con blanco en vez de bajarle la opacidad porque el resultado no
- * depende de lo que haya detrás: la misma tinta sobre la tarjeta blanca y sobre
- * el lienzo gris.
+ * Así que de cada marca **se conserva el matiz y se descartan la saturación y la
+ * luminosidad**, que pasan a ser las mismas para todas. El matiz es lo que la
+ * persona reconoce —el rojo Santander sigue siendo rojo y el celeste de Los
+ * Andes sigue siendo celeste—; la intensidad es lo que hacía que unas gritaran
+ * más que otras.
+ *
+ * Los dos valores salen de la paleta de Lexy: 45 % de saturación y 68 % de luz es donde el
+ * acento de marca se apoya sobre blanco sin pesar, y ahí entran todas. El resultado es que veinticuatro marcas ajenas se
+ * ven como una familia, y esa familia se ve del sistema.
  */
-export const aclarar = (hex: string, haciaElBlanco = 0.5): string => {
-  const canal = (desde: number) =>
-    Math.round(parseInt(hex.slice(desde, desde + 2), 16) * (1 - haciaElBlanco) + 255 * haciaElBlanco);
+const SATURACION = 0.45;
+const LUMINOSIDAD = 0.68;
 
-  const [r, g, b] = [1, 3, 5].map(canal);
-  return `#${[r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
+/** El matiz de un hex, en vueltas de 0 a 1. Lo único que se conserva. */
+const matizDe = (hex: string): number => {
+  const [r, g, b] = [1, 3, 5].map((d) => parseInt(hex.slice(d, d + 2), 16) / 255);
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const rango = max - min;
+
+  if (rango === 0) return 0;
+  if (max === r) return (((g - b) / rango) % 6) / 6;
+  if (max === g) return ((b - r) / rango + 2) / 6;
+  return ((r - g) / rango + 4) / 6;
+};
+
+const canal = (p: number, q: number, t: number): number => {
+  const v = (t + 1) % 1;
+  if (v < 1 / 6) return p + (q - p) * 6 * v;
+  if (v < 1 / 2) return q;
+  if (v < 2 / 3) return p + (q - p) * (2 / 3 - v) * 6;
+  return p;
+};
+
+export const armonizar = (hex: string): string => {
+  const h = matizDe(hex);
+  const q = LUMINOSIDAD + SATURACION * Math.min(LUMINOSIDAD, 1 - LUMINOSIDAD);
+  const p = 2 * LUMINOSIDAD - q;
+  const rgb = [h + 1 / 3, h, h - 1 / 3].map((t) => Math.round(canal(p, q, t) * 255));
+
+  return `#${rgb.map((v) => v.toString(16).padStart(2, "0")).join("")}`;
 };

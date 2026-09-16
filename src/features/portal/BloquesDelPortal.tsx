@@ -88,7 +88,7 @@ export function TarjetaInformativa({
   children: ReactNode;
 }) {
   return (
-    <section className="flex h-full gap-3 rounded-lg bg-card p-4 shadow-raised ring-1 ring-border-subtle">
+    <section className="flex h-full gap-3 rounded-lg bg-card p-4 shadow-card ring-1 ring-border-subtle">
       <Icono className="mt-0.5 size-[18px] shrink-0 text-brand-navy" aria-hidden />
 
       <div className="min-w-0">

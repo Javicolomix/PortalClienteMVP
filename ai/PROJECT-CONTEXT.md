@@ -846,10 +846,18 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   de antes, tarjetas y fondo eran del mismo tono y la pantalla se leía como una
   sola lámina plana. Aplica a todas las pantallas, no solo a «Mi servicio»: una
   sola con otro fondo se habría leído como un error.
-- 2026-09-15: **los dibujos van en una versión muy aclarada del color**, a mitad
-  de camino del blanco (`aclarar()`). El color pleno competía con el nombre del
-  acreedor, que es lo que identifica la causa, y un rojo a plena intensidad en
-  una pantalla sobre deudas se lee como alarma.
+- 2026-09-15: **de cada marca se conserva el matiz y se descartan la saturación
+  y la luminosidad** (`armonizar()`, 45 % / 68 % para todas). Veinticuatro
+  manuales de marca no se hablan entre sí: crudos, cada fila pesaba distinto y la
+  lista parecía un mosaico de logos pegados encima. El matiz es lo que la persona
+  reconoce; la intensidad es lo que hacía que unas gritaran más que otras.
+  PENDIENTE: los bancos chilenos se agolpan en el azul, así que BancoEstado y
+  Caja Los Andes quedan casi iguales. El nombre del acreedor los separa, pero si
+  molesta hay que subir la saturación y perder algo de integración.
+- 2026-09-15: **el rol va siempre debajo del acreedor**, no solo cuando no cabe.
+  Al lado competía por la misma línea de lectura; debajo, la fila se lee en el
+  orden en que se pregunta: quién me demanda, cuál de las causas, en qué va. La
+  etapa sube a 15 px.
 - 2026-09-15: **fuera la sección «Tu plan de pago»** de «Mis pagos» —las bolitas
   del avance—, a pedido del diseñador. Lo que queda es el historial completo en
   el modal.
