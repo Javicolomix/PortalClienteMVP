@@ -63,3 +63,25 @@ export const colorDeAcreedor = (acreedor?: string): string | undefined => {
   if (!acreedor) return undefined;
   return COLORES.find(([patron]) => patron.test(acreedor))?.[1];
 };
+
+/**
+ * **El mismo color, muy aclarado.** El dibujo va en una versión pálida de la
+ * marca —la mitad de camino hacia el blanco— y no en el color pleno.
+ *
+ * El pleno era demasiado: cuatro martillos saturados en fila competían con el
+ * nombre del acreedor, que es lo que de verdad identifica la causa, y en una
+ * pantalla sobre deudas un rojo Santander a plena intensidad se lee como una
+ * alarma. Aclarado sigue diciendo de qué banco es —el matiz es lo que se
+ * reconoce, no la intensidad— sin gritar.
+ *
+ * Se mezcla con blanco en vez de bajarle la opacidad porque el resultado no
+ * depende de lo que haya detrás: la misma tinta sobre la tarjeta blanca y sobre
+ * el lienzo gris.
+ */
+export const aclarar = (hex: string, haciaElBlanco = 0.5): string => {
+  const canal = (desde: number) =>
+    Math.round(parseInt(hex.slice(desde, desde + 2), 16) * (1 - haciaElBlanco) + 255 * haciaElBlanco);
+
+  const [r, g, b] = [1, 3, 5].map(canal);
+  return `#${[r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
+};

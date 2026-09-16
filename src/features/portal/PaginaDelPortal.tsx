@@ -34,7 +34,7 @@ export function PaginaDelPortal({
   children: ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-surface-subtle">
+    <div className="min-h-screen bg-surface-canvas">
       {/* La vuelta al inicio vive en la barra, **no en el cuerpo de la página**.
           Es lo único que no se va con el scroll: en «Mis pagos», que mide varias
           pantallas en el teléfono, un botón arriba del título queda fuera de

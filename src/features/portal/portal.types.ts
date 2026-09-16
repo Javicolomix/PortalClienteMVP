@@ -285,37 +285,6 @@ export type DatosMisPagos = {
   configuracion: ConfiguracionPortal;
 };
 
-/**
- * El avance del plan de pago: cuántas cuotas van, cuántas faltan y cuánta plata
- * es cada cosa. Sale de las cuotas, no de un campo aparte, porque un total que
- * se guarda por separado es un total que algún día no va a cuadrar con sus
- * partes.
- */
-export type AvanceDelPlan = {
-  total: number;
-  pagadas: number;
-  morosas: number;
-  montoPagado: number;
-  montoPorPagar: number;
-  montoTotal: number;
-};
-
-export const avanceDelPlan = (cuotas: Cuota[]): AvanceDelPlan => {
-  const pagadas = cuotas.filter((cuota) => cuota.estado === "pagada");
-  const morosas = cuotas.filter((cuota) => cuota.estado === "morosa");
-  const montoPagado = pagadas.reduce((suma, cuota) => suma + cuota.monto, 0);
-  const montoTotal = cuotas.reduce((suma, cuota) => suma + cuota.monto, 0);
-
-  return {
-    total: cuotas.length,
-    pagadas: pagadas.length,
-    morosas: morosas.length,
-    montoPagado,
-    montoPorPagar: montoTotal - montoPagado,
-    montoTotal,
-  };
-};
-
 /** Una etapa está lista para publicarse solo si sus seis textos están escritos. */
 export const etapaEstaCompleta = (etapa: Etapa): boolean =>
   [

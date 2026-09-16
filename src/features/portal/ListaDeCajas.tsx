@@ -5,7 +5,7 @@ import { useState } from "react";
 import { cn } from "@/shared/lib/utils/cn";
 
 import { DetalleDeEtapa } from "./BloquesDelPortal";
-import { colorDeAcreedor } from "./color-de-acreedor";
+import { aclarar, colorDeAcreedor } from "./color-de-acreedor";
 import { iconoDeLaCaja, tintaDe, tintasDeLaLista } from "./identidad-de-caja";
 import {
   type CajaConEtapa,
@@ -84,7 +84,7 @@ function MarcaDeLaCaja({ Icono, tinta }: { Icono: Icono; tinta: string }) {
     <span
       aria-hidden
       className="flex size-6 shrink-0 items-center justify-center"
-      style={{ color: tinta }}
+      style={{ color: aclarar(tinta) }}
     >
       <Icono className="size-[22px]" strokeWidth={1.75} />
     </span>
@@ -154,7 +154,7 @@ export function FilaDesplegable({
   const panelId = `detalle-${id}`;
 
   return (
-    <div className="overflow-hidden rounded-lg bg-card ring-1 ring-border-subtle">
+    <div className="overflow-hidden rounded-lg bg-card shadow-raised ring-1 ring-border-subtle">
       <h3>
         <button
           type="button"
@@ -282,7 +282,7 @@ export function ListaDeCajas({
       </TituloDeBloque>
 
       {items.length === 0 ? (
-        <p className="mt-3 rounded-lg bg-card p-4 type-supporting leading-relaxed text-muted-foreground ring-1 ring-border-subtle">
+        <p className="mt-3 rounded-lg bg-card p-4 type-supporting leading-relaxed text-muted-foreground shadow-raised ring-1 ring-border-subtle">
           {vacio}
         </p>
       ) : (

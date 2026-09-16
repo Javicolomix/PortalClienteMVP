@@ -84,6 +84,12 @@
   --color-popover: #ffffff;
   --color-popover-foreground: #202124;
   --color-surface-subtle: #f7f7f8; /* chrome y separación de primer nivel */
+  /* El lienzo del Portal Cliente. Va un paso más oscuro que `surface-subtle`,
+     que con las tarjetas blancas encima quedaba casi del mismo tono: todo se
+     leía como una sola lámina plana y los recuadros dejaban de ser recuadros.
+     Lleva una pizca del índigo de marca —no es un gris puro— para que el blanco
+     de las tarjetas se vea blanco y no amarillento por contraste. */
+  --color-surface-canvas: #edeef3;
   --color-surface-muted: #f1f1f3; /* selección neutral y agrupación secundaria */
   --color-surface-raised: #ffffff; /* popovers y superficies realmente elevadas */
   --color-surface-container: #fafafb; /* zona de contención: agrupa regiones del documento por tono, radio y aire en lugar de hairlines — DEC-014 */

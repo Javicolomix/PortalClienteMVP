@@ -831,6 +831,19 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   vieja dejaba la pantalla en blanco, sin nada que explicara qué pasó ni cómo
   salir.
 
+- 2026-09-15: **el lienzo del portal se oscurece** (`--color-surface-canvas`,
+  #edeef3) y las tarjetas levantan con `shadow-raised`. Con el gris casi blanco
+  de antes, tarjetas y fondo eran del mismo tono y la pantalla se leía como una
+  sola lámina plana. Aplica a todas las pantallas, no solo a «Mi servicio»: una
+  sola con otro fondo se habría leído como un error.
+- 2026-09-15: **los dibujos van en una versión muy aclarada del color**, a mitad
+  de camino del blanco (`aclarar()`). El color pleno competía con el nombre del
+  acreedor, que es lo que identifica la causa, y un rojo a plena intensidad en
+  una pantalla sobre deudas se lee como alarma.
+- 2026-09-15: **fuera la sección «Tu plan de pago»** de «Mis pagos» —las bolitas
+  del avance—, a pedido del diseñador. Lo que queda es el historial completo en
+  el modal.
+
 - 2026-09-15: **el martillo lleva el color de la marca del acreedor** —rojo
   Santander, celeste Caja Los Andes, azul BancoEstado—, que es lo que la persona
   tiene visto de la tarjeta y del cajero. La tabla vive en

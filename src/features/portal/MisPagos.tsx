@@ -29,7 +29,6 @@ import { formatearFechaBreve, formatearFechaCorta } from "./fechas";
 import { MarcaWhatsapp } from "./MarcaWhatsapp";
 import { CargandoPagina, ErrorDeCarga, PaginaDelPortal } from "./PaginaDelPortal";
 import {
-  avanceDelPlan,
   type ConfiguracionPortal,
   type Cuota,
   type DatosMisPagos,
@@ -174,73 +173,6 @@ function ProximaCuota({ cuota }: { cuota: Cuota }) {
         </p>
       </CardContent>
     </Card>
-  );
-}
-
-/**
- * **Cuánto llevas del plan**, en bolitas.
- *
- * Es la pregunta que la persona trae y que el portal no contestaba: sabía cuánto
- * le tocaba pagar este mes, pero no cuánto le quedaba por delante. Sin eso, un
- * plan de veinticuatro cuotas se vive como una deuda sin fondo.
- *
- * Va en bolitas y no en una barra de progreso porque **las cuotas se cuentan**.
- * Una barra dice «vas por la mitad»; las bolitas dejan contar seis llenas y seis
- * vacías, que es la forma en que la gente lleva la cuenta de lo que paga. Es
- * también lo que hace visible una cuota morosa: en una barra sería un tramo de
- * otro color, acá es una bolita roja en el lugar exacto del mes que falló.
- *
- * Las bolitas son **adorno para el lector de pantalla** (`aria-hidden`): la
- * frase de abajo dice lo mismo en palabras, y doce puntos anunciados uno a uno
- * no le sirven a nadie.
- *
- * El dinero va debajo y en gris. Es el dato que pidió el equipo —deuda total
- * contra pagada— pero no es lo primero que se mira: quien abre esta pantalla
- * quiere saber cuánto le falta, y eso se cuenta en cuotas antes que en pesos.
- */
-function AvanceDelPlan({ cuotas }: { cuotas: Cuota[] }) {
-  const avance = avanceDelPlan(cuotas);
-
-  if (avance.total === 0) return null;
-
-  return (
-    <section className="mt-4 rounded-lg bg-card p-5 ring-1 ring-border-subtle">
-      <h2 className="type-supporting text-muted-foreground">Tu plan de pago</h2>
-
-      <ul aria-hidden className="mt-3 flex flex-wrap gap-1.5">
-        {cuotas.map((cuota) => (
-          <li
-            key={cuota.id}
-            className={cn(
-              "size-2.5 rounded-full",
-              cuota.estado === "pagada" && "bg-primary",
-              cuota.estado === "morosa" && "bg-destructive",
-              cuota.estado === "pendiente" && "bg-transparent ring-1 ring-border-strong",
-            )}
-          />
-        ))}
-      </ul>
-
-      <p className="mt-3 type-body text-foreground">
-        <span className="font-semibold">
-          {avance.pagadas} de {avance.total}
-        </span>{" "}
-        {avance.total === 1 ? "cuota pagada" : "cuotas pagadas"}
-        {avance.morosas > 0 ? (
-          <>
-            {" · "}
-            <span className="font-medium text-destructive">
-              {avance.morosas} {avance.morosas === 1 ? "morosa" : "morosas"}
-            </span>
-          </>
-        ) : null}
-      </p>
-
-      <p className="mt-1 type-supporting text-muted-foreground">
-        Llevas pagados {FORMATO_PESOS.format(avance.montoPagado)} de{" "}
-        {FORMATO_PESOS.format(avance.montoTotal)}.
-      </p>
-    </section>
   );
 }
 
@@ -487,7 +419,7 @@ function DudasDelCobro({
   );
 
   return (
-    <section className="mt-10 rounded-lg bg-card p-5 ring-1 ring-border-subtle">
+    <section className="mt-10 rounded-lg bg-card p-5 shadow-raised ring-1 ring-border-subtle">
       <h2 className="type-item-title text-foreground">¿Tienes dudas de tu cobro?</h2>
       <p className="mt-2 type-body text-muted-foreground">
         Si algo no te cuadra —el monto, una cuota que ya pagaste, cuántas te quedan—, escríbele a{" "}
@@ -522,7 +454,6 @@ function ContenidoDePagos({ datos }: { datos: DatosMisPagos }) {
           </EmptyContent>
         </Empty>
 
-        <AvanceDelPlan cuotas={datos.cuotas} />
         <HistorialDeCuotas
           cuotas={datos.cuotas}
           urlPagoEnLinea={datos.configuracion.urlPagoEnLinea}
@@ -538,7 +469,6 @@ function ContenidoDePagos({ datos }: { datos: DatosMisPagos }) {
   return (
     <>
       <ProximaCuota cuota={datos.proximaCuota} />
-      <AvanceDelPlan cuotas={datos.cuotas} />
       <ComoPagar
         configuracion={datos.configuracion}
         nombreCliente={nombreCompleto(datos.cliente)}
