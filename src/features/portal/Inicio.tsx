@@ -133,7 +133,7 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
           {/* En una sola línea, siempre. Partido en dos —«Buenas tardes,» arriba
               y el nombre abajo— el saludo deja de leerse como un saludo y el
               nombre queda colgando, que es justo lo personal de la pantalla. */}
-          <h1 className="mt-4 type-page-title text-xl whitespace-nowrap text-white">
+          <h1 className="mt-4 type-page-title text-center text-xl whitespace-nowrap text-white">
             {saludo}
             {nombre ? (
               <>
@@ -142,10 +142,16 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
             ) : null}
           </h1>
 
-          <p className="mt-2 type-supporting text-balance text-white/70">{BAJADA}</p>
+          <p className="mt-2 type-supporting text-center text-balance text-white/70">{BAJADA}</p>
         </div>
 
-        <div className="hidden max-w-xl md:block">
+        {/* Centrado, y con él la tarjeta del servicio que cae debajo. La franja
+            navy es una portada: lo que lleva son tres cosas cortas —de qué
+            portal es, quién entró y qué contrató— y centradas se leen como un
+            bloque solo. Alineadas a la izquierda quedaban pegadas a un costado
+            de una franja que ocupa el ancho entero, y el arco de abajo, que es
+            simétrico, no calzaba con nada. */}
+        <div className="mx-auto hidden max-w-xl text-center md:block">
           <Rotulo tono="text-brand-lavender">Portal de cliente</Rotulo>
           <h1 className="mt-3 type-page-title whitespace-nowrap text-white">
             {saludo}
@@ -235,7 +241,7 @@ function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
   return (
     <section
       className={cn(
-        "w-full rounded-xl bg-[#e4e1fa] px-6 py-5 md:w-fit md:min-w-[24rem] md:max-w-2xl md:px-9 md:py-6",
+        "mx-auto w-full rounded-xl bg-[#e4e1fa] px-6 py-5 text-center md:w-fit md:min-w-[24rem] md:max-w-2xl md:px-9 md:py-6",
         // Con un nombre de una línea la tarjeta queda baja al lado de la del
         // nombre compuesto, que ocupa dos. Se le suma aire abajo para acercarlas
         // de porte. Es aire y no una línea de texto reservada: reservada dejaba
@@ -244,7 +250,7 @@ function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
       )}
       style={{ boxShadow: "0 8px 24px rgb(11 1 60 / 0.10)" }}
     >
-      <p className="flex items-center gap-1.5 type-meta text-[11px] font-medium tracking-[0.1em] text-[#4a4478] uppercase">
+      <p className="flex items-center justify-center gap-1.5 type-meta text-[11px] font-medium tracking-[0.1em] text-[#4a4478] uppercase">
         <ICONOS.balanza className="size-3.5 shrink-0" strokeWidth={1.75} aria-hidden />
         Mi servicio
       </p>

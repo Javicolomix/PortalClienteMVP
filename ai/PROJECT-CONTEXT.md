@@ -864,6 +864,11 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
 - 2026-09-16: **el tribunal titula «Mis juicios» y el martillo marca cada fila**:
   género y especie. Con el martillo en los dos lugares, el título y sus filas
   decían lo mismo.
+- 2026-09-16: **la portada del inicio va centrada**: el rótulo, el saludo, la
+  bajada y la tarjeta del servicio sobre el mismo eje. Son tres cosas cortas —de
+  qué portal es, quién entró y qué contrató— y centradas se leen como un bloque
+  solo; a la izquierda quedaban pegadas a un costado de una franja que ocupa el
+  ancho entero, y el arco de abajo, que es simétrico, no calzaba con nada.
 - 2026-09-16: **el login usa el mismo lienzo que el inicio** (`surface-canvas`).
 - 2026-09-16: **las dos barras superiores miden lo mismo y más delgadas**: 48 px
   en vez de los 64 del sistema, con el logo a 24 px en las dos. Es lo más bajo
