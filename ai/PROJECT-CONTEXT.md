@@ -853,6 +853,13 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   qué, y pasa a significar dónde**: en qué lugar de la lista va esta fila. Se va
   la tabla de 24 marcas de acreedor; `color-de-acreedor.ts` pasa a ser
   `degrade-de-la-lista.ts`.
+- 2026-09-16: **el tranquilo calla en todas partes.** No avisa en la fila cerrada
+  ni dentro del recuadro: una advertencia que dice «no hay nada de qué
+  advertirte» ocupa el lugar más visible para no decir nada, y en una pantalla
+  sobre deudas cualquier línea de color se lee primero como un problema.
+- 2026-09-16: el recuadro del desplegable se titula **«¿Qué significa esta
+  etapa?»** y no «Estado de mi caso»: ese nombre ya es el de una sección del
+  inicio, y en un juicio de cuatro «mi caso» no es esta causa sino las cuatro.
 - 2026-09-16: **el nivel de urgencia vuelve, y avisa solo cuando pide algo.** Un
   punto y una palabra —«Atención», «Urgente»— a la derecha de la fila; nada
   cuando el caso avanza solo. Se probó una franja de color en el canto de las

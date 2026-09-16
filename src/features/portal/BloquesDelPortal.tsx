@@ -249,9 +249,16 @@ export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
           Sin el nombre de la etapa: ya está en el título de la fila, a diez
           píxeles. Repetido y en cuerpo más grande, la persona lee dos veces lo
           mismo y la segunda parece otra cosa. */}
+      {/* **«¿Qué significa esta etapa?»** y no «Estado de mi caso». El estado
+          del caso es la sección de más arriba del inicio, y repetir ese nombre
+          acá adentro hacía que dos cosas distintas se llamaran igual: una
+          sección de la pantalla y un recuadro dentro de una de sus filas.
+          Además, en un juicio de cuatro «mi caso» no es esta causa, son las
+          cuatro. Lo que este recuadro contesta es qué quiere decir el nombre de
+          etapa que la persona acaba de leer en la fila. */}
       <TarjetaDeSeccion
         Icono={ICONOS.etapa}
-        titulo="Estado de mi caso"
+        titulo="¿Qué significa esta etapa?"
         antes={<RefuerzoDeUrgencia etapa={etapa} />}
       >
         <p className="type-supporting leading-relaxed whitespace-pre-line text-muted-foreground">
@@ -306,13 +313,20 @@ export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
  * como un mensaje del sistema, de esos que se cierran, y no como parte de lo que
  * el equipo escribió sobre este caso.
  *
- * Los tres niveles hablan acá, incluido el tranquilo. En la fila cerrada solo
- * avisan los dos que piden algo —el silencio es la buena noticia—, pero quien
- * abrió la fila vino a preguntar, y «no necesitas hacer nada por ahora» es una
- * respuesta, no un ruido.
+ * **Solo hablan los dos niveles que piden algo.** El tranquilo calla acá igual
+ * que en la fila cerrada: una advertencia que dice «no hay nada de qué
+ * advertirte» ocupa el lugar más visible del recuadro para no decir nada, y en
+ * una pantalla sobre deudas cualquier línea de color se lee primero como un
+ * problema.
  */
 function RefuerzoDeUrgencia({ etapa }: { etapa: Etapa }) {
-  const { frase, Icono, color } = NIVELES[etapa.nivelUrgencia];
+  const { frase, Icono, color, avisa } = NIVELES[etapa.nivelUrgencia];
+
+  // Tranquilo no dice nada, tampoco acá adentro. La regla es la misma que en la
+  // fila cerrada: solo se habla cuando hay algo que pedir. Decirle «no necesitas
+  // hacer nada» a alguien que abrió la fila para saber qué pasa es ocupar la
+  // primera línea del recuadro con una advertencia que no advierte de nada.
+  if (!avisa) return null;
 
   return (
     <p
