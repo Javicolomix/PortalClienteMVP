@@ -84,7 +84,7 @@ const BAJADA = "Todo lo que debes saber de tu servicio a un solo click.";
 
  *
  * El solape se queda: el `-mb-12` es la mitad del alto de la tarjeta del
- * servicio y vive acá, junto al `pb-20` que le deja el sitio. Son un solo gesto
+ * servicio y vive acá, junto al `pb` que le deja el sitio. Son un solo gesto
  * y separarlos deja el navy asomando o tapado; el valor hay que revisarlo si esa
  * tarjeta cambia de porte.
  *
@@ -98,7 +98,7 @@ const BAJADA = "Todo lo que debes saber de tu servicio a un solo click.";
 function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
   return (
     <header
-      className="relative isolate -mb-12 overflow-hidden bg-brand-navy pt-5 pb-20 [--arco:3rem] md:pt-7 md:pb-24 md:[--arco:2.5rem]"
+      className="relative isolate -mb-20 overflow-hidden bg-brand-navy pt-5 pb-28 [--arco:3rem] md:-mb-12 md:pt-7 md:pb-24 md:[--arco:2.5rem]"
       style={{
         // Radio elíptico: el horizontal es media pantalla, así los dos arcos se
         // encuentran al medio y el borde queda como un solo arco continuo. El
@@ -142,7 +142,14 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
             ) : null}
           </h1>
 
-          <p className="mt-2 type-supporting text-balance text-white/70">{BAJADA}</p>
+          {/* **Una sola línea, siempre.** El cuerpo se ata al ancho de la
+              pantalla en vez de quedarse fijo: a 14 px la frase no cabe en un
+              teléfono y partía en dos, y con dos líneas deja de leerse como la
+              bajada del saludo y empieza a leerse como un párrafo. El tope de
+              14 px es para que no crezca de más en un teléfono grande. */}
+          <p className="mt-2 text-[min(3.1vw,0.875rem)] leading-relaxed whitespace-nowrap text-white/70">
+            {BAJADA}
+          </p>
         </div>
 
         <div className="hidden max-w-xl md:block">
