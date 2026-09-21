@@ -266,7 +266,9 @@ export const TIPOS_CON_DIBUJO = Object.keys(POR_TIPO);
  * de arriba.
  */
 export const iconoDeLaCaja = (caja: Caja): IconoDelPortal =>
-  caja.tipo === "proteccionPatrimonial" ? iconoDeEscritura(caja.identificador) : Martillo;
+  caja.tipo === "proteccionPatrimonial"
+    ? iconoDeEscritura(caja.tipoDeEscritura ?? "")
+    : Martillo;
 
 /**
  * **El dibujo del servicio**, que es el que lleva la fila del estado del caso.

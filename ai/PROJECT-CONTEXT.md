@@ -1082,6 +1082,18 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   protección patrimonial) son **un ejemplo, no el catálogo definitivo**. No
   inviertas en afinar su contenido hasta que Lexy confirme la lista real.
 
+- 2026-09-20: cada escritura muestra su **identificador** entre el tipo y la
+  etapa —la patente del auto, el rol del inmueble, el nombre de la sociedad—,
+  desde la columna «identificador» de Streak. Es la misma forma de las causas
+  (acreedor / rol / etapa) y resuelve lo que antes no tenía respuesta: dos
+  compraventas de vehículo se veían idénticas. El tipo de escritura se muda a su
+  propio campo, `caja.tipoDeEscritura`; `caja.identificador` queda con un solo
+  significado en los dos embudos. El identificador va **sin rótulo delante**:
+  en esa columna cabe una patente, un rol o un nombre, y cualquier palabra que
+  le pusiéramos sería correcta para un tipo y falsa para los demás.
+  PENDIENTE CON TI: que la columna exista y venga completa en los dos embudos, y
+  con qué formato viene en escrituras.
+
 - 2026-09-16: **una sesión que apunta a un cliente que ya no existe se cierra
   sola** y lleva al acceso. Pasa cada vez que cambia el set de datos, y el portal
   lo mostraba como «Revisa tu conexión»: mandaba a revisar lo único que no tenía

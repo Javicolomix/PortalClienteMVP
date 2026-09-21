@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 44,
+  datasetVersion: 45,
   entities: {
     cliente: [
       // **Los cuatro casos que el portal tiene que saber armar.** No son
@@ -70,7 +70,9 @@ export const fixtures: Fixtures = {
 
       // Esteban: cuatro causas y tres escrituras. Los cuatro acreedores son
       // distintos y las tres escrituras de tipos distintos, así que se ve la
-      // lista larga sin repeticiones que la expliquen.
+      // lista larga sin repeticiones que la expliquen. Cada escritura lleva su
+      // identificador —la patente, el rol del inmueble, el nombre de la
+      // sociedad—, que es lo que distinguiría dos del mismo tipo.
       {
         id: "caj-001",
         clienteId: "cli-001",
@@ -112,7 +114,8 @@ export const fixtures: Fixtures = {
         clienteId: "cli-001",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Compraventa de Inmueble",
+        tipoDeEscritura: "Compraventa de Inmueble",
+        identificador: "Rol 2145-37, Ñuñoa",
         etapaId: "etp-pp-03",
       },
       {
@@ -120,7 +123,8 @@ export const fixtures: Fixtures = {
         clienteId: "cli-001",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Compraventa de Vehículo",
+        tipoDeEscritura: "Compraventa de Vehículo",
+        identificador: "Patente JLXR·84",
         etapaId: "etp-pp-04",
       },
       {
@@ -128,7 +132,8 @@ export const fixtures: Fixtures = {
         clienteId: "cli-001",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Constitución de Sociedades",
+        tipoDeEscritura: "Constitución de Sociedades",
+        identificador: "Inversiones Carrasco SpA",
         etapaId: "etp-pp-02",
       },
 
@@ -157,7 +162,8 @@ export const fixtures: Fixtures = {
         clienteId: "cli-002",
         tipo: "proteccionPatrimonial",
         estado: "activa",
-        identificador: "Cancelación y Alzamiento de Hipoteca",
+        tipoDeEscritura: "Cancelación y Alzamiento de Hipoteca",
+        identificador: "Rol 3012-8, Maipú",
         etapaId: "etp-pp-02",
       },
 

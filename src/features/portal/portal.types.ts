@@ -110,11 +110,26 @@ export type Caja = {
   tipo: TipoServicio;
   estado: EstadoCaja;
   /**
-   * Cómo reconoce la persona esta caja entre varias: el ROL de la causa
-   * («C-1234-2026») en juicio ejecutivo, el tipo de escritura en escrituras
-   * públicas. Vacío cuando es la única.
+   * **Qué distingue esta caja de otra del mismo tipo.** Sale de la columna
+   * «identificador» de Streak: en juicio ejecutivo es el ROL de la causa
+   * («C-1234-2026»); en escrituras públicas, lo que identifica el bien o la
+   * gestión —la patente del auto, el rol de avalúo del inmueble, el nombre de
+   * la sociedad—. Vacío cuando la caja es la única y no hay de qué
+   * distinguirla.
+   *
+   * No dice **qué es** la caja: eso lo dice `tipoDeEscritura` en las escrituras
+   * y el acreedor en las causas. Antes este campo cargaba las dos cosas —el rol
+   * en un embudo y el tipo de escritura en el otro— y por eso dos compraventas
+   * de vehículo se veían idénticas: lo único escrito era lo que tenían en
+   * común.
    */
   identificador: string;
+  /**
+   * De qué es la escritura: «Compraventa de Vehículo», «Constitución de
+   * Sociedades». Solo en el embudo de escrituras públicas, y es lo que elige el
+   * dibujo de la fila.
+   */
+  tipoDeEscritura?: string;
   /**
    * Quién demandó, solo en las causas: «Banco Estado», «Coopeuch». Va junto al
    * ROL y no en su lugar — el rol identifica el expediente, el acreedor es el
@@ -133,9 +148,12 @@ export type Caja = {
  * —«Rol N.° C-4821-2026 · Banco Estado»— y litigios lo corrigió: el rol quedó,
  * porque es lo único que distingue dos causas del mismo banco, pero pasa atrás.
  *
- * En una escritura el principal es el tipo, que ya se lee en castellano, y no
- * hay secundario: en Streak no existe con qué distinguir dos del mismo tipo.
- * Ahí lo que las separa es la burbuja de color y la etapa de cada una.
+ * En una escritura el principal es el tipo, que ya se lee en castellano, y el
+ * secundario es el identificador del bien: la patente del auto, el rol del
+ * inmueble, el nombre de la sociedad. Es el mismo reparto que en una causa —qué
+ * es arriba, cuál de todas debajo— y resuelve lo que antes no tenía respuesta:
+ * dos compraventas de vehículo se veían idénticas, con el tipo repetido y nada
+ * que dijera de cuál auto era cada una.
  *
  * Es el rótulo de la fila, no su titular: lo que manda en la línea de abajo
  * sigue siendo la etapa.
@@ -165,6 +183,18 @@ export type IdentidadDeCaja = {
 
 export const identidadDeLaCaja = (caja: Caja): IdentidadDeCaja | undefined => {
   if (caja.tipo !== "defensaEnJuicio") {
+    // El identificador va **sin rótulo**, tal como viene de Streak. En esa
+    // columna cabe una patente, un rol de avalúo o el nombre de una sociedad, y
+    // cualquier palabra que le pusiéramos delante —«Patente», «Rol»— sería la
+    // correcta para un tipo de escritura y falsa para los otros.
+    if (caja.tipoDeEscritura) {
+      return {
+        principal: caja.tipoDeEscritura,
+        secundario: caja.identificador || undefined,
+        claveDeColor: caja.tipoDeEscritura,
+      };
+    }
+
     return caja.identificador
       ? { principal: caja.identificador, claveDeColor: caja.identificador }
       : undefined;

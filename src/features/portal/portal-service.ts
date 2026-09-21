@@ -138,6 +138,7 @@ export async function cargarInicio(): Promise<DatosInicio> {
             "caja.tipo",
             "caja.estado",
             "caja.identificador",
+            "caja.tipoDeEscritura",
             "caja.acreedor",
             "caja.etapaId",
           ],

@@ -326,13 +326,27 @@ export const prototypeDataContract = definePrototypeDataContract({
         identificador: {
           id: "identificador",
           productDescription:
-            "Cómo reconoce la persona esta caja entre varias: en juicio ejecutivo es el ROL de la causa («C-4821-2026»); en escrituras públicas, el tipo de escritura («Declaración de bien familiar»). Va vacío en las cajas que no se listan.",
+            "Qué distingue esta caja de otra del mismo tipo, desde la columna «identificador» de Streak: en juicio ejecutivo, el ROL de la causa («C-4821-2026»); en escrituras públicas, lo que identifica el bien o la gestión —la patente del vehículo, el rol de avalúo del inmueble, el nombre de la sociedad—. Se muestra tal cual viene, sin rótulo delante: en esa columna cabe una patente, un rol o un nombre, y cualquier palabra que le pusiéramos sería correcta para un tipo de escritura y falsa para los demás. Va vacío en las cajas que no se listan.",
           dataType: "string",
           required: false,
           usage: soloVisible,
           usedIn: [PORTAL],
-          ...desdeUsabilidad(
-            "Con dos juicios abiertos, la persona necesita distinguir cuál es cuál. El ROL y el tipo de escritura son los campos que el diseñador fijó como identificador; falta confirmar que los dos existan y estén siempre completos en Streak, y qué se muestra si dos escrituras son del mismo tipo.",
+          ...pendienteTi(
+            "Confirmar que la columna «identificador» de Streak exista en los dos embudos y venga siempre completa, y qué formato trae en escrituras (¿patente con guión o con punto medio? ¿el rol de avalúo con comuna o sin ella?). Si viniera vacía, la fila queda con el tipo de escritura solo y dos del mismo tipo vuelven a verse idénticas.",
+            "productAssumption",
+          ),
+        },
+        tipoDeEscritura: {
+          id: "tipoDeEscritura",
+          productDescription:
+            "De qué es la escritura: «Compraventa de Vehículo», «Constitución de Sociedades». Solo en el embudo de escrituras públicas. Es la línea con tinta de la fila —lo que la persona reconoce primero— y además elige el dibujo de la marca.",
+          dataType: "string",
+          required: false,
+          usage: soloVisible,
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar de qué columna de Streak sale el tipo de escritura y con qué lista de valores. El portal tiene dibujo propio para veinticinco tipos y uno genérico para el resto: un valor escrito distinto al de esa lista se dibuja con el genérico, no falla, pero se ve como si fuera de otra clase.",
+            "productAssumption",
           ),
         },
         acreedor: {

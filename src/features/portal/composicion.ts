@@ -78,24 +78,26 @@ export function determinarServicioPrincipal(
 }
 
 /**
- * Las listas van ordenadas por identificador, y no por el orden en que vengan
- * las cajas, por dos razones.
+ * Las listas van ordenadas por **lo que se lee arriba en la fila**, y no por el
+ * orden en que vengan las cajas, por dos razones.
  *
- * La primera es que **dos escrituras pueden ser del mismo tipo** —en Streak no
- * hay con qué distinguirlas— y ahí lo único que las separa es la etapa en que
- * va cada una. Juntas se leen como lo que son, dos gestiones del mismo tipo en
- * momentos distintos; separadas por una tercera parecen un dato repetido por
- * error.
+ * La primera es que **dos escrituras del mismo tipo quedan juntas**. Así se leen
+ * como lo que son —dos gestiones del mismo tipo, cada una con su bien y su
+ * etapa— en vez de parecer un dato repetido por error cuando una tercera las
+ * separa. Por eso la clave de una escritura es el tipo y no el identificador:
+ * ordenar por patente las desparramaría justo cuando se busca compararlas.
  *
  * La segunda es que el orden no cambie entre una visita y otra. Una lista que se
  * reordena sola obliga a volver a leerla entera cada vez, y esta la abre alguien
  * que solo quiere ver si algo le pide algo.
  *
- * `sort` conserva el orden relativo de las que empatan, así que entre dos del
- * mismo tipo manda el orden en que vinieron.
+ * El identificador desempata: entre dos compraventas de vehículo manda la
+ * patente, que es lo único distinto que hay escrito.
  */
+const claveDeOrden = (caja: Caja) => `${caja.tipoDeEscritura ?? ""}\u0000${caja.identificador}`;
+
 const ordenadas = (cajas: Caja[]): Caja[] =>
-  [...cajas].sort((a, b) => a.identificador.localeCompare(b.identificador, "es-CL"));
+  [...cajas].sort((a, b) => claveDeOrden(a).localeCompare(claveDeOrden(b), "es-CL"));
 
 /**
  * Decide qué bloques se muestran. Es una función pura: mismos datos, misma
