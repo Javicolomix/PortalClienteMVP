@@ -145,9 +145,19 @@ function Saludo({ saludo, nombre }: { saludo: string; nombre?: string }) {
           {/* **Una sola línea, siempre.** El cuerpo se ata al ancho de la
               pantalla en vez de quedarse fijo: a 14 px la frase no cabe en un
               teléfono y partía en dos, y con dos líneas deja de leerse como la
-              bajada del saludo y empieza a leerse como un párrafo. El tope de
-              14 px es para que no crezca de más en un teléfono grande. */}
-          <p className="mt-2 text-[min(3.1vw,0.875rem)] leading-relaxed whitespace-nowrap text-white/70">
+              bajada del saludo y empieza a leerse como un párrafo. El tope, de
+              15 px, es para que no crezca de más en un teléfono grande.
+
+              **3.3vw y no más.** El techo no es de gusto: es el ancho de la
+              frase. Medida sobre la pantalla real, a 3.3vw ocupa entre el 90 % y
+              el 94 % de lo disponible según el teléfono —lo más apretado es un
+              Android de 320 px— y ese 6 % que sobra es el colchón para que no se
+              desborde si una fuente carga distinto o el navegador mide un pelo
+              más ancho. Subirlo a 3.4 deja el 97 % en los teléfonos chicos, que
+              ya no es margen. Con `nowrap`, pasarse no parte la frase: la saca
+              de la pantalla, que es peor que las dos líneas que se vinieron a
+              evitar. */}
+          <p className="mt-2 text-[min(3.3vw,0.9375rem)] leading-relaxed whitespace-nowrap text-white/70">
             {BAJADA}
           </p>
         </div>
