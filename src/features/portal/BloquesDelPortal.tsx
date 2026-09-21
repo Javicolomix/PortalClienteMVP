@@ -120,7 +120,14 @@ export function TarjetaDeSeccion({
    * reconocer nada: solo agrega una cosa más que mirar antes de la respuesta.
    */
   Icono?: Icono;
-  titulo: string;
+  /**
+   * Opcional: un recuadro puede quedarse **sin título** si lo único que tiene
+   * que decir vive en `antes`. Pasa cuando el capitán no escribió la
+   * explicación de la etapa pero el nivel de urgencia sí tiene algo que
+   * advertir: el aviso se muestra igual, y un encabezado sobre nada sería un
+   * rótulo que anuncia una sección vacía.
+   */
+  titulo?: string;
   /**
    * Lo que va **antes del título**, dentro del recuadro. Es para lo único que
    * puede ir ahí: algo que hay que leer incluso antes de saber de qué habla el
@@ -137,14 +144,18 @@ export function TarjetaDeSeccion({
           tinta de la marca —más azul que el negro del cuerpo, lo justo para que
           el título se despegue del párrafo sin gritar— y el índigo es el color
           de acción del sistema, que acá marca dónde empieza cada parte. */}
-      <h2 className="flex items-center gap-2.5 type-item-title font-semibold text-brand-navy">
-        {Icono ? (
-          <Icono className="size-[19px] shrink-0 text-primary" strokeWidth={1.9} aria-hidden />
-        ) : null}
-        {titulo}
-      </h2>
+      {titulo ? (
+        <h2 className="flex items-center gap-2.5 type-item-title font-semibold text-brand-navy">
+          {Icono ? (
+            <Icono className="size-[19px] shrink-0 text-primary" strokeWidth={1.9} aria-hidden />
+          ) : null}
+          {titulo}
+        </h2>
+      ) : null}
 
-      <div className="mt-4">{children}</div>
+      {/* El aire de arriba solo existe si hay título del cual separarse: sin
+          él, `mt-4` sería un hueco contra el borde del recuadro. */}
+      {children ? <div className={titulo ? "mt-4" : undefined}>{children}</div> : null}
     </section>
   );
 }
@@ -220,16 +231,32 @@ export function TarjetaInformativa({
  * una columna angosta de teléfono abre zanjas blancas entre las palabras, y eso
  * se lee peor que el borde irregular que se vino a arreglar.
  */
-export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
-  if (!etapa) {
-    return (
-      <p className="type-supporting px-1 py-1 text-justify leading-relaxed hyphens-auto text-muted-foreground">
-        Ahora mismo esto está en una etapa de trabajo interno de nuestro equipo, así que no hay
-        novedades que mostrarte todavía. Apenas las haya, las vas a ver acá.
-      </p>
-    );
-  }
+/**
+ * **Lo que el capitán escribió, o nada.**
+ *
+ * Un campo del panel de comunicaciones puede quedar sin llenar, y también puede
+ * quedar con un espacio o un salto de línea sueltos —se escribió algo y se
+ * borró, o se apretó enter por costumbre—. Las dos cosas significan lo mismo:
+ * el capitán no tenía nada que decir ahí. Por eso la prueba es sobre el texto
+ * recortado y no sobre si la cadena existe.
+ *
+ * Devuelve el texto ya recortado, que además le quita al párrafo las líneas en
+ * blanco de los extremos: con `whitespace-pre-line`, un salto al final del
+ * campo se dibuja como un renglón vacío dentro del recuadro.
+ */
+const conTexto = (valor: string | null | undefined): string | undefined => {
+  const limpio = valor?.trim();
+  return limpio ? limpio : undefined;
+};
 
+export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
+  const nivel = etapa ? NIVELES[etapa.nivelUrgencia] : null;
+  const explicacion = conTexto(etapa?.mensajePrincipal);
+
+  // **El orden es fijo aunque falten piezas.** Se arma la lista completa y se
+  // descartan las vacías: así una etapa con dos secciones las muestra en el
+  // mismo orden que una con cuatro, y nadie tiene que volver a aprender dónde
+  // está cada cosa al pasar de una fila a otra.
   const detalles = [
     {
       // Va **primero**, antes de lo que le toca a la persona. El orden contesta
@@ -240,15 +267,20 @@ export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
       clave: "equipo",
       Icono: ICONOS.equipo,
       titulo: "Qué está haciendo tu equipo",
-      texto: etapa.queHaceLexy,
+      texto: conTexto(etapa?.queHaceLexy),
     },
     {
       clave: "tarea",
       Icono: ICONOS.tarea,
       titulo: "Qué necesitamos de ti",
-      texto: etapa.queNecesitamosDelCliente,
+      texto: conTexto(etapa?.queNecesitamosDelCliente),
     },
-    { clave: "plazo", Icono: ICONOS.reloj, titulo: "Plazo esperado", texto: etapa.plazoEsperado },
+    {
+      clave: "plazo",
+      Icono: ICONOS.reloj,
+      titulo: "Plazo esperado",
+      texto: conTexto(etapa?.plazoEsperado),
+    },
     {
       clave: "camino",
       // La flecha y no el poste indicador: el poste lo lleva el título del
@@ -256,9 +288,26 @@ export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
       // la misma cosa dicha dos veces.
       Icono: ICONOS.siguiente,
       titulo: "Qué viene después",
-      texto: etapa.quePuedePasarDespues,
+      texto: conTexto(etapa?.quePuedePasarDespues),
     },
-  ];
+  ].filter((detalle) => detalle.texto !== undefined);
+
+  const hayCabecera = Boolean(nivel?.avisa || explicacion);
+
+  // Sin etapa publicada, o con una donde el capitán no alcanzó a escribir nada,
+  // el panel dice que no hay novedades. **Es lo contrario de un placeholder por
+  // sección**: no anuncia lo que falta —ningún «No aplica» bajo un reloj—, sino
+  // que contesta la única pregunta que quedaba en pie, que es por qué está
+  // vacío. Un desplegable que se abre y no muestra nada se lee como una falla
+  // del portal.
+  if (!etapa || (!hayCabecera && detalles.length === 0)) {
+    return (
+      <p className="type-supporting px-1 py-1 text-justify leading-relaxed hyphens-auto text-muted-foreground">
+        Ahora mismo esto está en una etapa de trabajo interno de nuestro equipo, así que no hay
+        novedades que mostrarte todavía. Apenas las haya, las vas a ver acá.
+      </p>
+    );
+  }
 
   return (
     <div className="space-y-3">
@@ -283,43 +332,60 @@ export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
           sección de la pantalla y un recuadro dentro de una de sus filas.
           Además, en un juicio de cuatro «mi caso» no es esta causa, son las
           cuatro. Lo que este recuadro contesta es qué quiere decir el nombre de
-          etapa que la persona acaba de leer en la fila. */}
-      <TarjetaDeSeccion
-        titulo="¿Qué significa esta etapa?"
-        antes={<RefuerzoDeUrgencia etapa={etapa} />}
-      >
-        <p className="type-supporting text-justify leading-relaxed whitespace-pre-line hyphens-auto text-muted-foreground">
-          {etapa.mensajePrincipal}
-        </p>
-      </TarjetaDeSeccion>
+          etapa que la persona acaba de leer en la fila.
 
-      {/* Los cuatro detalles, **apilados y sin título de sección**. Apilados
-          porque se leen en orden —qué está haciendo el equipo, qué me toca a mí,
-          para cuándo, qué sigue— y no son cuatro cosas entre las que elegir; sin
-          título de sección porque ya son la letra chica de lo de arriba, y un
-          encabezado sobre todos ellos los subiría al mismo nivel que la
-          explicación, que es justo lo que había que deshacer. */}
-      <div className="rounded-xl bg-card p-5 shadow-card ring-1 ring-border-subtle md:p-6">
-        <ul className="divide-y divide-border-subtle">
-          {detalles.map((detalle) => (
-            <li key={detalle.clave} className="flex gap-3 py-3.5 first:pt-0 last:pb-0">
-              <detalle.Icono
-                className="mt-0.5 size-[18px] shrink-0 text-primary"
-                strokeWidth={1.9}
-                aria-hidden
-              />
+          **El recuadro entero desaparece si no hay ni aviso ni explicación**, y
+          el título desaparece si lo único que hay es el aviso: un encabezado que
+          pregunta «¿qué significa esta etapa?» sobre un espacio en blanco es
+          peor que no preguntarlo. */}
+      {hayCabecera ? (
+        <TarjetaDeSeccion
+          titulo={explicacion ? "¿Qué significa esta etapa?" : undefined}
+          antes={<RefuerzoDeUrgencia etapa={etapa} conSeparador={Boolean(explicacion)} />}
+        >
+          {explicacion ? (
+            <p className="type-supporting text-justify leading-relaxed whitespace-pre-line hyphens-auto text-muted-foreground">
+              {explicacion}
+            </p>
+          ) : null}
+        </TarjetaDeSeccion>
+      ) : null}
 
-              <div className="min-w-0">
-                <h3 className="type-supporting font-semibold text-brand-navy">{detalle.titulo}</h3>
-                <p className="type-supporting mt-1 text-justify leading-relaxed whitespace-pre-line hyphens-auto text-muted-foreground">
-                  {detalle.texto}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* Los detalles, **apilados y sin título de sección**. Apilados porque se
+          leen en orden —qué está haciendo el equipo, qué me toca a mí, para
+          cuándo, qué sigue— y no son cosas entre las que elegir; sin título de
+          sección porque ya son la letra chica de lo de arriba, y un encabezado
+          sobre todos ellos los subiría al mismo nivel que la explicación, que es
+          justo lo que había que deshacer.
 
+          Las líneas las pone `divide-y` **entre los que se muestran**, no entre
+          los cuatro posibles: como las vacías ni siquiera llegan al DOM, no hay
+          separador que sobre ni hueco que rellenar. `first:pt-0 last:pb-0` se
+          encarga de los bordes, sea cual sea el que quedó primero. */}
+      {detalles.length > 0 ? (
+        <div className="rounded-xl bg-card p-5 shadow-card ring-1 ring-border-subtle md:p-6">
+          <ul className="divide-y divide-border-subtle">
+            {detalles.map((detalle) => (
+              <li key={detalle.clave} className="flex gap-3 py-3.5 first:pt-0 last:pb-0">
+                <detalle.Icono
+                  className="mt-0.5 size-[18px] shrink-0 text-primary"
+                  strokeWidth={1.9}
+                  aria-hidden
+                />
+
+                <div className="min-w-0">
+                  <h3 className="type-supporting font-semibold text-brand-navy">
+                    {detalle.titulo}
+                  </h3>
+                  <p className="type-supporting mt-1 text-justify leading-relaxed whitespace-pre-line hyphens-auto text-muted-foreground">
+                    {detalle.texto}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -344,7 +410,19 @@ export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
  * una pantalla sobre deudas cualquier línea de color se lee primero como un
  * problema.
  */
-function RefuerzoDeUrgencia({ etapa }: { etapa: Etapa }) {
+function RefuerzoDeUrgencia({
+  etapa,
+  conSeparador,
+}: {
+  etapa: Etapa;
+  /**
+   * La línea de abajo es lo que separa el aviso de lo que sigue, así que solo
+   * se dibuja si hay algo que separar. Cuando el capitán no escribió la
+   * explicación de la etapa, el aviso queda solo en el recuadro y una línea
+   * bajo la última cosa que hay se lee como una sección que falta.
+   */
+  conSeparador: boolean;
+}) {
   const { frase, Icono, color, avisa } = NIVELES[etapa.nivelUrgencia];
 
   // Tranquilo no dice nada, tampoco acá adentro. La regla es la misma que en la
@@ -356,7 +434,8 @@ function RefuerzoDeUrgencia({ etapa }: { etapa: Etapa }) {
   return (
     <p
       className={cn(
-        "mb-3 flex items-start gap-2 border-b border-border-subtle pb-3 type-supporting font-semibold",
+        "flex items-start gap-2 type-supporting font-semibold",
+        conSeparador && "mb-3 border-b border-border-subtle pb-3",
         color,
       )}
     >

@@ -1089,6 +1089,16 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   cambia el tono de la pantalla. «¿Qué significa esta etapa?» pierde su dibujo:
   el recuadro ya viene dentro de una fila que tiene el suyo.
 
+- 2026-09-21: el desplegable de una etapa **se arma solo con las secciones que
+  el capitán escribió**. Un campo vacío —o con solo espacios y saltos de línea—
+  no deja hueco, ni separador suelto, ni un «no aplica»: la sección entera
+  desaparece, dibujo y título incluidos. El orden de las cinco es fijo aunque
+  falten. Si no queda ninguna, el panel dice que la etapa está en trabajo
+  interno, que es la única pregunta que queda en pie. Los cinco campos pasan a
+  **opcionales** en el contrato.
+  PENDIENTE CON TI: si el panel de comunicaciones debe advertirle al capitán
+  cuando deja una etapa entera en blanco.
+
 - 2026-09-21: **el panel de WhatsApp muestra los contactos que corresponden a la
   etapa**, no todos los asignados (regla de operaciones, en
   `contactos-visibles.ts`). En renegociación y liquidación sale **uno**: el que

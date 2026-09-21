@@ -552,18 +552,21 @@ export const prototypeDataContract = definePrototypeDataContract({
         mensajePrincipal: {
           id: "mensajePrincipal",
           productDescription:
-            "Una o dos frases que dicen dónde está el caso y qué significa eso para el cliente.",
+            "Una o dos frases que dicen dónde está el caso y qué significa eso para el cliente. Es opcional: si el capitán lo deja en blanco, el portal no muestra esa sección —ni el dibujo, ni el título, ni un «no aplica»—; el panel se arma solo con lo que tenga texto. Sin este texto, el recuadro de «¿Qué significa esta etapa?» desaparece; si además la etapa es urgente o de atención, queda solo el aviso de color.",
           dataType: "string",
-          required: true,
+          required: false,
           usage: visibleYEditable,
           usedIn: [PORTAL, PANEL],
-          ...pendienteTi("Confirmar si hay largo máximo para este mensaje.", "lexyConfirmed"),
+          ...pendienteTi(
+            "Confirmar si hay largo máximo para este mensaje, y si el panel de comunicaciones debe advertirle al capitán cuando deja en blanco los cinco campos de una etapa: ahí el cliente no ve nada del caso, solo el aviso de que está en trabajo interno.",
+            "lexyConfirmed",
+          ),
         },
         queHaceLexy: {
           id: "queHaceLexy",
-          productDescription: "Qué está gestionando el equipo ahora y por qué el caso está ahí.",
+          productDescription: "Qué está gestionando el equipo ahora y por qué el caso está ahí. Es opcional: si el capitán lo deja en blanco, el portal no muestra esa sección —ni el dibujo, ni el título, ni un «no aplica»—; el panel se arma solo con lo que tenga texto.",
           dataType: "string",
-          required: true,
+          required: false,
           usage: visibleYEditable,
           usedIn: [PORTAL, PANEL],
           ...pendienteTi(
@@ -574,9 +577,9 @@ export const prototypeDataContract = definePrototypeDataContract({
         queNecesitamosDelCliente: {
           id: "queNecesitamosDelCliente",
           productDescription:
-            "Qué le toca hacer al cliente, o la indicación explícita de que no debe hacer nada.",
+            "Qué le toca hacer al cliente, o la indicación explícita de que no debe hacer nada. Es opcional: si el capitán lo deja en blanco, el portal no muestra esa sección —ni el dibujo, ni el título, ni un «no aplica»—; el panel se arma solo con lo que tenga texto. Ojo con la diferencia: dejarlo en blanco no es lo mismo que escribir «no tienes que hacer nada» — lo primero calla la sección, lo segundo la muestra diciendo eso.",
           dataType: "string",
-          required: true,
+          required: false,
           usage: visibleYEditable,
           usedIn: [PORTAL, PANEL],
           ...pendienteTi(
@@ -587,9 +590,9 @@ export const prototypeDataContract = definePrototypeDataContract({
         quePuedePasarDespues: {
           id: "quePuedePasarDespues",
           productDescription:
-            "Siguiente paso del proceso y la condición para avanzar, sin prometer resultado.",
+            "Siguiente paso del proceso y la condición para avanzar, sin prometer resultado. Es opcional: si el capitán lo deja en blanco, el portal no muestra esa sección —ni el dibujo, ni el título, ni un «no aplica»—; el panel se arma solo con lo que tenga texto.",
           dataType: "string",
-          required: true,
+          required: false,
           usage: visibleYEditable,
           usedIn: [PORTAL, PANEL],
           ...pendienteTi(
@@ -600,9 +603,9 @@ export const prototypeDataContract = definePrototypeDataContract({
         plazoEsperado: {
           id: "plazoEsperado",
           productDescription:
-            "Plazo estimado de la etapa o de qué depende. Es texto, no fecha: muchas veces no hay fecha y hay que decirlo.",
+            "Plazo estimado de la etapa o de qué depende. Es texto, no fecha: muchas veces no hay fecha y hay que decirlo. Es opcional: si el capitán lo deja en blanco, el portal no muestra esa sección —ni el dibujo, ni el título, ni un «no aplica»—; el panel se arma solo con lo que tenga texto.",
           dataType: "string",
-          required: true,
+          required: false,
           usage: visibleYEditable,
           usedIn: [PORTAL, PANEL],
           ...pendienteTi(
