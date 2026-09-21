@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 49,
+  datasetVersion: 50,
   entities: {
     cliente: [
       // **Los cuatro casos que el portal tiene que saber armar.** No son
@@ -73,6 +73,19 @@ export const fixtures: Fixtures = {
         apellido: "Zúñiga",
         correo: "patricia.zuniga@example.com",
         rut: "15.734.209-6",
+        servicioId: "srv-liquidacion",
+        etapaActualId: "etp-liq-05",
+      },
+      // 6. Cristóbal — la misma liquidación detenida que Patricia, pero **sin
+      //    juicio**. Es la otra mitad de la regla: cuando no hay causa, el
+      //    segundo contacto sale de la escritura. Entre él y Patricia se ve por
+      //    qué el juicio manda cuando están los dos.
+      {
+        id: "cli-006",
+        nombre: "Cristóbal",
+        apellido: "Reyes",
+        correo: "cristobal.reyes@example.com",
+        rut: "12.845.663-1",
         servicioId: "srv-liquidacion",
         etapaActualId: "etp-liq-05",
       },
@@ -223,6 +236,36 @@ export const fixtures: Fixtures = {
         estado: "activa",
         tipoDeEscritura: "Declaración de Bien Familiar",
         identificador: "Pasaje Lircay 870, La Florida",
+        etapaId: "etp-pp-02",
+      },
+
+      // Cristóbal: liquidación detenida y dos escrituras, **sin ninguna causa**.
+      // Sin juicio que corra, lo que sigue andando es la protección
+      // patrimonial, y de ahí sale su segundo contacto.
+      {
+        id: "caj-016",
+        clienteId: "cli-006",
+        tipo: "liquidacion",
+        estado: "activa",
+        identificador: "",
+        etapaId: "etp-liq-05",
+      },
+      {
+        id: "caj-017",
+        clienteId: "cli-006",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        tipoDeEscritura: "Declaración de Bien Familiar",
+        identificador: "Camino El Roble 3155, Peñalolén",
+        etapaId: "etp-pp-03",
+      },
+      {
+        id: "caj-018",
+        clienteId: "cli-006",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        tipoDeEscritura: "Constitución de Sociedades",
+        identificador: "Comercial Reyes y Compañía Ltda.",
         etapaId: "etp-pp-02",
       },
 
@@ -861,6 +904,24 @@ export const fixtures: Fixtures = {
         servicioTipo: "defensaEnJuicio",
         telefonoWhatsapp: "+56 9 3915 7420",
       },
+      // Cristóbal: el mismo reparto que Patricia, pero el segundo es de
+      // protección patrimonial. El panel los nombra igual de distinto.
+      {
+        id: "con-010",
+        clienteId: "cli-006",
+        nombre: "Rodrigo Cifuentes",
+        rol: "abogado",
+        servicioTipo: "liquidacion",
+        telefonoWhatsapp: "+56 9 8264 1179",
+      },
+      {
+        id: "con-011",
+        clienteId: "cli-006",
+        nombre: "Javiera Bustos",
+        rol: "ejecutiva",
+        servicioTipo: "proteccionPatrimonial",
+        telefonoWhatsapp: "+56 9 5487 3310",
+      },
       {
         id: "con-007",
         clienteId: "cli-004",
@@ -1207,6 +1268,68 @@ export const fixtures: Fixtures = {
         numero: 6,
         fechaVencimiento: "2027-01-14",
         monto: 62000,
+        estado: "pendiente",
+      },
+
+      // Cristóbal: siete cuotas, cuatro pagadas. Otro plan al día.
+      {
+        id: "cuo-601",
+        clienteId: "cli-006",
+        numero: 1,
+        fechaVencimiento: "2026-05-28",
+        monto: 104000,
+        estado: "pagada",
+        fechaPago: "2026-05-27",
+      },
+      {
+        id: "cuo-602",
+        clienteId: "cli-006",
+        numero: 2,
+        fechaVencimiento: "2026-06-28",
+        monto: 104000,
+        estado: "pagada",
+        fechaPago: "2026-06-28",
+      },
+      {
+        id: "cuo-603",
+        clienteId: "cli-006",
+        numero: 3,
+        fechaVencimiento: "2026-07-28",
+        monto: 104000,
+        estado: "pagada",
+        fechaPago: "2026-07-30",
+      },
+      {
+        id: "cuo-604",
+        clienteId: "cli-006",
+        numero: 4,
+        fechaVencimiento: "2026-08-28",
+        monto: 104000,
+        estado: "pagada",
+        fechaPago: "2026-08-28",
+      },
+      {
+        id: "cuo-605",
+        clienteId: "cli-006",
+        numero: 5,
+        fechaVencimiento: "2026-09-28",
+        monto: 104000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-606",
+        clienteId: "cli-006",
+        numero: 6,
+        fechaVencimiento: "2026-10-28",
+        monto: 104000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-607",
+        clienteId: "cli-006",
+        numero: 7,
+        fechaVencimiento: "2026-11-28",
+        monto: 104000,
         estado: "pendiente",
       },
 

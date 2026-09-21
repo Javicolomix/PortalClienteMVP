@@ -1098,8 +1098,10 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   juicio, porque el juicio tiene plazos que corren. En litigios y PP no cambia
   nada. Cada contacto gana `servicioTipo` y el panel lo nombra: «Tu abogado de
   liquidación», «Tu ejecutiva de defensa en juicio» — sin eso, dos filas dirían
-  «Tu abogado» sin decir de qué. Entra un quinto cliente de prueba, Patricia
-  Zúñiga, que es el único con la liquidación detenida.
+  «Tu abogado» sin decir de qué. Entran dos clientes de prueba con la
+  liquidación detenida: **Patricia Zúñiga** (con juicio y escritura: manda el
+  juicio) y **Cristóbal Reyes** (solo escrituras: el segundo contacto sale de
+  PP). Entre los dos se ve la regla del desempate sin mover a nadie.
   PENDIENTE CON TI: cuál es la etapa «Mediata» en el embudo de liquidación de
   Streak. Hoy solo está marcada «En espera del plazo para comenzar».
 
