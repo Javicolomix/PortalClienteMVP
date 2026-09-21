@@ -391,7 +391,7 @@ const opciones = (datos: DatosInicio): Opcion[] => [
     externo: true,
     titulo: "Felicitar a mi equipo",
     corto: "Felicitar al equipo",
-    apoyo: "Déjanos una reseña en Google si te ayudamos",
+    apoyo: "Déjanos una reseña si te ayudamos",
     Icono: ICONOS.felicitacion,
   },
   {
