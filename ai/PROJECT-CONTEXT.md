@@ -1082,6 +1082,13 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   protección patrimonial) son **un ejemplo, no el catálogo definitivo**. No
   inviertas en afinar su contenido hasta que Lexy confirme la lista real.
 
+- 2026-09-20: el desplegable de una fila gana **«Qué está haciendo tu equipo»**
+  como sección propia, arriba de «Qué necesitamos de ti». Era el segundo párrafo
+  de la explicación y ahí quedaba sin nombre; como sección, contesta la pregunta
+  que la persona no puede ver por su cuenta, y contestarla antes de pedirle algo
+  cambia el tono de la pantalla. «¿Qué significa esta etapa?» pierde su dibujo:
+  el recuadro ya viene dentro de una fila que tiene el suyo.
+
 - 2026-09-20: **los encabezados del inicio no se encogen en el teléfono**: los
   tres de sección —«Estado de mi caso», «Mis juicios», «Mis escrituras»— y «¿Qué
   necesitas hacer hoy?» quedan en 18 px en los dos tamaños. Bajaban a 16, y el

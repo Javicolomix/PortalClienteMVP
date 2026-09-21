@@ -113,7 +113,13 @@ export function TarjetaDeSeccion({
   antes,
   children,
 }: {
-  Icono: Icono;
+  /**
+   * Opcional: el desplegable de una fila abre **sin dibujo**. Ahí el recuadro ya
+   * viene dentro de otro que tiene el suyo —el martillo de la causa, el tipo de
+   * la escritura— y un segundo dibujo a dos centímetros del primero no ayuda a
+   * reconocer nada: solo agrega una cosa más que mirar antes de la respuesta.
+   */
+  Icono?: Icono;
   titulo: string;
   /**
    * Lo que va **antes del título**, dentro del recuadro. Es para lo único que
@@ -132,7 +138,9 @@ export function TarjetaDeSeccion({
           el título se despegue del párrafo sin gritar— y el índigo es el color
           de acción del sistema, que acá marca dónde empieza cada parte. */}
       <h2 className="flex items-center gap-2.5 type-item-title font-semibold text-brand-navy">
-        <Icono className="size-[19px] shrink-0 text-primary" strokeWidth={1.9} aria-hidden />
+        {Icono ? (
+          <Icono className="size-[19px] shrink-0 text-primary" strokeWidth={1.9} aria-hidden />
+        ) : null}
         {titulo}
       </h2>
 
@@ -224,6 +232,17 @@ export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
 
   const detalles = [
     {
+      // Va **primero**, antes de lo que le toca a la persona. El orden contesta
+      // «¿y ahora qué?» en el orden en que se pregunta: primero qué está
+      // pasando del lado de Lexy —que es lo que la persona no puede ver— y
+      // recién después qué le toca a ella. Al revés, la pantalla abría pidiendo
+      // algo antes de haber contado qué se hizo.
+      clave: "equipo",
+      Icono: ICONOS.equipo,
+      titulo: "Qué está haciendo tu equipo",
+      texto: etapa.queHaceLexy,
+    },
+    {
       clave: "tarea",
       Icono: ICONOS.tarea,
       titulo: "Qué necesitamos de ti",
@@ -243,16 +262,17 @@ export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
 
   return (
     <div className="space-y-3">
-      {/* **Primero el estado y su explicación; después, los detalles.** Lo de
-          arriba es una sola cosa —qué está pasando— dicha en dos párrafos: el
-          mensaje del capitán y lo que el equipo está haciendo. Iban separados, en
-          dos recuadros del mismo porte, y ahí la persona tenía que armar sola
-          que eran la misma respuesta.
+      {/* **Primero qué significa la etapa; después, los detalles.** Arriba va
+          una sola cosa: qué quiere decir el nombre que la persona acaba de leer
+          en la fila. Lo que el equipo está haciendo bajó a la lista de abajo con
+          título propio —«Qué está haciendo tu equipo»—: ahí es una de las cuatro
+          preguntas concretas que siguen, y como segundo párrafo de la
+          explicación quedaba sin nombre, mezclado con lo anterior.
 
-          La piel es la de «Mi servicio»: dibujo índigo, título navy y el
-          contenido adentro. Se abría con un bloque lila y cuatro tarjetas
-          sueltas, un lenguaje que no existía en ninguna otra parte del portal, y
-          al desplegar se perdía el hilo con el resto de la pantalla.
+          La piel es la de «Mi servicio»: título navy y el contenido adentro. Se
+          abría con un bloque lila y cuatro tarjetas sueltas, un lenguaje que no
+          existía en ninguna otra parte del portal, y al desplegar se perdía el
+          hilo con el resto de la pantalla.
 
           Sin el nombre de la etapa: ya está en el título de la fila, a diez
           píxeles. Repetido y en cuerpo más grande, la persona lee dos veces lo
@@ -265,23 +285,20 @@ export function DetalleDeEtapa({ etapa }: { etapa: Etapa | null }) {
           cuatro. Lo que este recuadro contesta es qué quiere decir el nombre de
           etapa que la persona acaba de leer en la fila. */}
       <TarjetaDeSeccion
-        Icono={ICONOS.etapa}
         titulo="¿Qué significa esta etapa?"
         antes={<RefuerzoDeUrgencia etapa={etapa} />}
       >
         <p className="type-supporting text-justify leading-relaxed whitespace-pre-line hyphens-auto text-muted-foreground">
           {etapa.mensajePrincipal}
         </p>
-        <p className="type-supporting mt-3 text-justify leading-relaxed whitespace-pre-line hyphens-auto text-muted-foreground">
-          {etapa.queHaceLexy}
-        </p>
       </TarjetaDeSeccion>
 
-      {/* Los tres detalles, **apilados y sin título de sección**. Apilados
-          porque se leen en orden —qué me toca, para cuándo, qué sigue— y no son
-          tres cosas entre las que elegir; sin título porque ya son la letra
-          chica de lo de arriba, y ponerles encabezado los subiría al mismo nivel
-          que la explicación, que es justo lo que había que deshacer. */}
+      {/* Los cuatro detalles, **apilados y sin título de sección**. Apilados
+          porque se leen en orden —qué está haciendo el equipo, qué me toca a mí,
+          para cuándo, qué sigue— y no son cuatro cosas entre las que elegir; sin
+          título de sección porque ya son la letra chica de lo de arriba, y un
+          encabezado sobre todos ellos los subiría al mismo nivel que la
+          explicación, que es justo lo que había que deshacer. */}
       <div className="rounded-xl bg-card p-5 shadow-card ring-1 ring-border-subtle md:p-6">
         <ul className="divide-y divide-border-subtle">
           {detalles.map((detalle) => (
