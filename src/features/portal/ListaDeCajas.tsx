@@ -25,7 +25,7 @@ type Icono = IconoDelPortal;
  * caso, un tribunal para los juicios y un documento para las escrituras. Dejan
  * reconocer de qué es cada sección al pasar la vista, sin leer.
  *
- * **Son contenidos, no protagonistas**: 18 px, con el contador todavía más
+ * **Son contenidos, no protagonistas**: 20 px, con el contador todavía más
  * chico y en gris. Lo más grande de la página es el nombre del servicio, y estos
  * títulos solo tienen que decir de qué es cada sección — no competir con él.
  *
@@ -59,7 +59,7 @@ export function TituloDeBloque({
 }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <h2 className="flex min-w-0 items-center gap-2 type-section-title text-lg text-foreground">
+      <h2 className="flex min-w-0 items-center gap-2 type-section-title type-section-title-inicio text-foreground">
         <Icono className="size-[15px] shrink-0 text-brand-navy" strokeWidth={1.75} aria-hidden />
         {children}
         {contador ? (

@@ -1089,12 +1089,16 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   cambia el tono de la pantalla. «¿Qué significa esta etapa?» pierde su dibujo:
   el recuadro ya viene dentro de una fila que tiene el suyo.
 
-- 2026-09-20: **los encabezados del inicio no se encogen en el teléfono**: los
-  tres de sección —«Estado de mi caso», «Mis juicios», «Mis escrituras»— y «¿Qué
-  necesitas hacer hoy?» quedan en 18 px en los dos tamaños. Bajaban a 16, y el
-  teléfono es donde menos podían: a cada título se llega después de scrollear la
-  lista anterior, y si no marca el corte la pantalla se lee como una sola lista
-  larga de casos mezclados.
+- 2026-09-21: **los encabezados del inicio quedan en 20 px**, iguales en el
+  teléfono y en el computador. Bajaban a 16 en mobile, que es el mismo porte del
+  nombre de etapa dentro de cada fila: un título que mide lo mismo que una fila
+  se lee como una fila más, y con eso la pantalla se leía como una sola lista
+  larga de casos mezclados. Se compararon los cuatro portes sobre la pantalla
+  real (16 · 18 · 20 · 22) y ganó el 20: deja cuatro píxeles de aire contra la
+  etapa (16) y otros cuatro contra el saludo (24), que tiene que seguir siendo
+  lo más grande. **Está fuera de la rampa del sistema** —que salta de 16 a 22—
+  así que vive como utilidad (`type-section-title-inicio`) y no como rol.
+  PENDIENTE CON DISEÑO: si la rampa debe ganar un escalón intermedio propio.
 
 - 2026-09-20: **«Mis pagos» también lleva la trama**, sobre el lienzo gris. Había
   quedado sobre blanco para que el bloque navy de la cuota fuera lo único que

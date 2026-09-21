@@ -474,6 +474,25 @@
 }
 
 @layer utilities {
+  /* ── Título de sección del inicio ──
+     20 px: **fuera de la rampa a propósito**, y por eso vive acá y no como rol.
+     Entre «Body large» (16) y «Title large» (22) el sistema no tiene escalón, y
+     en el inicio del teléfono hacen falta los dos por separado: 16 es el porte
+     del nombre de la etapa dentro de cada fila —un título que mida lo mismo se
+     lee como una fila más— y 22 queda a dos píxeles del saludo, que es lo más
+     grande de la pantalla. 20 deja cuatro de aire contra cada uno.
+
+     Va en la capa de utilidades porque los roles `type-*` viven en components
+     justamente para que una utilidad pueda matizarlos (DEC-012): así el rol
+     sigue poniendo familia y peso y solo se le corrige el porte. Si la rampa
+     gana algún día su propio escalón intermedio, esta clase se retira y el rol
+     vuelve a mandar solo. */
+  .type-section-title-inicio {
+    font-size: 1.25rem; /* 20 */
+    line-height: 1.625rem; /* 26 */
+    letter-spacing: -0.012em;
+  }
+
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
