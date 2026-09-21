@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 45,
+  datasetVersion: 46,
   entities: {
     cliente: [
       // **Los cuatro casos que el portal tiene que saber armar.** No son
@@ -70,9 +70,10 @@ export const fixtures: Fixtures = {
 
       // Esteban: cuatro causas y tres escrituras. Los cuatro acreedores son
       // distintos y las tres escrituras de tipos distintos, así que se ve la
-      // lista larga sin repeticiones que la expliquen. Cada escritura lleva su
-      // identificador —la patente, el rol del inmueble, el nombre de la
-      // sociedad—, que es lo que distinguiría dos del mismo tipo.
+      // lista larga sin repeticiones que la expliquen. El identificador va solo
+      // en la compraventa de vehículo —la patente, que es el ejemplo que pidió
+      // el diseñador—; las otras dos lo llevan vacío, que es como se ve la fila
+      // cuando Streak no trae nada en esa columna.
       {
         id: "caj-001",
         clienteId: "cli-001",
@@ -115,7 +116,7 @@ export const fixtures: Fixtures = {
         tipo: "proteccionPatrimonial",
         estado: "activa",
         tipoDeEscritura: "Compraventa de Inmueble",
-        identificador: "Rol 2145-37, Ñuñoa",
+        identificador: "",
         etapaId: "etp-pp-03",
       },
       {
@@ -133,7 +134,7 @@ export const fixtures: Fixtures = {
         tipo: "proteccionPatrimonial",
         estado: "activa",
         tipoDeEscritura: "Constitución de Sociedades",
-        identificador: "Inversiones Carrasco SpA",
+        identificador: "",
         etapaId: "etp-pp-02",
       },
 
@@ -163,7 +164,7 @@ export const fixtures: Fixtures = {
         tipo: "proteccionPatrimonial",
         estado: "activa",
         tipoDeEscritura: "Cancelación y Alzamiento de Hipoteca",
-        identificador: "Rol 3012-8, Maipú",
+        identificador: "",
         etapaId: "etp-pp-02",
       },
 

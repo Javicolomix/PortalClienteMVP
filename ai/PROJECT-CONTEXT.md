@@ -1090,7 +1090,9 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   propio campo, `caja.tipoDeEscritura`; `caja.identificador` queda con un solo
   significado en los dos embudos. El identificador va **sin rótulo delante**:
   en esa columna cabe una patente, un rol o un nombre, y cualquier palabra que
-  le pusiéramos sería correcta para un tipo y falsa para los demás.
+  le pusiéramos sería correcta para un tipo y falsa para los demás. En los datos
+  de prueba va **solo en la compraventa de vehículo**: las otras escrituras lo
+  llevan vacío, que es además cómo se ve la fila si Streak no trae nada ahí.
   PENDIENTE CON TI: que la columna exista y venga completa en los dos embudos, y
   con qué formato viene en escrituras.
 
