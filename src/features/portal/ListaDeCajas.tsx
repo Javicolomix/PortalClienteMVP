@@ -25,10 +25,18 @@ type Icono = IconoDelPortal;
  * caso, un tribunal para los juicios y un documento para las escrituras. Dejan
  * reconocer de qué es cada sección al pasar la vista, sin leer.
  *
- * **Son contenidos, no protagonistas**: 16 px en el teléfono y 18 en el
- * computador, con el contador todavía más chico y en gris. Lo más grande de la
- * página es el nombre del servicio, y estos títulos solo tienen que decir de qué
- * es cada sección — no competir con él.
+ * **Son contenidos, no protagonistas**: 18 px, con el contador todavía más
+ * chico y en gris. Lo más grande de la página es el nombre del servicio, y estos
+ * títulos solo tienen que decir de qué es cada sección — no competir con él.
+ *
+ * **No se encogen en el teléfono.** Estuvieron en 16, y ahí es donde menos
+ * podían estarlo: en el computador un título chico igual se ve porque la
+ * sección entera entra en pantalla, pero en un teléfono se llega a cada uno
+ * después de scrollear la lista anterior, y si no marca el corte la pantalla se
+ * lee como una sola lista larga de casos mezclados. Los 18 px no les quitan el
+ * lugar a los nombres de etapa, que van en el mismo cuerpo pero adentro de un
+ * recuadro blanco: lo que separa a un título de una fila acá es dónde está, no
+ * cuánto mide.
  *
  * Se probaron dos veces más grandes, hasta igualar a «¿Qué necesitas hacer hoy?»,
  * y el resultado fue el contrario del buscado: el título, el nombre de la etapa
@@ -51,7 +59,7 @@ export function TituloDeBloque({
 }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <h2 className="flex min-w-0 items-center gap-2 type-section-title text-foreground md:text-lg">
+      <h2 className="flex min-w-0 items-center gap-2 type-section-title text-lg text-foreground">
         <Icono className="size-[15px] shrink-0 text-brand-navy" strokeWidth={1.75} aria-hidden />
         {children}
         {contador ? (

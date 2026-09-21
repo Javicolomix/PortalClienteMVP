@@ -1082,6 +1082,13 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   protección patrimonial) son **un ejemplo, no el catálogo definitivo**. No
   inviertas en afinar su contenido hasta que Lexy confirme la lista real.
 
+- 2026-09-20: **los encabezados del inicio no se encogen en el teléfono**: los
+  tres de sección —«Estado de mi caso», «Mis juicios», «Mis escrituras»— y «¿Qué
+  necesitas hacer hoy?» quedan en 18 px en los dos tamaños. Bajaban a 16, y el
+  teléfono es donde menos podían: a cada título se llega después de scrollear la
+  lista anterior, y si no marca el corte la pantalla se lee como una sola lista
+  larga de casos mezclados.
+
 - 2026-09-20: **«Mis pagos» también lleva la trama**, sobre el lienzo gris. Había
   quedado sobre blanco para que el bloque navy de la cuota fuera lo único que
   pesara, pero la trama es blanca y sobre blanco no se ve: las dos cosas no
