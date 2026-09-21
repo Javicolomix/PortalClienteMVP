@@ -592,13 +592,19 @@ export function Inicio() {
                 {/* Bajó de 30 a 24 px en el computador: con el nombre del
                     servicio como pieza más grande de la página, una pregunta
                     más grande que él invertía la jerarquía. */}
-                {/* Al mismo porte y en la misma tipografía que «Estado de mi
-                    caso» y «Mis juicios»: los tres encabezan una sección del
-                    inicio y están al mismo nivel, así que no hay razón para que
-                    uno vaya en la tipografía de display y a cuatro píxeles más.
-                    El énfasis en índigo y cursiva se queda: eso es lo que le da
-                    personalidad, no el tamaño. */}
-                <h2 className="type-section-title text-foreground md:text-lg">
+                {/* En la misma tipografía que «Estado de mi caso» y «Mis
+                    juicios»: los tres encabezan una sección del inicio y están
+                    al mismo nivel, así que no hay razón para que uno vaya en la
+                    tipografía de display. El énfasis en índigo y cursiva se
+                    queda: eso es lo que le da personalidad, no el tamaño.
+
+                    **Los 18 px no se encogen en el teléfono.** Bajaba a 16 con
+                    el resto de los encabezados, pero este no rotula una lista
+                    que ya se ve: abre la pregunta con que termina la pantalla, y
+                    en el teléfono llega después de scrollear toda la lista de
+                    casos. A 16 px se leía como el pie de lo anterior en vez de
+                    como el comienzo de algo nuevo. */}
+                <h2 className="type-section-title text-lg text-foreground">
                   ¿Qué necesitas <em className="text-primary italic">hacer hoy</em>?
                 </h2>
                 <div className="mt-5">
