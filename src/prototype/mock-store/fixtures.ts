@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 46,
+  datasetVersion: 47,
   entities: {
     cliente: [
       // **Los cuatro casos que el portal tiene que saber armar.** No son
@@ -70,10 +70,12 @@ export const fixtures: Fixtures = {
 
       // Esteban: cuatro causas y tres escrituras. Los cuatro acreedores son
       // distintos y las tres escrituras de tipos distintos, así que se ve la
-      // lista larga sin repeticiones que la expliquen. El identificador va solo
-      // en la compraventa de vehículo —la patente, que es el ejemplo que pidió
-      // el diseñador—; las otras dos lo llevan vacío, que es como se ve la fila
-      // cuando Streak no trae nada en esa columna.
+      // lista larga sin repeticiones que la expliquen. Cada escritura lleva su
+      // identificador y **ninguno lleva rótulo delante**: el tipo que va arriba
+      // ya dice de qué se trata, así que bajo «Compraventa de Vehículo» una
+      // patente se lee como patente y bajo «Compraventa de Inmueble» una calle
+      // se lee como dirección. La fila solo se queda sin esa línea cuando el
+      // dato viene vacío de Streak.
       {
         id: "caj-001",
         clienteId: "cli-001",
@@ -116,7 +118,7 @@ export const fixtures: Fixtures = {
         tipo: "proteccionPatrimonial",
         estado: "activa",
         tipoDeEscritura: "Compraventa de Inmueble",
-        identificador: "",
+        identificador: "Los Maitenes 1234, Ñuñoa",
         etapaId: "etp-pp-03",
       },
       {
@@ -125,7 +127,7 @@ export const fixtures: Fixtures = {
         tipo: "proteccionPatrimonial",
         estado: "activa",
         tipoDeEscritura: "Compraventa de Vehículo",
-        identificador: "Patente JLXR·84",
+        identificador: "JLXR·84",
         etapaId: "etp-pp-04",
       },
       {
@@ -134,7 +136,7 @@ export const fixtures: Fixtures = {
         tipo: "proteccionPatrimonial",
         estado: "activa",
         tipoDeEscritura: "Constitución de Sociedades",
-        identificador: "",
+        identificador: "Inversiones Carrasco SpA",
         etapaId: "etp-pp-02",
       },
 
@@ -164,7 +166,7 @@ export const fixtures: Fixtures = {
         tipo: "proteccionPatrimonial",
         estado: "activa",
         tipoDeEscritura: "Cancelación y Alzamiento de Hipoteca",
-        identificador: "",
+        identificador: "Av. Pajaritos 4520, Maipú",
         etapaId: "etp-pp-02",
       },
 

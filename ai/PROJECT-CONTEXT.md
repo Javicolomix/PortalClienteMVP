@@ -1082,6 +1082,11 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   protección patrimonial) son **un ejemplo, no el catálogo definitivo**. No
   inviertas en afinar su contenido hasta que Lexy confirme la lista real.
 
+- 2026-09-20: la trama de aspas de «Mi servicio» queda **nítida y callada por
+  opacidad** (al 65 %) en vez de desenfocada. El desenfoque bajaba el ruido pero
+  sobre una imagen a pantalla completa se leía como una foto mal exportada. Lo
+  que competía con el título era el contraste, no el contorno.
+
 - 2026-09-20: cada escritura muestra su **identificador** entre el tipo y la
   etapa —la patente del auto, el rol del inmueble, el nombre de la sociedad—,
   desde la columna «identificador» de Streak. Es la misma forma de las causas
@@ -1090,9 +1095,11 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   propio campo, `caja.tipoDeEscritura`; `caja.identificador` queda con un solo
   significado en los dos embudos. El identificador va **sin rótulo delante**:
   en esa columna cabe una patente, un rol o un nombre, y cualquier palabra que
-  le pusiéramos sería correcta para un tipo y falsa para los demás. En los datos
-  de prueba va **solo en la compraventa de vehículo**: las otras escrituras lo
-  llevan vacío, que es además cómo se ve la fila si Streak no trae nada ahí.
+  le pusiéramos sería correcta para un tipo y falsa para los demás; el tipo que
+  va arriba ya da el contexto, así que bajo «Compraventa de Vehículo» una
+  patente se lee como patente y bajo «Compraventa de Inmueble» una calle se lee
+  como dirección. **Lo lleva toda escritura**; la línea del medio desaparece
+  solo cuando el dato viene vacío de Streak.
   PENDIENTE CON TI: que la columna exista y venga completa en los dos embudos, y
   con qué formato viene en escrituras.
 
