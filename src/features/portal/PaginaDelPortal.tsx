@@ -48,10 +48,11 @@ export function PaginaDelPortal({
    */
   conTramaDeMarca?: boolean;
   /**
-   * Fondo blanco en vez del lienzo gris. Es para «Mis pagos», donde lo que hay
-   * que mirar es un solo bloque —cuánto y cuándo, en navy— y todo lo demás son
-   * instrucciones. Sobre blanco el navy es lo único que pesa; sobre el gris, las
-   * tarjetas blancas de «cómo pagar» levantaban y le hacían coro.
+   * Fondo blanco en vez del lienzo gris. Lo usó «Mis pagos» mientras no llevaba
+   * trama: sobre blanco el bloque navy de la cuota era lo único que pesaba. Hoy
+   * no lo usa ninguna pantalla —la trama es blanca y sobre blanco no se ve—,
+   * pero queda porque es la salida para una pantalla operativa que el manual de
+   * marca pide sobre fondo plano.
    */
   sobreBlanco?: boolean;
   children: ReactNode;

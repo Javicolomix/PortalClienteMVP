@@ -1082,6 +1082,11 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   protección patrimonial) son **un ejemplo, no el catálogo definitivo**. No
   inviertas en afinar su contenido hasta que Lexy confirme la lista real.
 
+- 2026-09-20: **«Mis pagos» también lleva la trama**, sobre el lienzo gris. Había
+  quedado sobre blanco para que el bloque navy de la cuota fuera lo único que
+  pesara, pero la trama es blanca y sobre blanco no se ve: las dos cosas no
+  podían convivir. Las dos pantallas de detalle quedan de la misma familia.
+
 - 2026-09-20: la trama de aspas de «Mi servicio» queda **nítida y callada por
   opacidad** (al 65 %) en vez de desenfocada. El desenfoque bajaba el ruido pero
   sobre una imagen a pantalla completa se leía como una foto mal exportada. Lo

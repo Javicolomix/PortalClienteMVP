@@ -542,7 +542,13 @@ export function MisPagos() {
   const { fase, datos, recargar } = useCarga("mis-pagos", cargarMisPagos);
 
   return (
-    <PaginaDelPortal titulo="Mis pagos" sobreBlanco>
+    // Sobre el lienzo gris y con la trama, como «Mi servicio». Estuvo sobre
+    // blanco para que el bloque navy de la cuota fuera lo único que pesara, pero
+    // la trama es blanca: sobre un fondo blanco no se ve, así que las dos cosas
+    // no podían convivir. La jerarquía se sostiene igual —el navy sigue siendo
+    // lo más oscuro de la pantalla— y a cambio las dos pantallas de detalle se
+    // ven como la misma familia en vez de como dos plantillas distintas.
+    <PaginaDelPortal titulo="Mis pagos" conTramaDeMarca>
       {fase === "cargando" ? <CargandoPagina /> : null}
       {fase === "error" ? <ErrorDeCarga onReintentar={recargar} /> : null}
       {fase === "listo" && datos ? <ContenidoDePagos datos={datos} /> : null}
