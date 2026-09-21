@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 47,
+  datasetVersion: 49,
   entities: {
     cliente: [
       // **Los cuatro casos que el portal tiene que saber armar.** No son
@@ -60,6 +60,21 @@ export const fixtures: Fixtures = {
         rut: "14.552.081-2",
         servicioId: "srv-defensa-juicio",
         etapaActualId: "etp-lit-00",
+      },
+      // 5. Patricia — **la liquidación detenida**. No prueba una regla de
+      //    composición, como los cuatro de arriba, sino la de contactos: es la
+      //    única cuya etapa de liquidación está «En espera», y por eso la única
+      //    a la que el panel de WhatsApp le ofrece dos personas en vez de una.
+      //    Soledad se queda donde está a propósito: entre las dos se ven las dos
+      //    ramas de la regla sin tener que mover a nadie.
+      {
+        id: "cli-005",
+        nombre: "Patricia",
+        apellido: "Zúñiga",
+        correo: "patricia.zuniga@example.com",
+        rut: "15.734.209-6",
+        servicioId: "srv-liquidacion",
+        etapaActualId: "etp-liq-05",
       },
     ],
 
@@ -179,6 +194,36 @@ export const fixtures: Fixtures = {
         estado: "activa",
         identificador: "",
         etapaId: "etp-reneg-06",
+      },
+
+      // Patricia: la liquidación en «En espera» y, mientras tanto, una causa y
+      // una escritura andando. Es exactamente el supuesto de la regla: el caso
+      // concursal está detenido y lo que se mueve es el otro frente.
+      {
+        id: "caj-013",
+        clienteId: "cli-005",
+        tipo: "liquidacion",
+        estado: "activa",
+        identificador: "",
+        etapaId: "etp-liq-05",
+      },
+      {
+        id: "caj-014",
+        clienteId: "cli-005",
+        tipo: "defensaEnJuicio",
+        estado: "activa",
+        identificador: "C-2208-2026",
+        acreedor: "Banco BICE",
+        etapaId: "etp-lit-02",
+      },
+      {
+        id: "caj-015",
+        clienteId: "cli-005",
+        tipo: "proteccionPatrimonial",
+        estado: "activa",
+        tipoDeEscritura: "Declaración de Bien Familiar",
+        identificador: "Pasaje Lircay 870, La Florida",
+        etapaId: "etp-pp-02",
       },
 
       // Marcela: **solo la caja de monitoreo**. En Lexy toda persona queda con
@@ -394,6 +439,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues: "Si cumples los requisitos, preparamos tu solicitud.",
         plazoEsperado: "Entre 5 y 10 días hábiles.",
         contactoPrincipal: "ejecutiva",
+        liquidacionEnEspera: false,
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -411,6 +457,7 @@ export const fixtures: Fixtures = {
           "Cuando se cumpla el plazo, te pedimos los documentos para presentar.",
         plazoEsperado: "Depende de tus deudas. Te avisamos cuando toque revisar de nuevo.",
         contactoPrincipal: "ejecutiva",
+        liquidacionEnEspera: false,
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -429,6 +476,7 @@ export const fixtures: Fixtures = {
           "Una vez que hayas reunido toda la documentación, deberás firmar un mandato para que podamos representarte. Luego, tu abogado preparará y presentará tu solicitud ante la Superintendencia.",
         plazoEsperado: "Recuerda que debes enviar la documentación dentro de 10 días hábiles.",
         contactoPrincipal: "ejecutiva",
+        liquidacionEnEspera: false,
         nivelUrgencia: "atencion",
       },
       {
@@ -443,6 +491,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues: "Presentamos tu solicitud ante la Superintendencia.",
         plazoEsperado: "2 o 3 días hábiles.",
         contactoPrincipal: "ejecutiva",
+        liquidacionEnEspera: false,
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -458,6 +507,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues: "Si la declaran admisible, tus acreedores no pueden cobrarte.",
         plazoEsperado: "Entre 5 y 10 días hábiles. Ese plazo lo maneja la Superintendencia.",
         contactoPrincipal: "ejecutiva",
+        liquidacionEnEspera: false,
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -492,6 +542,7 @@ export const fixtures: Fixtures = {
         plazoEsperado:
           "La audiencia se realizará en la fecha específica informada previamente a tu correo electrónico.",
         contactoPrincipal: "abogado",
+        liquidacionEnEspera: false,
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -522,6 +573,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues: "Si liquidar es el camino, preparamos tu solicitud para el tribunal.",
         plazoEsperado: "Entre 5 y 10 días hábiles.",
         contactoPrincipal: "ejecutiva",
+        liquidacionEnEspera: false,
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -541,6 +593,7 @@ export const fixtures: Fixtures = {
         plazoEsperado:
           "Estamos a la espera de que se cumpla el plazo indicado por tu abogado ⏳. Este tiempo es necesario para poder iniciar tu procedimiento en las condiciones adecuadas. Una vez cumplido, podremos comenzar con las gestiones correspondientes. Mientras tanto, no debes preocuparte: tu procedimiento sigue siendo viable.",
         contactoPrincipal: "abogado",
+        liquidacionEnEspera: true,
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -556,6 +609,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues: "Con todo listo presentamos y el tribunal revisa tu solicitud.",
         plazoEsperado: "5 días hábiles desde que recibimos tus documentos.",
         contactoPrincipal: "ejecutiva",
+        liquidacionEnEspera: false,
         nivelUrgencia: "atencion",
       },
       {
@@ -571,6 +625,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues: "Si el tribunal acoge la solicitud, designa a un liquidador.",
         plazoEsperado: "Los plazos los fija el tribunal. Te avisamos cada avance.",
         contactoPrincipal: "abogado",
+        liquidacionEnEspera: false,
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -585,6 +640,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues: "Al terminar, el saldo que quede impago se extingue.",
         plazoEsperado: "Depende de cuántos bienes y acreedores haya. Suele tomar meses.",
         contactoPrincipal: "abogado",
+        liquidacionEnEspera: false,
         nivelUrgencia: "atencion",
       },
 
@@ -602,6 +658,7 @@ export const fixtures: Fixtures = {
           "Si aparece una demanda, la vas a ver acá y un abogado toma la defensa.",
         plazoEsperado: "Es permanente, mientras tengas tu servicio activo.",
         contactoPrincipal: "ejecutiva",
+        liquidacionEnEspera: false,
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -616,6 +673,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues: "Con la estrategia lista, presentamos tu defensa ante el tribunal.",
         plazoEsperado: "Entre 10 y 15 días hábiles.",
         contactoPrincipal: "abogado",
+        liquidacionEnEspera: false,
         nivelUrgencia: "atencion",
       },
       {
@@ -631,6 +689,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues: "El tribunal notifica a la otra parte y fija la primera audiencia.",
         plazoEsperado: "Los fija el tribunal y varían mucho. No podemos comprometer una fecha.",
         contactoPrincipal: "abogado",
+        liquidacionEnEspera: false,
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -645,6 +704,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues: "",
         plazoEsperado: "",
         contactoPrincipal: "abogado",
+        liquidacionEnEspera: false,
         nivelUrgencia: "tranquilidad",
       },
       {
@@ -676,6 +736,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues: "Con el catastro listo te explicamos qué se puede proteger.",
         plazoEsperado: "Entre 10 y 15 días hábiles.",
         contactoPrincipal: "ejecutiva",
+        liquidacionEnEspera: false,
         nivelUrgencia: "atencion",
       },
       {
@@ -690,6 +751,7 @@ export const fixtures: Fixtures = {
         quePuedePasarDespues: "Si estás de acuerdo con el borrador, coordinamos la firma.",
         plazoEsperado: "Entre 5 y 8 días hábiles.",
         contactoPrincipal: "ejecutiva",
+        liquidacionEnEspera: false,
         nivelUrgencia: "atencion",
       },
       {
@@ -723,6 +785,7 @@ export const fixtures: Fixtures = {
           "Cuando la inscripción salga, te entregamos la copia y el resguardo queda completo.",
         plazoEsperado: "Entre 15 y 30 días hábiles, según el registro.",
         contactoPrincipal: "ejecutiva",
+        liquidacionEnEspera: false,
         nivelUrgencia: "tranquilidad",
       },
     ],
@@ -736,6 +799,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-001",
         nombre: "Daniela Soto",
         rol: "ejecutiva",
+        servicioTipo: "defensaEnJuicio",
         telefonoWhatsapp: "+56 9 4418 2036",
       },
       {
@@ -743,6 +807,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-001",
         nombre: "Matías Fuenzalida",
         rol: "abogado",
+        servicioTipo: "defensaEnJuicio",
         telefonoWhatsapp: "+56 9 5530 9174",
       },
       {
@@ -750,6 +815,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-002",
         nombre: "Camila Rivera",
         rol: "ejecutiva",
+        servicioTipo: "liquidacion",
         telefonoWhatsapp: "+56 9 6721 4488",
       },
       {
@@ -757,6 +823,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-002",
         nombre: "Andrés Peña",
         rol: "abogado",
+        servicioTipo: "liquidacion",
         telefonoWhatsapp: "+56 9 7302 6641",
       },
       {
@@ -764,6 +831,7 @@ export const fixtures: Fixtures = {
         clienteId: "cli-003",
         nombre: "Camila Rivera",
         rol: "ejecutiva",
+        servicioTipo: "renegociacion",
         telefonoWhatsapp: "+56 9 6721 4488",
       },
       {
@@ -771,13 +839,34 @@ export const fixtures: Fixtures = {
         clienteId: "cli-004",
         nombre: "Daniela Soto",
         rol: "ejecutiva",
+        servicioTipo: "defensaEnJuicio",
         telefonoWhatsapp: "+56 9 4418 2036",
+      },
+      // Patricia tiene **uno por servicio**, y es el único caso donde el panel
+      // muestra los dos. Sin `servicioTipo` las dos filas dirían «Tu abogado» y
+      // «Tu ejecutiva» sin decir de qué, que es justo lo que había que resolver.
+      {
+        id: "con-008",
+        clienteId: "cli-005",
+        nombre: "Rodrigo Cifuentes",
+        rol: "abogado",
+        servicioTipo: "liquidacion",
+        telefonoWhatsapp: "+56 9 8264 1179",
+      },
+      {
+        id: "con-009",
+        clienteId: "cli-005",
+        nombre: "María Coloma",
+        rol: "ejecutiva",
+        servicioTipo: "defensaEnJuicio",
+        telefonoWhatsapp: "+56 9 3915 7420",
       },
       {
         id: "con-007",
         clienteId: "cli-004",
         nombre: "Andrés Peña",
         rol: "abogado",
+        servicioTipo: "defensaEnJuicio",
         telefonoWhatsapp: "+56 9 7302 6641",
       },
     ],
@@ -1118,6 +1207,77 @@ export const fixtures: Fixtures = {
         numero: 6,
         fechaVencimiento: "2027-01-14",
         monto: 62000,
+        estado: "pendiente",
+      },
+
+      // Patricia: ocho cuotas, tres pagadas y el resto por venir. Un plan sin
+      // nada en rojo, que es lo normal: su caso está en la regla de contactos,
+      // no en la de cobranza.
+      {
+        id: "cuo-501",
+        clienteId: "cli-005",
+        numero: 1,
+        fechaVencimiento: "2026-06-18",
+        monto: 98000,
+        estado: "pagada",
+        fechaPago: "2026-06-17",
+      },
+      {
+        id: "cuo-502",
+        clienteId: "cli-005",
+        numero: 2,
+        fechaVencimiento: "2026-07-18",
+        monto: 98000,
+        estado: "pagada",
+        fechaPago: "2026-07-18",
+      },
+      {
+        id: "cuo-503",
+        clienteId: "cli-005",
+        numero: 3,
+        fechaVencimiento: "2026-08-18",
+        monto: 98000,
+        estado: "pagada",
+        fechaPago: "2026-08-20",
+      },
+      {
+        id: "cuo-504",
+        clienteId: "cli-005",
+        numero: 4,
+        fechaVencimiento: "2026-09-18",
+        monto: 98000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-505",
+        clienteId: "cli-005",
+        numero: 5,
+        fechaVencimiento: "2026-10-18",
+        monto: 98000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-506",
+        clienteId: "cli-005",
+        numero: 6,
+        fechaVencimiento: "2026-11-18",
+        monto: 98000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-507",
+        clienteId: "cli-005",
+        numero: 7,
+        fechaVencimiento: "2026-12-18",
+        monto: 98000,
+        estado: "pendiente",
+      },
+      {
+        id: "cuo-508",
+        clienteId: "cli-005",
+        numero: 8,
+        fechaVencimiento: "2027-01-18",
+        monto: 98000,
         estado: "pendiente",
       },
     ],

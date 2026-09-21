@@ -1,4 +1,4 @@
-import type { Contacto, RolContacto } from "./portal.types";
+import type { Contacto, RolContacto, TipoServicio } from "./portal.types";
 
 /**
  * El enlace de WhatsApp hacia un contacto del equipo, con el mensaje ya
@@ -32,6 +32,34 @@ export const ETIQUETA_ROL = {
   abogado: "Tu abogado",
 } as const satisfies Record<RolContacto, string>;
 
-/** «Escribirle a Camila Rivera, tu ejecutiva, por WhatsApp». */
+/**
+ * El servicio en **dos o tres palabras**, para ir detrás del rol. No es el
+ * nombre completo del catálogo —«Liquidación de deudas», «Defensa en juicio con
+ * Protección Patrimonial»—: eso titula una pantalla, y acá va dentro de una fila
+ * de panel donde compite con el nombre de la persona, que es lo que se busca.
+ */
+export const ETIQUETA_SERVICIO = {
+  renegociacion: "renegociación",
+  liquidacion: "liquidación",
+  defensaEnJuicio: "defensa en juicio",
+  proteccionPatrimonial: "protección patrimonial",
+} as const satisfies Record<TipoServicio, string>;
+
+/**
+ * **«Tu abogado de liquidación»**, y no solo «Tu abogado».
+ *
+ * Cuando el panel ofrece dos personas, las dos pueden ser abogados —uno de la
+ * liquidación y otra del juicio— y sin el servicio detrás son dos filas que
+ * dicen lo mismo. Con el servicio, la persona sabe a cuál escribirle sin tener
+ * que abrir las dos conversaciones para averiguarlo.
+ *
+ * Va **siempre**, también cuando hay un solo contacto: que la fila diga más o
+ * menos según un dato que la persona no ve haría que dos clientes de Lexy
+ * tengan dos productos distintos en la mano.
+ */
+export const etiquetaDelContacto = (contacto: Contacto): string =>
+  `${ETIQUETA_ROL[contacto.rol]} de ${ETIQUETA_SERVICIO[contacto.servicioTipo]}`;
+
+/** «Escribirle a Camila Rivera, tu ejecutiva de liquidación, por WhatsApp». */
 export const rotuloDelContacto = (contacto: Contacto): string =>
-  `Escribirle a ${contacto.nombre}, ${ETIQUETA_ROL[contacto.rol].toLowerCase()}, por WhatsApp`;
+  `Escribirle a ${contacto.nombre}, ${etiquetaDelContacto(contacto).toLowerCase()}, por WhatsApp`;

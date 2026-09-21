@@ -7,7 +7,7 @@ import { cn } from "@/shared/lib/utils/cn";
 import { CargandoPagina, ErrorDeCarga, PaginaDelPortal } from "./PaginaDelPortal";
 import { type DatosMiEquipo, nombreCompleto } from "./portal.types";
 import { cargarMiEquipo } from "./portal-service";
-import { enlaceWhatsapp, ETIQUETA_ROL } from "./whatsapp";
+import { enlaceWhatsapp, etiquetaDelContacto } from "./whatsapp";
 
 /**
  * El primer contacto lleva el botón sólido y el resto delineado: una sola acción
@@ -39,7 +39,7 @@ function Contactos({ datos }: { datos: DatosMiEquipo }) {
                 <span>
                   <span className="block type-item-title text-foreground">{contacto.nombre}</span>
                   <span className="block type-supporting text-muted-foreground">
-                    {ETIQUETA_ROL[contacto.rol]}
+                    {etiquetaDelContacto(contacto)}
                   </span>
                 </span>
 

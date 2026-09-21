@@ -1089,6 +1089,20 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   cambia el tono de la pantalla. «¿Qué significa esta etapa?» pierde su dibujo:
   el recuadro ya viene dentro de una fila que tiene el suyo.
 
+- 2026-09-21: **el panel de WhatsApp muestra los contactos que corresponden a la
+  etapa**, no todos los asignados (regla de operaciones, en
+  `contactos-visibles.ts`). En renegociación y liquidación sale **uno**: el que
+  atiende esa etapa (`etapa.contactoPrincipal`). La excepción es la liquidación
+  detenida —«Mediata» o «En espera»—, donde salen **dos**: el de la liquidación
+  y el del otro frente que siga andando; si hay juicio y escritura manda el
+  juicio, porque el juicio tiene plazos que corren. En litigios y PP no cambia
+  nada. Cada contacto gana `servicioTipo` y el panel lo nombra: «Tu abogado de
+  liquidación», «Tu ejecutiva de defensa en juicio» — sin eso, dos filas dirían
+  «Tu abogado» sin decir de qué. Entra un quinto cliente de prueba, Patricia
+  Zúñiga, que es el único con la liquidación detenida.
+  PENDIENTE CON TI: cuál es la etapa «Mediata» en el embudo de liquidación de
+  Streak. Hoy solo está marcada «En espera del plazo para comenzar».
+
 - 2026-09-21: **los encabezados del inicio quedan en 20 px**, iguales en el
   teléfono y en el computador. Bajaban a 16 en mobile, que es el mismo porte del
   nombre de etapa dentro de cada fila: un título que mide lo mismo que una fila

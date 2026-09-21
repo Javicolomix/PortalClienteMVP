@@ -624,6 +624,33 @@ export const prototypeDataContract = definePrototypeDataContract({
             "lexyConfirmed",
           ),
         },
+        contactoPrincipal: {
+          id: "contactoPrincipal",
+          productDescription:
+            "Quién atiende al cliente durante esta etapa: la ejecutiva o el abogado. No es el mismo en todo el proceso —mientras se juntan papeles atiende la ejecutiva, y con el asunto en el tribunal atiende el abogado—, así que se fija por etapa y puede cambiar dentro del mismo caso. Es el contacto que ofrece el botón de WhatsApp.",
+          dataType: "enum",
+          required: true,
+          usage: visibleYEditable,
+          usedIn: [PORTAL, PANEL],
+          enumValues: ["ejecutiva", "abogado"],
+          ...pendienteTi(
+            "Confirmar que el capitán pueda fijar esto por etapa desde el panel, y qué pasa si el rol elegido no tiene a nadie asignado en ese caso.",
+            "productAssumption",
+          ),
+        },
+        liquidacionEnEspera: {
+          id: "liquidacionEnEspera",
+          productDescription:
+            "Marca las dos etapas de liquidación en que el caso es viable pero todavía no parte: las que Lexy llama «Mediata» y «En espera». Solo tiene sentido en ese embudo; en los demás va en falso. De esto depende que el panel de WhatsApp ofrezca un contacto o dos: mientras la liquidación está detenida, lo único que se mueve es el juicio o la escritura que el cliente tenga abiertos, y se agrega también ese contacto.",
+          dataType: "boolean",
+          required: true,
+          usage: soloTecnico,
+          usedIn: [PORTAL],
+          ...pendienteTi(
+            "Confirmar cuáles son exactamente las etapas «Mediata» y «En espera» en el embudo de liquidación de Streak y cómo se reconocen. Hoy el prototipo solo marca «En espera del plazo para comenzar»: falta identificar la de «Mediata», que debe llevar la misma marca. Mal marcado, alguien con un juicio andando se queda sin a quién escribirle por el juicio durante meses.",
+            "productAssumption",
+          ),
+        },
       },
     },
 
@@ -631,7 +658,7 @@ export const prototypeDataContract = definePrototypeDataContract({
       id: "contacto",
       productDescription: "Persona de Lexy asignada al caso con la que el cliente puede hablar.",
       roleInExperience:
-        "Le pone nombre y cara al equipo: el cliente sabe a quién le escribe, no a un buzón anónimo. Es también lo que decide a dónde lleva el botón flotante de WhatsApp: con un solo contacto asignado abre la conversación directa con esa persona; con los dos, lleva a «Mi equipo» para que elija.",
+        "Le pone nombre y cara al equipo: el cliente sabe a quién le escribe, no a un buzón anónimo. El botón flotante de WhatsApp abre un panel con las personas que corresponden a la etapa en que va el caso —regla en `contactos-visibles.ts`—, no con todas las asignadas: en renegociación y liquidación sale una sola, salvo que la liquidación esté detenida («Mediata» o «En espera»), donde sale también la del juicio o la escritura que siga andando.",
       usedIn: [PORTAL],
       ...pendienteTi(
         "LO QUE FALTA: **quién de los dos ve el cliente lo configura el capitán por etapa**, en un panel de administración —solo abogado, solo ejecutiva o los dos—, así que puede cambiar durante el mismo caso a medida que avanza. Hay que definir dónde vive esa configuración y cómo llega al portal, que muestra lo que le llega y no elige. Además: en «defensa en juicio con protección patrimonial» tienen que venir la ejecutiva legal y/o el abogado de litigios de esa persona, nunca un contacto genérico de Lexy.",
@@ -677,6 +704,20 @@ export const prototypeDataContract = definePrototypeDataContract({
           usedIn: [PORTAL],
           enumValues: ["ejecutiva", "abogado"],
           ...pendienteTi("Confirmar si existen otros roles que el cliente pueda contactar.", "lexyConfirmed"),
+        },
+        servicioTipo: {
+          id: "servicioTipo",
+          productDescription:
+            "De qué servicio es esta persona, con los mismos cuatro valores que `servicio.tipo`. Una persona puede tener abogado de liquidación y ejecutiva de defensa en juicio al mismo tiempo, y el panel de WhatsApp los nombra por separado: «Tu abogado de liquidación», «Tu ejecutiva de defensa en juicio».",
+          dataType: "enum",
+          required: true,
+          usage: soloVisible,
+          usedIn: [PORTAL],
+          enumValues: ["renegociacion", "liquidacion", "defensaEnJuicio", "proteccionPatrimonial"],
+          ...pendienteTi(
+            "Confirmar cómo se sabe en Streak de qué servicio es cada persona asignada. Sin este dato, un cliente con dos contactos ve dos filas que dicen «Tu abogado» sin decir de qué, y tiene que abrir las dos conversaciones para averiguar a cuál escribirle.",
+            "productAssumption",
+          ),
         },
         telefonoWhatsapp: {
           id: "telefonoWhatsapp",

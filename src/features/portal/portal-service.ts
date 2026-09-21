@@ -2,6 +2,7 @@ import { sesion } from "@/features/auth";
 import { read } from "@/prototype/ports";
 
 import { componerInicio, determinarServicioPrincipal, nombreDelServicioPrincipal } from "./composicion";
+import { contactosVisibles } from "./contactos-visibles";
 import type {
   Caja,
   CajaConEtapa,
@@ -153,7 +154,12 @@ export async function cargarInicio(): Promise<DatosInicio> {
         trigger: "Al abrir el inicio",
         reads: {
           entities: ["contacto"],
-          fields: ["contacto.nombre", "contacto.rol", "contacto.telefonoWhatsapp"],
+          fields: [
+            "contacto.nombre",
+            "contacto.rol",
+            "contacto.servicioTipo",
+            "contacto.telefonoWhatsapp",
+          ],
         },
       },
     ),
@@ -199,15 +205,26 @@ export async function cargarInicio(): Promise<DatosInicio> {
     conSusEtapas(composicion.escrituras, etapasDeLasCajas),
   ]);
 
+  const etapaDelCaso = etapas[0] ?? null;
+
   return {
     cliente,
     serviciosPrincipales,
-    etapa: etapas[0] ?? null,
+    etapa: etapaDelCaso,
     configuracion,
     composicion,
     juicios,
     escrituras,
-    contactos,
+    // No todos los contactos del caso: los que corresponden a esta etapa. La
+    // regla vive en `contactos-visibles.ts` y no acá porque es de negocio, no
+    // de carga de datos.
+    contactos: contactosVisibles({
+      contactos,
+      etapaDelCaso,
+      servicioPrincipal: composicion.servicioPrincipal,
+      juicios: composicion.juicios,
+      escrituras: composicion.escrituras,
+    }),
   };
 }
 
@@ -253,7 +270,12 @@ export async function cargarMiEquipo(): Promise<DatosMiEquipo> {
         trigger: "Al abrir «Quiero conversar con mi equipo»",
         reads: {
           entities: ["contacto"],
-          fields: ["contacto.nombre", "contacto.rol", "contacto.telefonoWhatsapp"],
+          fields: [
+            "contacto.nombre",
+            "contacto.rol",
+            "contacto.servicioTipo",
+            "contacto.telefonoWhatsapp",
+          ],
         },
       },
     ),

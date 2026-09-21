@@ -9,7 +9,7 @@ import {
 
 import { MarcaWhatsapp } from "./MarcaWhatsapp";
 import type { Contacto } from "./portal.types";
-import { enlaceWhatsapp, ETIQUETA_ROL, rotuloDelContacto } from "./whatsapp";
+import { enlaceWhatsapp, etiquetaDelContacto, rotuloDelContacto } from "./whatsapp";
 
 /**
  * La piel del botón, que es la misma lleve a donde lleve: el círculo verde. Solo
@@ -83,7 +83,7 @@ function OpcionDeContacto({
       <span className="min-w-0 flex-1">
         <span className="type-item-title block truncate text-foreground">{contacto.nombre}</span>
         <span className="type-supporting block text-muted-foreground">
-          {ETIQUETA_ROL[contacto.rol]}
+          {etiquetaDelContacto(contacto)}
         </span>
       </span>
 

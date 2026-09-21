@@ -230,6 +230,25 @@ export type Etapa = {
   queNecesitamosDelCliente: string;
   quePuedePasarDespues: string;
   plazoEsperado: string;
+  /**
+   * **Quién atiende durante esta etapa**, de los dos roles que tiene un caso.
+   * No es lo mismo en todo el proceso: mientras se juntan papeles atiende la
+   * ejecutiva y cuando el asunto está en el tribunal atiende el abogado, así
+   * que el capitán lo fija por etapa y puede cambiar dentro del mismo caso.
+   */
+  contactoPrincipal: RolContacto;
+  /**
+   * **La liquidación está detenida a la espera de algo.** Cubre las dos etapas
+   * que Lexy llama «Mediata» y «En espera»: el caso es viable pero todavía no
+   * parte, y mientras tanto lo único que se mueve del lado de la persona es el
+   * juicio o la escritura que tenga abiertos.
+   *
+   * Solo tiene sentido en el embudo de liquidación; en los demás va en `false`.
+   * De esto depende que el panel de WhatsApp ofrezca **un contacto o dos** —ver
+   * `contactos-visibles.ts`—, así que no es un dato de adorno: mal marcado deja
+   * a alguien con un juicio andando sin a quién escribirle por el juicio.
+   */
+  liquidacionEnEspera: boolean;
   nivelUrgencia: NivelUrgencia;
 };
 
@@ -238,6 +257,13 @@ export type Contacto = {
   clienteId: string;
   nombre: string;
   rol: RolContacto;
+  /**
+   * **De qué servicio es esta persona.** Una misma persona puede tener abogado
+   * de liquidación y abogada de defensa en juicio al mismo tiempo, y cuando el
+   * panel ofrece los dos hay que poder distinguirlos: sin esto, dos filas con
+   * «Tu abogado» obligan a adivinar cuál atiende qué.
+   */
+  servicioTipo: TipoServicio;
   telefonoWhatsapp: string;
 };
 
