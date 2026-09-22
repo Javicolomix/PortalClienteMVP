@@ -261,8 +261,11 @@ function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
       )}
       style={{ boxShadow: "0 8px 24px rgb(11 1 60 / 0.10)" }}
     >
-      <p className="flex items-center gap-1.5 type-meta text-[11px] font-medium tracking-[0.1em] text-[#4a4478] uppercase">
-        <ICONOS.balanza className="size-3.5 shrink-0" strokeWidth={1.75} aria-hidden />
+      {/* A los 12 px del rol, sin el `text-[11px]` que lo bajaba a mano. Un
+          píxel no parece nada, pero en versalitas con un décimo de em de
+          separación entre letras es la diferencia entre leerse y adivinarse. */}
+      <p className="flex items-center gap-1.5 type-meta font-medium tracking-[0.1em] text-[#4a4478] uppercase">
+        <ICONOS.balanza className="size-4 shrink-0" strokeWidth={1.75} aria-hidden />
         Mi servicio
       </p>
 
@@ -277,7 +280,20 @@ function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
           peor: con un nombre de una línea quedaba medio bloque de lila vacío
           debajo. La consistencia de alto entre cuentas no la ve nadie —cada
           persona entra a la suya— y el vacío lo ve todo el mundo. */}
-      <p className="mt-2 type-subsection-title text-base leading-[1.35] tracking-[0.06em] text-balance text-brand-navy uppercase md:text-base">
+      {/* 18 px, entre los 16 de «Body large» y los 22 de «Title large». Como en
+          los encabezados del inicio, la rampa no tiene escalón intermedio y acá
+          hace falta: a 16 el nombre del servicio medía lo mismo que el nombre
+          de etapa de cualquier fila de más abajo, y es lo que la persona
+          contrató; a 22, en versalitas y a dos líneas, le ganaba al saludo.
+
+          **La separación entre letras baja de 0.06 a 0.04 em**, y eso no es
+          gusto: es lo que paga los dos píxeles. Medido sobre la pantalla,
+          «PROTECCIÓN PATRIMONIAL» a 18 px con 0.06 em ya no cabe en una línea
+          en un teléfono de 360, y el nombre compuesto se iba a tres renglones
+          —justo el corte a mitad de nombre que este bloque evita partiendo por
+          servicio—. Con 0.04 em cabe igual que antes en 360, 375 y 390. En 390
+          sobra holgura; el que manda es el Android chico. */}
+      <p className="mt-2 type-subsection-title text-[1.125rem] leading-[1.35] tracking-[0.04em] text-balance text-brand-navy uppercase">
         {nombres.map((nombre, indice) => (
           <span key={nombre} className="block">
             {indice < nombres.length - 1 ? `${nombre} con` : nombre}
