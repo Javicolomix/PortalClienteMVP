@@ -1164,8 +1164,10 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   campo `orden` de cada lista decide cuáles.
 
 - 2026-09-16: el historial de cuotas muestra **el plan entero, no solo lo que ya
-  pasó por caja**, y lo resume en una línea: «Las 10 cuotas de tu plan: 4
-  pagadas, 2 morosas y 4 pendientes». La pregunta con la que se abre ese modal es
+  pasó por caja**. (Llegó a resumirlo en una línea —«4 pagadas, 2 morosas y 4
+  pendientes»— y el 22-09 la bajada se redujo a «Acá encontrarás el estado de tu
+  cobro completo»: el desglose repetía en letra chica lo que la tabla dice fila
+  por fila.) La pregunta con la que se abre ese modal es
   cuánto falta, y contar diez filas a mano no la contesta. La cartera de Soledad
   pasa a ese reparto exacto para que los tres estados se vean en una sola
   pantalla.

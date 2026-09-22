@@ -283,36 +283,6 @@ const presentacionDeCuota = (cuota: Cuota) => {
 };
 
 /**
- * **El plan en una línea**: cuántas pagadas, cuántas morosas y cuántas por
- * venir.
- *
- * La tabla ya tiene los tres estados, pero contarlos fila por fila es trabajo
- * de la persona. Esta frase los cuenta por ella —que es exactamente la pregunta
- * con la que se abre el historial— y deja la tabla para el detalle: qué mes,
- * cuánto, qué día.
- *
- * Los estados que no existen **no se nombran**: decirle «0 morosas» a quien está
- * al día es meterle la palabra morosa en una pantalla donde no tenía nada que
- * hacer.
- */
-function resumenDelPlan(cuotas: Cuota[]) {
-  const cuenta = (estado: Cuota["estado"]) => cuotas.filter((c) => c.estado === estado).length;
-
-  const partes = [
-    { n: cuenta("pagada"), una: "pagada", varias: "pagadas" },
-    { n: cuenta("morosa"), una: "morosa", varias: "morosas" },
-    { n: cuenta("pendiente"), una: "pendiente", varias: "pendientes" },
-  ]
-    .filter((parte) => parte.n > 0)
-    .map((parte) => `${parte.n} ${parte.n === 1 ? parte.una : parte.varias}`);
-
-  if (partes.length === 0) return "";
-  if (partes.length === 1) return partes[0];
-
-  return `${partes.slice(0, -1).join(", ")} y ${partes[partes.length - 1]}`;
-}
-
-/**
  * **El historial completo, en un modal.**
  *
  * Es una tabla de doce filas en una pantalla que ya mide varias pantallas de
@@ -325,6 +295,13 @@ function resumenDelPlan(cuotas: Cuota[]) {
  * Están **todas las cuotas, no solo las pagadas**, porque la pregunta que se
  * contesta acá es cómo va el plan entero. Van en el orden del plan y no al
  * revés: es un plan de pagos, se lee de la uno a la última.
+ *
+ * La bajada dice **una sola cosa: que acá está todo**. Llegó a contar el
+ * desglose —«4 pagadas, 2 morosas y 4 pendientes»— y a explicar de qué es la
+ * fecha de cada fila, y eran tres frases de letra chica encima de una tabla que
+ * dice lo mismo, fila por fila y sin que nadie tenga que leerlas. Lo único que
+ * la bajada tiene que hacer es confirmar que no falta nada: quien abre esto
+ * viene a buscar una cuota, no a que le resuman las otras.
  *
  * La tabla **se desplaza de lado si no cabe** en vez de apilarse en el teléfono.
  * Cuatro columnas en 358 píxeles quedan justas, pero convertirlas en fichas
@@ -358,8 +335,7 @@ function HistorialDeCuotas({
           <DialogHeader>
             <DialogTitle scale="compact">Historial de tus cuotas</DialogTitle>
             <DialogDescription>
-              Las {cuotas.length} cuotas de tu plan: {resumenDelPlan(cuotas)}. En las pagadas la
-              fecha es la del pago; en las demás, la de vencimiento.
+              Acá encontrarás el estado de tu cobro completo.
             </DialogDescription>
           </DialogHeader>
 
