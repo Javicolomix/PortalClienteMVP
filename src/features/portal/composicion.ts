@@ -23,7 +23,7 @@ export type ComposicionDelInicio = {
   cajaDelCaso: Caja | null;
   /** Las causas que se muestran: ni monitoreo ni concursal. */
   juicios: Caja[];
-  /** Las escrituras que se muestran: sin cajas madre. */
+  /** Las escrituras que se muestran: ni cajas madre ni gestiones abortadas. */
   escrituras: Caja[];
 };
 
@@ -65,12 +65,25 @@ function repartir(cajas: Caja[], etapas: Etapa[]) {
   );
   const monitoreo = cajas.filter((caja) => EMBUDO.juicio(caja) && clase(caja) === "monitoreo");
 
-  // **Las cajas madre no se muestran nunca.** Son el paraguas del servicio, no
-  // una gestión: debajo cuelga la caja obrera donde está el trabajo real, y esa
-  // sí se lista. Se reconocen por la etapa o por el rol, porque una caja madre
-  // puede avanzar de etapa sin dejar de serlo.
+  // **Dos exclusiones, las dos incondicionales.**
+  //
+  // Las **cajas madre** son el paraguas del servicio, no una gestión: debajo
+  // cuelga la caja obrera donde está el trabajo real, y esa sí se lista. Se
+  // reconocen por la etapa o por el rol, porque una caja madre puede avanzar de
+  // etapa sin dejar de serlo.
+  //
+  // Las **gestiones abortadas** no se muestran nunca, tenga la persona una
+  // escritura o cinco. Una gestión que no se hizo no es algo que seguir, y en
+  // una lista de escrituras en marcha se lee como una que se quedó atrás. Que
+  // la única caja de PP sea una abortada deja de ser un caso aparte: la lista
+  // queda vacía y el servicio se descarta solo, que es exactamente lo que pide
+  // la regla de «Solo monitoreo».
   const escrituras = cajas.filter(
-    (caja) => EMBUDO.escrituras(caja) && clase(caja) !== "cajaMadre" && !caja.esCajaMadre,
+    (caja) =>
+      EMBUDO.escrituras(caja) &&
+      clase(caja) !== "cajaMadre" &&
+      clase(caja) !== "gestionAbortada" &&
+      !caja.esCajaMadre,
   );
 
   return { clase, renegociacion, liquidacion, causas, monitoreo, escrituras };
@@ -87,17 +100,6 @@ const renegociacionCuenta = ({ renegociacion, clase }: Reparto): boolean => {
 };
 
 /**
- * Protección patrimonial queda descartada si su única caja es una gestión que
- * no se llegó a hacer. Ahí la persona no tiene ninguna escritura que seguir, y
- * anunciarle el servicio sería prometerle una gestión que no existe.
- */
-const escriturasCuentan = ({ escrituras, clase }: Reparto): boolean => {
-  if (escrituras.length === 0) return false;
-  if (escrituras.length > 1) return true;
-  return clase(escrituras[0]) !== "gestionAbortada";
-};
-
-/**
  * **Paso 0: cuál es el servicio principal.** De acá salen tanto el nombre que
  * lleva el bloque A como qué bloque ocupa el lugar del estado del caso.
  *
@@ -111,8 +113,11 @@ const escriturasCuentan = ({ escrituras, clase }: Reparto): boolean => {
  * 3. **Defensa en juicio con protección patrimonial**: causas reales y
  *    escrituras a la vez. Las dos pesan igual, ninguna es secundaria.
  * 4. **Defensa en juicio** con causas reales y sin escrituras.
- * 5. **Protección patrimonial**, salvo que su única caja sea una gestión
- *    abortada.
+ * 5. **Protección patrimonial**, si le queda alguna escritura después de sacar
+ *    las cajas madre y las gestiones abortadas. Si no le queda ninguna, este
+ *    paso no se cumple y la decisión sigue bajando —que es de dónde sale, sin
+ *    ninguna regla aparte, el caso de quien tiene una sola caja de PP abortada
+ *    y termina en «Solo monitoreo»—.
  * 6. **Defensa en juicio, solo monitoreo.** Es la única vez que la caja de
  *    monitoreo se mira: cuando no hay nada más que contar, lo que la persona
  *    tiene contratado es efectivamente la vigilancia.
@@ -126,7 +131,7 @@ function resolverServicioPrincipal(reparto: Reparto, respaldo: TipoServicio): Ti
   if (renegociacionCuenta(reparto)) return ["renegociacion"];
   if (liquidacion.length > 0) return ["liquidacion"];
 
-  const hayEscrituras = escriturasCuentan(reparto);
+  const hayEscrituras = reparto.escrituras.length > 0;
   if (causas.length > 0) {
     return hayEscrituras ? ["defensaEnJuicio", "proteccionPatrimonial"] : ["defensaEnJuicio"];
   }
@@ -191,9 +196,7 @@ export function componerInicio(
 
   const juicios = ordenadas(reparto.causas);
 
-  // La gestión abortada que descartó el servicio tampoco se lista: si no
-  // alcanzó a ser un servicio, menos va a ser una escritura que seguir.
-  const escrituras = escriturasCuentan(reparto) ? ordenadas(reparto.escrituras) : [];
+  const escrituras = ordenadas(reparto.escrituras);
 
   // El estado del caso existe en los servicios que **son** un procedimiento
   // —renegociación y liquidación—, y en la Situación 1 de defensa en juicio, que

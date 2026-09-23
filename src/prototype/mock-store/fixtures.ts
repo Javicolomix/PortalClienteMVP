@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 51,
+  datasetVersion: 52,
   entities: {
     cliente: [
       // **Los cuatro casos que el portal tiene que saber armar.** No son
@@ -341,9 +341,10 @@ export const fixtures: Fixtures = {
         etapaId: "etp-lit-02",
       },
 
-      // Ximena: las tres exclusiones juntas. La caja madre por etapa, la que
-      // avanzó de etapa sin dejar de ser madre, y una causa que el concurso ya
-      // absorbió. Lo único que se muestra es la escritura de verdad.
+      // Ximena: las cuatro exclusiones juntas. La caja madre por etapa, la que
+      // avanzó de etapa sin dejar de ser madre, una gestión abortada —que no se
+      // muestra aunque haya otras escrituras al lado— y una causa que el
+      // concurso ya absorbió. Lo único que se muestra es la escritura de verdad.
       {
         id: "caj-025",
         clienteId: "cli-009",
@@ -368,6 +369,14 @@ export const fixtures: Fixtures = {
         tipoDeEscritura: "Declaración de Bien Familiar",
         identificador: "Los Nogales 455, Quilpué",
         etapaId: "etp-pp-03",
+      },
+      {
+        id: "caj-030",
+        clienteId: "cli-009",
+        tipo: "proteccionPatrimonial",
+        tipoDeEscritura: "Compraventa de Vehículo",
+        identificador: "KDPT·19",
+        etapaId: "etp-pp-06",
       },
       {
         id: "caj-028",

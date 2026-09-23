@@ -1100,8 +1100,10 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   - **Regla de «Demandado»**: con dos cajas de RN, el caso cuenta la que no es
     el duplicado. Para esto la etapa del caso pasó a salir de **la caja** y no de
     `cliente.etapaActualId`, que era un campo por persona y no dejaba elegir.
-  - **Protección patrimonial se descarta** si su única caja está en «Gestión
-    abortada»: ahí el cliente se trata como solo monitoreo.
+  - Las **gestiones abortadas** no se muestran nunca, tenga el cliente una
+    escritura o cinco. Que la única caja de PP sea una abortada deja de ser un
+    caso aparte: la lista queda vacía, protección patrimonial se descarta sola y
+    la decisión sigue bajando hasta «Solo monitoreo».
   - Las **cajas madre** se excluyen por etapa y también por el campo «Rol de
     caja», porque una caja madre puede avanzar de etapa sin dejar de serlo.
   - Los **contactos salen del servicio principal**: RN muestra el equipo de RN
@@ -1110,8 +1112,8 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   - `caja.estado` se retira y `etapa.clase` lo reemplaza: las nueve clases están
     en `portal.types.ts` y mapean una a una con el documento.
   PENDIENTE CON TI: mapear cada etapa real de los cuatro embudos a una clase.
-  PENDIENTE CON DISEÑO: qué hacer con una caja en «Gestión abortada» cuando NO
-  es la única del cliente — el documento solo resuelve el caso de la única.
+  (Resuelto el 23-09 con diseño: la gestión abortada nunca se muestra, esté sola
+  o acompañada.)
 
 - 2026-09-21: el desplegable de una etapa **se arma solo con las secciones que
   el capitán escribió**. Un campo vacío —o con solo espacios y saltos de línea—
