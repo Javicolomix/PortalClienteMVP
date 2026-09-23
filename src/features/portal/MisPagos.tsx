@@ -210,13 +210,15 @@ function PlanTerminado() {
   return (
     <section className="rounded-xl bg-brand-navy p-5 text-white shadow-card md:p-6">
       <p className="type-supporting text-white/70">Tu plan de pago</p>
-      <p className="mt-1 type-page-title text-balance">Tus pagos se encuentran completados</p>
+      <p className="mt-1 type-page-title text-balance">Pagaste todas tus cuotas</p>
 
       {/* Sin el número de cuotas. Lo llevaba —«Pagaste las 6 cuotas de tu
           plan»— y el dato ya está a un toque de distancia, en el historial, con
           el detalle de cada una. Acá lo único que hace falta es que no quede
           ninguna. */}
-      <p className="mt-3 type-body text-white/85">Pagaste todas tus cuotas.</p>
+      <p className="mt-3 type-body text-white/85">
+        El pago de tus honorarios se encuentra completado en su totalidad.
+      </p>
     </section>
   );
 }
