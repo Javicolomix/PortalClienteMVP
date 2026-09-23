@@ -210,7 +210,7 @@ function PlanTerminado({ cuotas }: { cuotas: Cuota[] }) {
   return (
     <section className="rounded-xl bg-brand-navy p-5 text-white shadow-card md:p-6">
       <p className="type-supporting text-white/70">Tu plan de pago</p>
-      <p className="mt-1 type-page-title">Lo terminaste de pagar</p>
+      <p className="mt-1 type-page-title text-balance">Tus pagos se encuentran completados</p>
 
       <p className="mt-3 type-body text-white/85">
         {cuotas.length === 1
