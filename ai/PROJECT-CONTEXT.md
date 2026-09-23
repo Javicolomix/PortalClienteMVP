@@ -1089,6 +1089,14 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   cambia el tono de la pantalla. «¿Qué significa esta etapa?» pierde su dibujo:
   el recuadro ya viene dentro de una fila que tiene el suyo.
 
+- 2026-09-23: «Mis pagos» distingue **tres situaciones donde antes decía una sola
+  frase**. Quien terminó de pagar ve «Lo terminaste de pagar» en el mismo navy
+  que ocupaba la cuota, sin los medios de pago; quien todavía no tiene plan
+  cargado lo ve dicho así; y a quien le quedan **solo cuotas vencidas** —el caso
+  que estaba mal— la pantalla le decía «Estás al día con tus honorarios» y le
+  escondía cómo pagar. Ahora una morosa ocupa el lugar de la próxima cuando no
+  queda ninguna por vencer, nombrada como lo que es.
+
 - 2026-09-23: **el documento de reglas servicio por servicio queda implementado
   entero.** Lo que cambió respecto de lo que había:
   - Las cajas de juicio en etapa **«Concursal»** se excluyen igual que las de

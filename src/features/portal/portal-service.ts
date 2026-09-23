@@ -314,12 +314,19 @@ export async function cargarMisPagos(): Promise<DatosMisPagos> {
     cargarConfiguracion(),
   ]);
 
-  // La próxima es la pendiente más antigua del plan. Una morosa no compite por
-  // ese lugar: ya venció, y ponerla ahí haría que la pantalla pidiera pagar algo
-  // distinto de lo que toca este mes.
-  const proximaCuota =
-    cuotas.filter((cuota) => cuota.estado === "pendiente").sort((a, b) => a.numero - b.numero)[0] ??
-    null;
+  const enOrden = (estado: Cuota["estado"]) =>
+    cuotas.filter((cuota) => cuota.estado === estado).sort((a, b) => a.numero - b.numero);
+
+  // **Lo que toca pagar es la pendiente más antigua.** Una morosa no le compite
+  // ese lugar mientras haya pendientes: ya venció, y ponerla ahí haría que la
+  // pantalla pidiera pagar algo distinto de lo que toca este mes. El historial
+  // es donde se ven las morosas, en rojo y en su lugar del plan.
+  //
+  // **Pero si no queda ninguna pendiente, la morosa sí ocupa el lugar.** Antes
+  // no lo hacía, y a quien le quedaban solo cuotas vencidas la pantalla le decía
+  // que estaba al día y le escondía los medios de pago: la única persona que
+  // tenía algo que pagar era justamente la que no podía hacerlo desde acá.
+  const proximaCuota = enOrden("pendiente")[0] ?? enOrden("morosa")[0] ?? null;
 
   // Todas, en el orden del plan. El historial las muestra enteras —pagadas,
   // morosas y las que vienen— porque la pregunta que se contesta ahí es «cómo va

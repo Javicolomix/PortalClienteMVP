@@ -170,17 +170,53 @@ function PasoDePago({
  * como «lo que Lexy te está diciendo».
  */
 function ProximaCuota({ cuota }: { cuota: Cuota }) {
+  // Una cuota vencida ocupa este lugar solo cuando no queda ninguna por vencer.
+  // Se nombra por lo que es: decirle «tu próxima cuota» a algo cuyo plazo ya
+  // pasó le esconde a la persona lo único que necesita saber de esa cuota.
+  const vencida = cuota.estado === "morosa";
+
   return (
     <section className="rounded-xl bg-brand-navy p-5 text-white shadow-card md:p-6">
-      <p className="type-supporting text-white/70">Tu próxima cuota</p>
+      <p className="type-supporting text-white/70">
+        {vencida ? "Tu cuota vencida" : "Tu próxima cuota"}
+      </p>
       <p className="mt-1 type-page-title">{FORMATO_PESOS.format(cuota.monto)}</p>
 
       <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 type-body text-white/85">
         <span className="flex items-center gap-2">
           <CalendarDays className="size-4 shrink-0 text-white/60" aria-hidden />
-          Vence el {formatearFechaCorta(cuota.fechaVencimiento)}
+          {vencida ? "Venció el" : "Vence el"} {formatearFechaCorta(cuota.fechaVencimiento)}
         </span>
         <span className="type-supporting text-white/60">Cuota N°{cuota.numero}</span>
+      </p>
+    </section>
+  );
+}
+
+/**
+ * **El plan terminado.**
+ *
+ * Va en el mismo navy que la cuota por pagar y en el mismo lugar, porque cumple
+ * el mismo oficio: es lo único que esta pantalla vino a decir. Para quien
+ * terminó, esa respuesta ya no es un monto sino que no hay monto.
+ *
+ * Estuvo como estado vacío —un recuadro gris con «No tienes cuotas
+ * pendientes»— y era una respuesta de sistema a un hecho de la persona:
+ * terminar de pagar lo que se debía no es que falte algo en la pantalla. La
+ * frase prometía además «cuando venga la próxima cuota, la vas a ver acá», que
+ * era falsa: no viene ninguna más.
+ */
+function PlanTerminado({ cuotas }: { cuotas: Cuota[] }) {
+  return (
+    <section className="rounded-xl bg-brand-navy p-5 text-white shadow-card md:p-6">
+      <p className="type-supporting text-white/70">Tu plan de pago</p>
+      <p className="mt-1 type-page-title">Lo terminaste de pagar</p>
+
+      <p className="mt-3 type-body text-white/85">
+        {cuotas.length === 1
+          ? "Pagaste la única cuota de tu plan."
+          : `Pagaste las ${cuotas.length} cuotas de tu plan.`}{" "}
+        No queda nada por cobrarte.
       </p>
     </section>
   );
@@ -458,23 +494,57 @@ function DudasDelCobro({
   );
 }
 
+/**
+ * **Tres pantallas, no una.** Sin cuota por pagar la pantalla decía siempre lo
+ * mismo, y esa frase única servía para un caso de tres:
+ *
+ * - **Terminó de pagar** — le prometía «cuando venga la próxima cuota, la vas a
+ *   ver acá», y no viene ninguna más.
+ * - **Todavía no tiene plan** — le hablaba de un plan de pago que nadie le ha
+ *   cargado.
+ * - **Le quedan solo cuotas vencidas** — le decía que estaba al día. Ese ya no
+ *   llega acá: una morosa ocupa el lugar de la próxima cuando no hay ninguna
+ *   por vencer, así que esa persona ve su monto y cómo pagarlo, que es lo que
+ *   le faltaba.
+ */
 function ContenidoDePagos({ datos }: { datos: DatosMisPagos }) {
   if (!datos.proximaCuota) {
+    // Sin ninguna cuota cargada no hay plan del cual hablar. Es la persona
+    // recién entrada, no la que terminó: felicitarla por un plan que no existe
+    // sería peor que la frase genérica que había antes.
+    if (datos.cuotas.length === 0) {
+      return (
+        <>
+          <Empty>
+            <EmptyHeader>
+              <EmptyTitle>Todavía no tienes cuotas cargadas</EmptyTitle>
+              <EmptyDescription>
+                Cuando tu plan de honorarios esté listo, vas a ver acá cuánto y cuándo pagar.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button asChild variant="outline">
+                <Link to="/mi-equipo">Preguntarle a mi equipo</Link>
+              </Button>
+            </EmptyContent>
+          </Empty>
+
+          <DudasDelCobro
+            configuracion={datos.configuracion}
+            nombreDelCliente={nombreCompleto(datos.cliente)}
+          />
+        </>
+      );
+    }
+
+    // Terminó. **Sin «cómo pagar»**: los dos modos de pago son el paso siguiente
+    // de una pantalla que pide algo, y acá no se pide nada. El historial se
+    // queda —es donde se comprueba que los pagos quedaron registrados, y eso
+    // sigue importando después del último— y finanzas también, por si algo no
+    // le cuadra.
     return (
       <>
-        <Empty>
-          <EmptyHeader>
-            <EmptyTitle>No tienes cuotas pendientes</EmptyTitle>
-            <EmptyDescription>
-              Estás al día con tus honorarios. Cuando venga la próxima cuota, la vas a ver acá.
-            </EmptyDescription>
-          </EmptyHeader>
-          <EmptyContent>
-            <Button asChild variant="outline">
-              <Link to="/mi-equipo">Preguntarle a mi equipo</Link>
-            </Button>
-          </EmptyContent>
-        </Empty>
+        <PlanTerminado cuotas={datos.cuotas} />
 
         <HistorialDeCuotas
           cuotas={datos.cuotas}
