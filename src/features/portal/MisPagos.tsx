@@ -206,18 +206,17 @@ function ProximaCuota({ cuota }: { cuota: Cuota }) {
  * frase prometía además «cuando venga la próxima cuota, la vas a ver acá», que
  * era falsa: no viene ninguna más.
  */
-function PlanTerminado({ cuotas }: { cuotas: Cuota[] }) {
+function PlanTerminado() {
   return (
     <section className="rounded-xl bg-brand-navy p-5 text-white shadow-card md:p-6">
       <p className="type-supporting text-white/70">Tu plan de pago</p>
       <p className="mt-1 type-page-title text-balance">Tus pagos se encuentran completados</p>
 
-      <p className="mt-3 type-body text-white/85">
-        {cuotas.length === 1
-          ? "Pagaste la única cuota de tu plan."
-          : `Pagaste las ${cuotas.length} cuotas de tu plan.`}{" "}
-        No queda nada por cobrarte.
-      </p>
+      {/* Sin el número de cuotas. Lo llevaba —«Pagaste las 6 cuotas de tu
+          plan»— y el dato ya está a un toque de distancia, en el historial, con
+          el detalle de cada una. Acá lo único que hace falta es que no quede
+          ninguna. */}
+      <p className="mt-3 type-body text-white/85">Pagaste todas tus cuotas.</p>
     </section>
   );
 }
@@ -544,7 +543,7 @@ function ContenidoDePagos({ datos }: { datos: DatosMisPagos }) {
     // le cuadra.
     return (
       <>
-        <PlanTerminado cuotas={datos.cuotas} />
+        <PlanTerminado />
 
         <HistorialDeCuotas
           cuotas={datos.cuotas}
