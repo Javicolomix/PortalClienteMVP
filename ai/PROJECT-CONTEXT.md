@@ -1089,6 +1089,30 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   cambia el tono de la pantalla. «¿Qué significa esta etapa?» pierde su dibujo:
   el recuadro ya viene dentro de una fila que tiene el suyo.
 
+- 2026-09-23: **el documento de reglas servicio por servicio queda implementado
+  entero.** Lo que cambió respecto de lo que había:
+  - Las cajas de juicio en etapa **«Concursal»** se excluyen igual que las de
+    monitoreo: no cuentan como juicio ni se listan.
+  - El orden del servicio principal es el del documento y se recorre de arriba
+    abajo: RN → Liquidación → Defensa+PP → Defensa → PP → solo monitoreo.
+  - **Renegociación se descarta** si su única caja está en «Archivados» o «A
+    liquidación», y sigue el siguiente servicio de la lista.
+  - **Regla de «Demandado»**: con dos cajas de RN, el caso cuenta la que no es
+    el duplicado. Para esto la etapa del caso pasó a salir de **la caja** y no de
+    `cliente.etapaActualId`, que era un campo por persona y no dejaba elegir.
+  - **Protección patrimonial se descarta** si su única caja está en «Gestión
+    abortada»: ahí el cliente se trata como solo monitoreo.
+  - Las **cajas madre** se excluyen por etapa y también por el campo «Rol de
+    caja», porque una caja madre puede avanzar de etapa sin dejar de serlo.
+  - Los **contactos salen del servicio principal**: RN muestra el equipo de RN
+    aunque haya juicios, el compuesto muestra litigios ignorando el panel de PP,
+    y PP muestra el suyo. Liquidación es la única que mira la etapa.
+  - `caja.estado` se retira y `etapa.clase` lo reemplaza: las nueve clases están
+    en `portal.types.ts` y mapean una a una con el documento.
+  PENDIENTE CON TI: mapear cada etapa real de los cuatro embudos a una clase.
+  PENDIENTE CON DISEÑO: qué hacer con una caja en «Gestión abortada» cuando NO
+  es la única del cliente — el documento solo resuelve el caso de la única.
+
 - 2026-09-21: el desplegable de una etapa **se arma solo con las secciones que
   el capitán escribió**. Un campo vacío —o con solo espacios y saltos de línea—
   no deja hueco, ni separador suelto, ni un «no aplica»: la sección entera

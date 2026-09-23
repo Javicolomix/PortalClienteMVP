@@ -89,7 +89,40 @@ export const servicioEnFrase = (servicios: Servicio[]): string => {
  * - `activa` — la caja que sí es un asunto que informar: una causa, una gestión
  *   de escritura, la renegociación o la liquidación.
  */
-export type EstadoCaja = "monitoreo" | "madre" | "activa";
+/**
+ * **Qué significa una etapa para las reglas del portal.**
+ *
+ * Casi todas las etapas son corrientes: describen en qué va una gestión y no
+ * cambian nada de cómo se arma la pantalla. Un puñado sí, y son las que este
+ * tipo nombra una por una. Están acá y no repartidas en banderas sueltas porque
+ * son excluyentes —una etapa es una de estas cosas, no varias— y porque así la
+ * lista se lee igual que el documento de reglas del que salen.
+ *
+ * - `monitoreo` — Litigios. La vigilancia por defecto que Lexy le abre a toda
+ *   persona, la contrate o no. **No es un juicio**: no entra en «Mis juicios» ni
+ *   cuenta para resolver el servicio principal, salvo cuando es lo único que
+ *   hay.
+ * - `concursal` — Litigios. La causa quedó absorbida por el procedimiento
+ *   concursal. Tampoco cuenta ni se muestra.
+ * - `archivada` — Renegociación. La gestión se cerró.
+ * - `aLiquidacion` — Renegociación. El caso se derivó a liquidación.
+ * - `demandado` — Renegociación. **Es un duplicado**: se crea solo cuando
+ *   demandan a la persona, y la gestión real sigue en la otra caja de RN.
+ * - `liquidacionEnEspera` — Liquidación. Cubre «Mediata» y «En espera»: el caso
+ *   es viable pero todavía no parte.
+ * - `cajaMadre` — Escrituras. El paraguas del servicio, no una gestión.
+ * - `gestionAbortada` — Escrituras. La gestión no se llegó a hacer.
+ */
+export type ClaseDeEtapa =
+  | "corriente"
+  | "monitoreo"
+  | "concursal"
+  | "archivada"
+  | "aLiquidacion"
+  | "demandado"
+  | "liquidacionEnEspera"
+  | "cajaMadre"
+  | "gestionAbortada";
 
 /**
  * Una **caja** es cada caso que la persona tiene abierto con Lexy —lo que en
@@ -108,7 +141,16 @@ export type Caja = {
   id: string;
   clienteId: string;
   tipo: TipoServicio;
-  estado: EstadoCaja;
+  /**
+   * **El rol que la caja tiene en Streak**, no la etapa en que va.
+   *
+   * Una caja madre es el paraguas de un servicio de escrituras: debajo cuelgan
+   * las «obreras», que son las gestiones reales. Nunca se muestra. Lo normal es
+   * que esté en la etapa «Caja madre» —y entonces lo dice su etapa—, pero
+   * también puede haber avanzado a otra etapa conservando el rol, y ahí la
+   * etapa ya no alcanza para reconocerla.
+   */
+  esCajaMadre?: boolean;
   /**
    * **Qué distingue esta caja de otra del mismo tipo.** Sale de la columna
    * «identificador» de Streak: en juicio ejecutivo es el ROL de la causa
@@ -238,17 +280,10 @@ export type Etapa = {
    */
   contactoPrincipal: RolContacto;
   /**
-   * **La liquidación está detenida a la espera de algo.** Cubre las dos etapas
-   * que Lexy llama «Mediata» y «En espera»: el caso es viable pero todavía no
-   * parte, y mientras tanto lo único que se mueve del lado de la persona es el
-   * juicio o la escritura que tenga abiertos.
-   *
-   * Solo tiene sentido en el embudo de liquidación; en los demás va en `false`.
-   * De esto depende que el panel de WhatsApp ofrezca **un contacto o dos** —ver
-   * `contactos-visibles.ts`—, así que no es un dato de adorno: mal marcado deja
-   * a alguien con un juicio andando sin a quién escribirle por el juicio.
+   * Qué significa esta etapa para las reglas del portal. Casi siempre
+   * `corriente`; ver `ClaseDeEtapa` para las que no.
    */
-  liquidacionEnEspera: boolean;
+  clase: ClaseDeEtapa;
   nivelUrgencia: NivelUrgencia;
 };
 

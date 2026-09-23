@@ -310,16 +310,16 @@ export const prototypeDataContract = definePrototypeDataContract({
             "productAssumption",
           ),
         },
-        estado: {
-          id: "estado",
+        esCajaMadre: {
+          id: "esCajaMadre",
           productDescription:
-            "«activa» o «monitoreo», y solo tiene sentido en el embudo de juicio ejecutivo. Monitoreo es la vigilancia por defecto que Lexy le abre a toda persona, la contrate o no: NO es un juicio real. Por eso no entra en la lista de causas y no cuenta al resolver el servicio principal. La única excepción: cuando es la única caja que la persona tiene, su servicio principal es defensa en juicio y el estado del caso cuenta esa vigilancia.",
-          dataType: "string",
-          required: true,
+            "Marca las cajas del embudo de escrituras que son la «caja madre»: el paraguas del servicio, no una gestión. Nunca se le muestran al cliente, porque debajo cuelga la caja obrera donde está el trabajo real. Sale del campo «Rol de caja» de Streak y es aparte de la etapa: una caja madre puede avanzar de etapa sin dejar de serlo, y ahí la etapa ya no alcanza para reconocerla.",
+          dataType: "boolean",
+          required: false,
           usage: { ...soloTecnico, filterable: true },
           usedIn: [PORTAL],
           ...pendienteTi(
-            "Confirmar cómo se reconoce en Streak que una tarjeta de juicio ejecutivo es la de monitoreo y no una causa real. Toda la determinación del servicio principal depende de esto.",
+            "Confirmar de qué campo de Streak sale el rol de caja y con qué valor exacto se marca la madre. Reemplaza al antiguo `caja.estado`, que mezclaba tres cosas distintas —monitoreo, caja madre y el resto— en un solo campo; monitoreo pasó a ser una clase de etapa.",
             "productAssumption",
           ),
         },
@@ -641,16 +641,27 @@ export const prototypeDataContract = definePrototypeDataContract({
             "productAssumption",
           ),
         },
-        liquidacionEnEspera: {
-          id: "liquidacionEnEspera",
+        clase: {
+          id: "clase",
           productDescription:
-            "Marca las dos etapas de liquidación en que el caso es viable pero todavía no parte: las que Lexy llama «Mediata» y «En espera». Solo tiene sentido en ese embudo; en los demás va en falso. De esto depende que el panel de WhatsApp ofrezca un contacto o dos: mientras la liquidación está detenida, lo único que se mueve es el juicio o la escritura que el cliente tenga abiertos, y se agrega también ese contacto.",
-          dataType: "boolean",
+            "Qué significa esta etapa para las reglas del portal. Casi todas son «corriente» y solo describen un avance; las demás cambian qué se le muestra al cliente: «monitoreo» y «concursal» son etapas de juicio ejecutivo cuyas cajas no cuentan como juicio ni se listan; «archivada» y «aLiquidacion» son etapas de renegociación que, si son la única caja del cliente, hacen que renegociación deje de ser su servicio principal; «demandado» es el duplicado que se crea en renegociación cuando demandan al cliente, y su etapa nunca se muestra si hay otra caja; «liquidacionEnEspera» cubre «Mediata» y «En espera»; «cajaMadre» y «gestionAbortada» son etapas de escrituras.",
+          dataType: "enum",
           required: true,
-          usage: soloTecnico,
+          usage: { ...soloTecnico, filterable: true },
           usedIn: [PORTAL],
+          enumValues: [
+            "corriente",
+            "monitoreo",
+            "concursal",
+            "archivada",
+            "aLiquidacion",
+            "demandado",
+            "liquidacionEnEspera",
+            "cajaMadre",
+            "gestionAbortada",
+          ],
           ...pendienteTi(
-            "Confirmar cuáles son exactamente las etapas «Mediata» y «En espera» en el embudo de liquidación de Streak y cómo se reconocen. Hoy el prototipo solo marca «En espera del plazo para comenzar»: falta identificar la de «Mediata», que debe llevar la misma marca. Mal marcado, alguien con un juicio andando se queda sin a quién escribirle por el juicio durante meses.",
+            "Mapear cada etapa real de los cuatro embudos de Streak a una de estas clases, y confirmar los nombres exactos: «Archivados», «A liquidación», «Demandado» en renegociación; «Monitoreo» y «Concursal» en juicio ejecutivo; «Mediata» y «En espera» en liquidación; «Caja madre» y «Gestión abortada» en escrituras. Es el dato del que cuelga toda la composición del inicio: una etapa mal clasificada puede esconderle un juicio al cliente o mostrarle un servicio que no tiene.",
             "productAssumption",
           ),
         },

@@ -1,4 +1,4 @@
-import type { Caja, Servicio, TipoServicio } from "./portal.types";
+import type { Caja, ClaseDeEtapa, Etapa, Servicio, TipoServicio } from "./portal.types";
 
 /**
  * Los cuatro bloques con que se arma el inicio. No hay una pantalla por
@@ -19,62 +19,203 @@ export type ComposicionDelInicio = {
    */
   servicioPrincipal: TipoServicio[];
   bloques: BloqueDelInicio[];
-  /** Las causas que se muestran: las del embudo de juicio, sin las de monitoreo. */
+  /** La caja cuyo estado cuenta el bloque del caso, cuando ese bloque existe. */
+  cajaDelCaso: Caja | null;
+  /** Las causas que se muestran: ni monitoreo ni concursal. */
   juicios: Caja[];
-  /** Las escrituras que se muestran: todas las del embudo de escrituras. */
+  /** Las escrituras que se muestran: sin cajas madre. */
   escrituras: Caja[];
 };
 
-const esDelEmbudoDeJuicio = (caja: Caja) => caja.tipo === "defensaEnJuicio";
-const esMonitoreo = (caja: Caja) => esDelEmbudoDeJuicio(caja) && caja.estado === "monitoreo";
-const esDelEmbudoDeEscrituras = (caja: Caja) => caja.tipo === "proteccionPatrimonial";
-const esCajaMadre = (caja: Caja) => esDelEmbudoDeEscrituras(caja) && caja.estado === "madre";
-const esConcursal = (caja: Caja) =>
-  caja.tipo === "renegociacion" || caja.tipo === "liquidacion";
+const EMBUDO = {
+  renegociacion: (caja: Caja) => caja.tipo === "renegociacion",
+  liquidacion: (caja: Caja) => caja.tipo === "liquidacion",
+  juicio: (caja: Caja) => caja.tipo === "defensaEnJuicio",
+  escrituras: (caja: Caja) => caja.tipo === "proteccionPatrimonial",
+} as const;
 
 /**
- * **Paso 0: cuál es el servicio principal.** Antes de decidir qué bloques se
- * muestran hay que resolver esto, porque de acá sale tanto el nombre que lleva
- * el bloque A como qué bloque ocupa el lugar del estado del caso.
- *
- * La regla que ordena todo lo demás: **una caja de monitoreo no cuenta**. En
- * Lexy toda persona queda con una caja de monitoreo en el embudo de juicio
- * ejecutivo, la contrate o no —es una vigilancia por defecto, no un juicio—, así
- * que tomarla como una caja real le cambiaría el servicio principal a casi
- * todo el mundo. La única vez que se mira es cuando es lo único que hay.
- *
- * El orden de la decisión:
- *
- * 1. **Renegociación o liquidación gana siempre.** Si la persona contrató una de
- *    las dos, ese es su servicio principal aunque además tenga juicios o
- *    escrituras: esos se suman abajo, no lo reemplazan.
- * 2. **Con causas reales, defensa en juicio** —y si además hay escrituras, el
- *    nombre compuesto: las dos cosas pesan igual, ninguna es secundaria de la otra.
- * 3. **Solo escrituras, protección patrimonial.**
- * 4. **Solo monitoreo, defensa en juicio.** Es el único caso en que la caja de
- *    monitoreo se evalúa: no hay nada más que contar, y lo que la persona tiene
- *    contratado es efectivamente la vigilancia.
- *
- * El `respaldo` es para la persona que todavía no tiene ninguna caja abierta: se
- * usa lo que figura contratado, que es lo único que se sabe de ella.
+ * Cómo se lee la clase de la etapa de una caja. Si la etapa no está cargada, la
+ * caja se trata como corriente: dejar de mostrar algo por un dato que falta es
+ * peor que mostrarlo de más, porque la persona no tiene cómo enterarse.
  */
-export function determinarServicioPrincipal(
-  cajas: Caja[],
-  respaldo: TipoServicio,
-): TipoServicio[] {
-  const concursal = cajas.find(esConcursal);
-  if (concursal) return [concursal.tipo];
+const claseDeLaCaja = (caja: Caja, etapas: Etapa[]): ClaseDeEtapa =>
+  etapas.find((etapa) => etapa.id === caja.etapaId)?.clase ?? "corriente";
 
-  const hayCausas = cajas.some((caja) => esDelEmbudoDeJuicio(caja) && !esMonitoreo(caja));
-  const hayEscrituras = cajas.some(esDelEmbudoDeEscrituras);
+/**
+ * **Cómo queda repartido el conjunto de cajas de una persona**, aplicadas todas
+ * las exclusiones antes de decidir nada. Se separa de la decisión a propósito:
+ * las reglas de qué servicio gana y de qué bloques salen leen de acá, así que
+ * una caja excluida lo está en todas partes a la vez y no hay forma de que una
+ * regla la cuente y otra no.
+ */
+function repartir(cajas: Caja[], etapas: Etapa[]) {
+  const clase = (caja: Caja) => claseDeLaCaja(caja, etapas);
 
-  if (hayCausas) {
+  const renegociacion = cajas.filter(EMBUDO.renegociacion);
+  const liquidacion = cajas.filter(EMBUDO.liquidacion);
+
+  // **Ni monitoreo ni concursal cuentan como juicio.** El monitoreo es la
+  // vigilancia por defecto que Lexy le abre a todo el mundo, y la concursal es
+  // una causa que el procedimiento concursal ya absorbió: ninguna de las dos es
+  // algo que la persona tenga que seguir.
+  const causas = cajas.filter(
+    (caja) =>
+      EMBUDO.juicio(caja) && clase(caja) !== "monitoreo" && clase(caja) !== "concursal",
+  );
+  const monitoreo = cajas.filter((caja) => EMBUDO.juicio(caja) && clase(caja) === "monitoreo");
+
+  // **Las cajas madre no se muestran nunca.** Son el paraguas del servicio, no
+  // una gestión: debajo cuelga la caja obrera donde está el trabajo real, y esa
+  // sí se lista. Se reconocen por la etapa o por el rol, porque una caja madre
+  // puede avanzar de etapa sin dejar de serlo.
+  const escrituras = cajas.filter(
+    (caja) => EMBUDO.escrituras(caja) && clase(caja) !== "cajaMadre" && !caja.esCajaMadre,
+  );
+
+  return { clase, renegociacion, liquidacion, causas, monitoreo, escrituras };
+}
+
+type Reparto = ReturnType<typeof repartir>;
+
+/** Renegociación queda descartada si su única caja está cerrada o derivada. */
+const renegociacionCuenta = ({ renegociacion, clase }: Reparto): boolean => {
+  if (renegociacion.length === 0) return false;
+  if (renegociacion.length > 1) return true;
+  const unica = clase(renegociacion[0]);
+  return unica !== "archivada" && unica !== "aLiquidacion";
+};
+
+/**
+ * Protección patrimonial queda descartada si su única caja es una gestión que
+ * no se llegó a hacer. Ahí la persona no tiene ninguna escritura que seguir, y
+ * anunciarle el servicio sería prometerle una gestión que no existe.
+ */
+const escriturasCuentan = ({ escrituras, clase }: Reparto): boolean => {
+  if (escrituras.length === 0) return false;
+  if (escrituras.length > 1) return true;
+  return clase(escrituras[0]) !== "gestionAbortada";
+};
+
+/**
+ * **Paso 0: cuál es el servicio principal.** De acá salen tanto el nombre que
+ * lleva el bloque A como qué bloque ocupa el lugar del estado del caso.
+ *
+ * El orden lo fijó operaciones y se recorre de arriba abajo, quedándose con el
+ * primero que se cumple. Un servicio descartado por sus propias reglas no
+ * bloquea a los que siguen: se salta y se sigue bajando.
+ *
+ * 1. **Renegociación**, salvo que su única caja esté archivada o derivada a
+ *    liquidación.
+ * 2. **Liquidación.**
+ * 3. **Defensa en juicio con protección patrimonial**: causas reales y
+ *    escrituras a la vez. Las dos pesan igual, ninguna es secundaria.
+ * 4. **Defensa en juicio** con causas reales y sin escrituras.
+ * 5. **Protección patrimonial**, salvo que su única caja sea una gestión
+ *    abortada.
+ * 6. **Defensa en juicio, solo monitoreo.** Es la única vez que la caja de
+ *    monitoreo se mira: cuando no hay nada más que contar, lo que la persona
+ *    tiene contratado es efectivamente la vigilancia.
+ *
+ * El `respaldo` es para quien todavía no tiene ninguna caja abierta: se usa lo
+ * que figura contratado, que es lo único que se sabe de ella.
+ */
+function resolverServicioPrincipal(reparto: Reparto, respaldo: TipoServicio): TipoServicio[] {
+  const { liquidacion, causas, monitoreo } = reparto;
+
+  if (renegociacionCuenta(reparto)) return ["renegociacion"];
+  if (liquidacion.length > 0) return ["liquidacion"];
+
+  const hayEscrituras = escriturasCuentan(reparto);
+  if (causas.length > 0) {
     return hayEscrituras ? ["defensaEnJuicio", "proteccionPatrimonial"] : ["defensaEnJuicio"];
   }
   if (hayEscrituras) return ["proteccionPatrimonial"];
-  if (cajas.some(esMonitoreo)) return ["defensaEnJuicio"];
+  if (monitoreo.length > 0) return ["defensaEnJuicio"];
 
   return [respaldo];
+}
+
+/**
+ * Se mantiene para quien solo necesita el nombre del servicio y no la
+ * composición entera —«Mi servicio», por ejemplo—.
+ */
+export function determinarServicioPrincipal(
+  cajas: Caja[],
+  etapas: Etapa[],
+  respaldo: TipoServicio,
+): TipoServicio[] {
+  return resolverServicioPrincipal(repartir(cajas, etapas), respaldo);
+}
+
+/**
+ * **De qué caja sale la etapa que cuenta el estado del caso.**
+ *
+ * Nunca se muestran dos etapas del mismo servicio concursal: el bloque del caso
+ * cuenta una sola cosa, que es en qué va el procedimiento.
+ *
+ * En renegociación puede haber dos cajas, y ahí manda la que **no** está en
+ * «Demandado»: esa segunda caja no es otra gestión, es un duplicado que Streak
+ * crea cuando demandan a la persona. Mostrar su etapa sería contarle que su
+ * renegociación está en «Demandado» cuando lo que está pasando es que le
+ * llegó un juicio —y ese juicio ya se lo cuenta «Mis juicios», que es donde
+ * corresponde—.
+ */
+const cajaQueCuentaElCaso = (candidatas: Caja[], clase: Reparto["clase"]): Caja | null =>
+  candidatas.find((caja) => clase(caja) !== "demandado") ?? candidatas[0] ?? null;
+
+/**
+ * Decide qué bloques se muestran. Es una función pura: mismos datos, misma
+ * composición. Vive separada de las pantallas para poder razonarla —y
+ * corregirla— sin abrir un solo componente.
+ *
+ * Resuelto el servicio principal, los bloques salen solos:
+ *
+ * 1. **El bloque del servicio principal reemplaza al estado del caso.** Si la
+ *    persona contrató defensa en juicio, su lista de causas ocupa el lugar del
+ *    «estado de mi caso»; lo mismo la lista de escrituras en protección
+ *    patrimonial. No conviven: sería el mismo dato contado dos veces.
+ * 2. **Un servicio secundario nunca reemplaza nada, se suma abajo.** Quien tiene
+ *    renegociación y además un juicio ve las dos cosas.
+ * 3. **Las listas solo aparecen si tienen algo que listar.** Una sección vacía
+ *    al pie de una renegociación es ruido.
+ */
+export function componerInicio(
+  cajas: Caja[],
+  etapas: Etapa[],
+  servicioContratado: TipoServicio,
+): ComposicionDelInicio {
+  const reparto = repartir(cajas, etapas);
+  const servicioPrincipal = resolverServicioPrincipal(reparto, servicioContratado);
+  const principal = servicioPrincipal[0];
+
+  const juicios = ordenadas(reparto.causas);
+
+  // La gestión abortada que descartó el servicio tampoco se lista: si no
+  // alcanzó a ser un servicio, menos va a ser una escritura que seguir.
+  const escrituras = escriturasCuentan(reparto) ? ordenadas(reparto.escrituras) : [];
+
+  // El estado del caso existe en los servicios que **son** un procedimiento
+  // —renegociación y liquidación—, y en la Situación 1 de defensa en juicio, que
+  // es la de quien solo tiene monitoreo. En protección patrimonial no existe: su
+  // bloque propio es la lista de escrituras.
+  const cajaDelCaso = (() => {
+    if (principal === "renegociacion") {
+      return cajaQueCuentaElCaso(reparto.renegociacion, reparto.clase);
+    }
+    if (principal === "liquidacion") return reparto.liquidacion[0] ?? null;
+    if (principal === "defensaEnJuicio" && juicios.length === 0) {
+      return reparto.monitoreo[0] ?? null;
+    }
+    return null;
+  })();
+
+  const bloques: BloqueDelInicio[] = ["servicio"];
+  if (cajaDelCaso) bloques.push("caso");
+  if (juicios.length > 0) bloques.push("juicios");
+  if (escrituras.length > 0) bloques.push("escrituras");
+
+  return { servicioPrincipal, bloques, cajaDelCaso, juicios, escrituras };
 }
 
 /**
@@ -98,71 +239,6 @@ const claveDeOrden = (caja: Caja) => `${caja.tipoDeEscritura ?? ""}\u0000${caja.
 
 const ordenadas = (cajas: Caja[]): Caja[] =>
   [...cajas].sort((a, b) => claveDeOrden(a).localeCompare(claveDeOrden(b), "es-CL"));
-
-/**
- * Decide qué bloques se muestran. Es una función pura: mismos datos, misma
- * composición. Vive separada de las pantallas para poder razonarla —y
- * corregirla— sin abrir un solo componente.
- *
- * Resuelto el servicio principal, los bloques salen solos:
- *
- * 1. **El bloque del servicio principal reemplaza al estado del caso.** Si la
- *    persona contrató defensa en juicio, su lista de causas ocupa el lugar del
- *    «estado de mi caso»; lo mismo la lista de escrituras en protección
- *    patrimonial. No conviven: sería el mismo dato contado dos veces.
- * 2. **Un servicio secundario nunca reemplaza nada, se suma abajo.** Quien tiene
- *    renegociación y además un juicio ve las dos cosas.
- * 3. **Monitoreo no entra en las listas.** Es una vigilancia por defecto, no una
- *    causa; en las listas solo agregaría un juicio que la persona no tiene.
- *    Cuando es lo único que hay, lo cuenta el estado del caso.
- * 4. **La caja madre de escrituras tampoco.** Es el paraguas del servicio, no una
- *    gestión: lo que la persona sigue son las cajas obreras que cuelgan de ella.
- *    Listarla sería anunciarle una escritura de más que no existe.
- */
-export function componerInicio(
-  cajas: Caja[],
-  servicioContratado: TipoServicio,
-): ComposicionDelInicio {
-  const servicioPrincipal = determinarServicioPrincipal(cajas, servicioContratado);
-
-  const juicios = ordenadas(cajas.filter((caja) => esDelEmbudoDeJuicio(caja) && !esMonitoreo(caja)));
-  const escrituras = ordenadas(
-    cajas.filter((caja) => esDelEmbudoDeEscrituras(caja) && !esCajaMadre(caja)),
-  );
-
-  // Que el estado del caso esté o no cuelga del **servicio principal**, no de si
-  // las listas quedaron vacías. Se probó lo segundo y dejaba a quien contrató
-  // escrituras y todavía no arranca ninguna con un «estado de mi caso» genérico
-  // que no le correspondía: en protección patrimonial ese bloque no existe, ni
-  // siquiera vacío.
-  const muestraCaso = (() => {
-    // Renegociación y liquidación son un solo caso, y ese bloque es lo que
-    // cuenta en qué va. Los juicios y las escrituras se le suman abajo.
-    if (servicioPrincipal[0] === "renegociacion" || servicioPrincipal[0] === "liquidacion") {
-      return true;
-    }
-    // Protección patrimonial, sola o dentro del nombre compuesto: su bloque
-    // propio es la lista de escrituras y nunca convive con el estado del caso.
-    if (servicioPrincipal.includes("proteccionPatrimonial")) return false;
-    // Defensa en juicio: el estado del caso queda solo en la Situación 1, la de
-    // quien tiene únicamente monitoreo. Con causas reales manda la lista.
-    return juicios.length === 0;
-  })();
-
-  // En protección patrimonial el bloque de escrituras es el servicio: está
-  // aunque todavía no cuelgue ninguna gestión de la caja madre, y ahí dice que
-  // no hay nada en marcha. Como bloque aditivo, en cambio, aparece solo si hay
-  // algo que listar: una sección vacía al pie de una renegociación es ruido.
-  const muestraEscrituras =
-    escrituras.length > 0 || servicioPrincipal.includes("proteccionPatrimonial");
-
-  const bloques: BloqueDelInicio[] = ["servicio"];
-  if (muestraCaso) bloques.push("caso");
-  if (juicios.length > 0) bloques.push("juicios");
-  if (muestraEscrituras) bloques.push("escrituras");
-
-  return { servicioPrincipal, bloques, juicios, escrituras };
-}
 
 /**
  * El nombre que lleva el bloque A. Con un solo servicio es su nombre tal cual;

@@ -113,15 +113,33 @@ export async function cargarInicio(): Promise<DatosInicio> {
         reads: { entities: ["servicio"], fields: ["servicio.tipo", "servicio.nombre"] },
       },
     ),
+    // **Las etapas se piden todas de una vez, antes de componer.** La
+    // composición no puede decidirse sin ellas: qué caja cuenta como juicio, si
+    // una renegociación está archivada o si una caja de escrituras es la madre
+    // son todas preguntas sobre la etapa. Pedir una por caja sería una llamada
+    // por juicio, y pedir primero la del caso —como se hacía— obligaba a saber
+    // cuál es el caso antes de haberlo resuelto.
     read.load<Etapa[]>(
-      "resumenDeLaEtapaEnInicio",
-      { id: cliente.etapaActualId },
+      "etapasDelCatalogo",
+      undefined,
       {
-        description: "Nombre y nivel de urgencia de la etapa, para adelantar si hay algo que hacer",
+        description:
+          "Todas las etapas del catálogo: de acá sale tanto el contenido que ve el cliente como la clase de cada etapa, que es lo que decide qué cajas se muestran",
         trigger: "Al abrir el inicio",
         reads: {
           entities: ["etapa"],
-          fields: ["etapa.visibleParaCliente", "etapa.nombreParaCliente", "etapa.nivelUrgencia"],
+          fields: [
+            "etapa.clase",
+            "etapa.visibleParaCliente",
+            "etapa.nombreParaCliente",
+            "etapa.nivelUrgencia",
+            "etapa.mensajePrincipal",
+            "etapa.queHaceLexy",
+            "etapa.queNecesitamosDelCliente",
+            "etapa.quePuedePasarDespues",
+            "etapa.plazoEsperado",
+            "etapa.contactoPrincipal",
+          ],
         },
       },
     ),
@@ -137,7 +155,7 @@ export async function cargarInicio(): Promise<DatosInicio> {
           entities: ["caja"],
           fields: [
             "caja.tipo",
-            "caja.estado",
+            "caja.esCajaMadre",
             "caja.identificador",
             "caja.tipoDeEscritura",
             "caja.acreedor",
@@ -171,41 +189,25 @@ export async function cargarInicio(): Promise<DatosInicio> {
   // Paso 0: con las cajas de la persona se resuelve cuál es su servicio
   // principal, y de ahí salen los bloques. Lo que figura contratado solo se usa
   // de respaldo, para quien todavía no tiene ninguna caja abierta.
-  const composicion = componerInicio(cajas, contratado.tipo);
+  const composicion = componerInicio(cajas, etapas, contratado.tipo);
 
   const serviciosPrincipales = composicion.servicioPrincipal.flatMap((tipo) => {
     const servicio = servicios.find((candidato) => candidato.tipo === tipo);
     return servicio ? [servicio] : [];
   });
 
-  // Las etapas de las cajas se piden aparte de la del caso: son las de los
-  // juicios y las escrituras, que van cada una por su cuenta.
-  const etapasDeLasCajas = await read.load<Etapa[]>(
-    "etapasDeLasCajas",
-    undefined,
-    {
-      description:
-        "Etapa en que va cada juicio y cada escritura. El inicio muestra el nombre en la lista, y el resto al desplegar la caja",
-      trigger: "Al abrir el inicio, cuando la persona tiene más de un caso",
-      reads: {
-        entities: ["etapa"],
-        fields: [
-          "etapa.visibleParaCliente",
-          "etapa.nombreParaCliente",
-          "etapa.queHaceLexy",
-          "etapa.queNecesitamosDelCliente",
-          "etapa.plazoEsperado",
-        ],
-      },
-    },
-  );
-
   const [juicios, escrituras] = await Promise.all([
-    conSusEtapas(composicion.juicios, etapasDeLasCajas),
-    conSusEtapas(composicion.escrituras, etapasDeLasCajas),
+    conSusEtapas(composicion.juicios, etapas),
+    conSusEtapas(composicion.escrituras, etapas),
   ]);
 
-  const etapaDelCaso = etapas[0] ?? null;
+  // **La etapa del caso sale de la caja, no del cliente.** Venía de
+  // `cliente.etapaActualId`, un solo campo por persona, y con eso no había
+  // forma de aplicar la regla de «Demandado»: cuando alguien tiene dos cajas de
+  // renegociación hay que elegir entre ellas, y para elegir hay que tenerlas.
+  const etapaDelCaso = composicion.cajaDelCaso
+    ? (etapas.find((etapa) => etapa.id === composicion.cajaDelCaso?.etapaId) ?? null)
+    : null;
 
   return {
     cliente,
@@ -339,7 +341,7 @@ export async function cargarMisPagos(): Promise<DatosMisPagos> {
 export async function cargarMiServicio(): Promise<DatosMiServicio> {
   const cliente = await cargarClienteEnSesion();
 
-  const [servicios, resultados, cajas] = await Promise.all([
+  const [servicios, resultados, cajas, etapas] = await Promise.all([
     read.load<Servicio[]>(
       "detalleDeLosServicios",
       undefined,
@@ -382,7 +384,20 @@ export async function cargarMiServicio(): Promise<DatosMiServicio> {
         description:
           "Casos abiertos de la persona, para saber cuál es el servicio que hay que explicarle",
         trigger: "Al abrir «¿Qué es mi servicio?»",
-        reads: { entities: ["caja"], fields: ["caja.tipo", "caja.estado"] },
+        reads: { entities: ["caja"], fields: ["caja.tipo", "caja.etapaId", "caja.esCajaMadre"] },
+      },
+    ),
+    // La clase de cada etapa: sin ella no se puede saber qué caja cuenta y esta
+    // pantalla quedaría explicando un servicio distinto del que muestra el
+    // inicio.
+    read.load<Etapa[]>(
+      "clasesDeEtapaEnMiServicio",
+      undefined,
+      {
+        description:
+          "Clase de cada etapa, para resolver el servicio principal con las mismas reglas que el inicio",
+        trigger: "Al abrir «¿Qué es mi servicio?»",
+        reads: { entities: ["etapa"], fields: ["etapa.clase"] },
       },
     ),
   ]);
@@ -390,7 +405,7 @@ export async function cargarMiServicio(): Promise<DatosMiServicio> {
   const contratado = servicios.find((candidato) => candidato.id === cliente.servicioId);
   if (!contratado) throw new Error("Falta el servicio contratado.");
 
-  const principales = determinarServicioPrincipal(cajas, contratado.tipo).flatMap((tipo) => {
+  const principales = determinarServicioPrincipal(cajas, etapas, contratado.tipo).flatMap((tipo) => {
     const encontrado = servicios.find((candidato) => candidato.tipo === tipo);
     return encontrado ? [encontrado] : [];
   });
