@@ -296,7 +296,7 @@ const presentacionDeCuota = (cuota: Cuota) => {
  * contesta acá es cómo va el plan entero. Van en el orden del plan y no al
  * revés: es un plan de pagos, se lee de la uno a la última.
  *
- * La bajada dice **una sola cosa: que acá está todo**. Llegó a contar el
+ * La bajada dice **una sola cosa: que aquí está todo**. Llegó a contar el
  * desglose —«4 pagadas, 2 morosas y 4 pendientes»— y a explicar de qué es la
  * fecha de cada fila, y eran tres frases de letra chica encima de una tabla que
  * dice lo mismo, fila por fila y sin que nadie tenga que leerlas. Lo único que
@@ -335,7 +335,7 @@ function HistorialDeCuotas({
           <DialogHeader>
             <DialogTitle scale="compact">Historial de tus cuotas</DialogTitle>
             <DialogDescription>
-              Acá encontrarás el estado de tu cobro completo.
+              Aquí encontrarás el estado de tu cobro completo.
             </DialogDescription>
           </DialogHeader>
 
