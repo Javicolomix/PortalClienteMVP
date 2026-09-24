@@ -261,11 +261,13 @@ function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
       )}
       style={{ boxShadow: "0 8px 24px rgb(11 1 60 / 0.10)" }}
     >
-      {/* A los 12 px del rol, sin el `text-[11px]` que lo bajaba a mano. Un
-          píxel no parece nada, pero en versalitas con un décimo de em de
-          separación entre letras es la diferencia entre leerse y adivinarse. */}
-      <p className="flex items-center gap-1.5 type-meta font-medium tracking-[0.1em] text-[#4a4478] uppercase">
-        <ICONOS.balanza className="size-4 shrink-0" strokeWidth={1.75} aria-hidden />
+      {/* 11 px en el teléfono y los 12 del rol desde `md`. La tarjeta es lo
+          más grande de la pantalla en las dos, pero en el teléfono ocupa el
+          ancho completo y ahí un punto menos la deja respirar sin que el rótulo
+          deje de leerse. El dibujo baja con él: un icono de 16 al lado de una
+          versalita de 11 pesa más que la palabra que acompaña. */}
+      <p className="flex items-center gap-1.5 type-meta text-[0.6875rem] font-medium tracking-[0.1em] text-[#4a4478] uppercase md:text-xs">
+        <ICONOS.balanza className="size-3.5 shrink-0 md:size-4" strokeWidth={1.75} aria-hidden />
         Mi servicio
       </p>
 
@@ -292,8 +294,14 @@ function TarjetaDelServicio({ nombres }: { nombres: string[] }) {
           en un teléfono de 360, y el nombre compuesto se iba a tres renglones
           —justo el corte a mitad de nombre que este bloque evita partiendo por
           servicio—. Con 0.04 em cabe igual que antes en 360, 375 y 390. En 390
-          sobra holgura; el que manda es el Android chico. */}
-      <p className="mt-2 type-subsection-title text-[1.125rem] leading-[1.35] tracking-[0.04em] text-balance text-brand-navy uppercase">
+          sobra holgura; el que manda es el Android chico.
+
+          **17 en el teléfono, 18 desde `md`.** En el computador la tarjeta
+          ocupa un tercio del ancho y el nombre necesita ese punto de más para
+          no perderse; en el teléfono ocupa la pantalla entera y ahí el mismo
+          porte pesa distinto. El punto que baja además le devuelve holgura al
+          nombre compuesto en los teléfonos chicos. */}
+      <p className="mt-2 type-subsection-title text-[1.0625rem] leading-[1.35] tracking-[0.04em] text-balance text-brand-navy uppercase md:text-[1.125rem]">
         {nombres.map((nombre, indice) => (
           <span key={nombre} className="block">
             {indice < nombres.length - 1 ? `${nombre} con` : nombre}
