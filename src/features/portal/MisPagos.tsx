@@ -252,7 +252,13 @@ function ComoPagar({
             Entra con el correo asociado a tu cuenta y paga con tarjeta. El pago queda registrado
             automáticamente, sin que tengas que avisarnos.
           </p>
-          <Button asChild size="lg" className="mt-4">
+          {/* Del ancho de la tarjeta en el teléfono, como «Copiar los datos» y
+              «Contactar a finanzas». Era el único de la pantalla que se quedaba
+              corto y pegado a la izquierda, y con tres botones apilados en la
+              misma columna esa diferencia se lee como si este fuera de otra
+              clase. Desde `sm` vuelve a su ancho natural: ahí la tarjeta mide el
+              doble y un botón que la cruza entera pesa más de lo que le toca. */}
+          <Button asChild size="lg" className="mt-4 w-full sm:w-auto">
             <a href={configuracion.urlPagoEnLinea} target="_blank" rel="noreferrer">
               Ir a pagar en línea
               <ExternalLink aria-hidden />
