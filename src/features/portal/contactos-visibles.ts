@@ -1,6 +1,13 @@
 import type { Caja, Contacto, Etapa, TipoServicio } from "./portal.types";
 
 /**
+ * **Nunca más de dos.** Lo fija la regla de operaciones y vale para todos los
+ * caminos, también para los de respaldo: el panel es una salida, y una salida
+ * con cinco puertas deja de serlo.
+ */
+const TOPE = 2;
+
+/**
  * **A quién se le puede escribir desde el botón de WhatsApp.**
  *
  * El panel no es un directorio del equipo: es la salida de emergencia, y
@@ -54,7 +61,7 @@ export function contactosVisibles({
   // En el compuesto manda litigios: `servicioPrincipal[0]` ya viene en ese
   // orden, así que el panel de PP queda fuera sin tener que nombrarlo.
   const principal = servicioPrincipal[0];
-  if (!principal) return contactos;
+  if (!principal) return contactos.slice(0, TOPE);
 
   const delServicio = (tipo: TipoServicio, rol?: Contacto["rol"]) =>
     contactos.filter(
@@ -65,10 +72,14 @@ export function contactosVisibles({
   const equipo = delServicio(principal);
 
   // Un panel vacío por un dato incompleto es peor que un contacto que no era
-  // exactamente el previsto: sin nadie del servicio, sale lo que haya.
-  if (equipo.length === 0) return contactos;
+  // exactamente el previsto: sin nadie cargado en el servicio, sale lo que
+  // haya. **Pero nunca más de dos**, que es tope duro de la regla: sin el
+  // corte, un cliente con equipo en tres embudos y sin `servicioTipo` en el que
+  // le toca vería una lista de cinco nombres, que es exactamente lo que este
+  // panel existe para no ser.
+  if (equipo.length === 0) return contactos.slice(0, TOPE);
 
-  if (principal !== "liquidacion") return equipo;
+  if (principal !== "liquidacion") return equipo.slice(0, TOPE);
 
   const deLaLiquidacion =
     (etapaDelCaso ? delServicio("liquidacion", etapaDelCaso.contactoPrincipal)[0] : undefined) ??

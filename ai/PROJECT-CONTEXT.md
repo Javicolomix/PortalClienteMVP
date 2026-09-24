@@ -1089,6 +1089,13 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   cambia el tono de la pantalla. «¿Qué significa esta etapa?» pierde su dibujo:
   el recuadro ya viene dentro de una fila que tiene el suyo.
 
+- 2026-09-24: la tabla de decisión de contactos en liquidación queda **verificada
+  por script** (`npx tsx scripts/check-reglas-contactos.ts`): once casos y tres
+  reglas duras que se corren contra la función real. El comportamiento ya
+  cumplía la tabla; lo que se corrigió es el **tope de dos contactos**, que los
+  caminos de respaldo —cuando el servicio principal no tiene a nadie cargado— no
+  respetaban.
+
 - 2026-09-23: «Mis pagos» distingue **tres situaciones donde antes decía una sola
   frase**. Quien terminó de pagar ve «¡Terminaste de pagar!» en el mismo navy
   que ocupaba la cuota, sin los medios de pago; quien todavía no tiene plan
