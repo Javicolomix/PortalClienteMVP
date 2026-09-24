@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 53,
+  datasetVersion: 54,
   entities: {
     cliente: [
       // **Los cuatro casos que el portal tiene que saber armar.** No son
@@ -413,7 +413,7 @@ export const fixtures: Fixtures = {
         id: "srv-renegociacion",
         tipo: "renegociacion",
         nombre: "Renegociación de deudas",
-        nombreEnFrase: "La Renegociación",
+        nombreEnFrase: "la Renegociación",
         resumen:
           "Buscamos un acuerdo con tus acreedores para que pagues tus deudas en cuotas que sí puedas cumplir.",
         queEs:
@@ -423,7 +423,7 @@ export const fixtures: Fixtures = {
         id: "srv-liquidacion",
         tipo: "liquidacion",
         nombre: "Liquidación de deudas",
-        nombreEnFrase: "La Liquidación",
+        nombreEnFrase: "la Liquidación",
         resumen:
           "Cuando ya no es posible pagar, buscamos que un tribunal extinga tus deudas para que puedas partir de nuevo.",
         queEs:
@@ -433,7 +433,7 @@ export const fixtures: Fixtures = {
         id: "srv-defensa-juicio",
         tipo: "defensaEnJuicio",
         nombre: "Defensa en juicio",
-        nombreEnFrase: "La Defensa en Juicio",
+        nombreEnFrase: "la Defensa en Juicio",
         resumen: "Te representamos ante el tribunal en cada causa que tengas abierta.",
         queEs:
           "En una defensa en juicio llevamos tu caso ante el tribunal: preparamos los escritos, presentamos las pruebas y te representamos en cada audiencia. Si tienes más de una causa, cada una avanza por su cuenta.",
@@ -442,7 +442,7 @@ export const fixtures: Fixtures = {
         id: "srv-proteccion-patrimonial",
         tipo: "proteccionPatrimonial",
         nombre: "Protección Patrimonial",
-        nombreEnFrase: "La Protección Patrimonial",
+        nombreEnFrase: "la Protección Patrimonial",
         resumen:
           "Ordenamos y resguardamos lo que tienes a tu nombre dentro de lo que permite la ley.",
         queEs:

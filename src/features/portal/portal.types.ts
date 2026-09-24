@@ -50,8 +50,14 @@ export type Servicio = {
    * Es otro campo y no una transformación del nombre porque no hay regla que
    * lleve de uno al otro: «Renegociación de deudas» se titula «La
    * Renegociación», que es media frase menos, y «Defensa en juicio» se titula
-   * «La Defensa en Juicio», que sube una mayúscula. Cualquier intento de
-   * derivarlo termina escribiendo «La Renegociación de deudas».
+   * «la Defensa en Juicio», que sube una mayúscula. Cualquier intento de
+   * derivarlo termina escribiendo «la Renegociación de deudas».
+   *
+   * **El artículo va en minúscula** y el nombre del servicio en mayúsculas.
+   * Este campo siempre cae dentro de una frase —«En qué consiste la
+   * Renegociación»— y ahí «La» con mayúscula parte la oración en dos: se lee
+   * como si el título empezara en el artículo. La mayúscula que sí importa es
+   * la del servicio, que es un nombre propio dentro de Lexy.
    */
   nombreEnFrase: string;
   resumen: string;
@@ -59,9 +65,9 @@ export type Servicio = {
 };
 
 /**
- * El titular de «Mi servicio»: «La Defensa en Juicio con Protección
+ * El titular de «Mi servicio»: «la Defensa en Juicio con Protección
  * Patrimonial». Al segundo servicio se le cae el artículo —«con Protección
- * Patrimonial», no «con La Protección Patrimonial»—, que es lo único que hay que
+ * Patrimonial», no «con la Protección Patrimonial»—, que es lo único que hay que
  * hacer para unirlos.
  */
 const SIN_ARTICULO = /^(la|el|los|las)\s+/i;
