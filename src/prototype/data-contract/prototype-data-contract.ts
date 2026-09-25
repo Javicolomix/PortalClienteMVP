@@ -661,7 +661,7 @@ export const prototypeDataContract = definePrototypeDataContract({
             "gestionAbortada",
           ],
           ...pendienteTi(
-            "Mapear cada etapa real de los cuatro embudos de Streak a una de estas clases, y confirmar los nombres exactos: «Archivados», «A liquidación», «Demandado» en renegociación; «Monitoreo» y «Concursal» en juicio ejecutivo; «Mediata» y «En espera» en liquidación; «Caja madre» y «Gestión abortada» en escrituras. Es el dato del que cuelga toda la composición del inicio: una etapa mal clasificada puede esconderle un juicio al cliente o mostrarle un servicio que no tiene.",
+            "Mapear cada etapa real de los cuatro embudos de Streak a una de estas clases, y confirmar los nombres exactos: «Archivados», «A liquidación», «Demandado» en renegociación; «Monitoreo» y «Concursal» en juicio ejecutivo; «Mediata» y «En espera» en liquidación —las dos llevan la clase `liquidacionEnEspera`—; «Caja madre» y «Gestión abortada» en escrituras. Es el dato del que cuelga toda la composición del inicio: una etapa mal clasificada puede esconderle un juicio al cliente o mostrarle un servicio que no tiene.",
             "productAssumption",
           ),
         },

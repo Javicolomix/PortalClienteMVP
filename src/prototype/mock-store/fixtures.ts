@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 54,
+  datasetVersion: 55,
   entities: {
     cliente: [
       // **Los cuatro casos que el portal tiene que saber armar.** No son
@@ -76,10 +76,11 @@ export const fixtures: Fixtures = {
         servicioId: "srv-liquidacion",
         etapaActualId: "etp-liq-05",
       },
-      // 6. Cristóbal — la misma liquidación detenida que Patricia, pero **sin
-      //    juicio**. Es la otra mitad de la regla: cuando no hay causa, el
-      //    segundo contacto sale de la escritura. Entre él y Patricia se ve por
-      //    qué el juicio manda cuando están los dos.
+      // 6. Cristóbal — liquidación en **«Mediata»** y **sin juicio**. Entre él y
+      //    Patricia se recorren las dos etapas detenidas y las dos mitades de la
+      //    regla: ella está «En espera» y tiene causa, así que su segundo
+      //    contacto sale de litigios; él está en «Mediata» y solo tiene
+      //    escrituras, así que el suyo sale de protección patrimonial.
       {
         id: "cli-006",
         nombre: "Cristóbal",
@@ -87,7 +88,7 @@ export const fixtures: Fixtures = {
         correo: "cristobal.reyes@example.com",
         rut: "12.845.663-1",
         servicioId: "srv-liquidacion",
-        etapaActualId: "etp-liq-05",
+        etapaActualId: "etp-liq-06",
       },
       // 7. Gabriela — **la regla de «Demandado»**. Dos cajas de renegociación:
       //    una en «Demandado», que es el duplicado que Streak crea cuando la
@@ -263,15 +264,15 @@ export const fixtures: Fixtures = {
         etapaId: "etp-pp-02",
       },
 
-      // Cristóbal: liquidación detenida y dos escrituras, **sin ninguna causa**.
-      // Sin juicio que corra, lo que sigue andando es la protección
+      // Cristóbal: liquidación en «Mediata» y dos escrituras, **sin ninguna
+      // causa**. Sin juicio que corra, lo que sigue andando es la protección
       // patrimonial, y de ahí sale su segundo contacto.
       {
         id: "caj-016",
         clienteId: "cli-006",
         tipo: "liquidacion",
         identificador: "",
-        etapaId: "etp-liq-05",
+        etapaId: "etp-liq-06",
       },
       {
         id: "caj-017",
@@ -953,6 +954,32 @@ export const fixtures: Fixtures = {
         plazoEsperado: "Entre 15 y 30 días hábiles, según el registro.",
         contactoPrincipal: "ejecutiva",
         clase: "corriente",
+        nivelUrgencia: "tranquilidad",
+      },
+
+      // **«Mediata».** La otra etapa de liquidación detenida, junto con «En
+      // espera»: el caso es viable pero su presentación queda para más
+      // adelante. Los textos que ve el cliente son **provisorios** —los escribe
+      // el capitán en el panel de comunicaciones— y están redactados con lo que
+      // la regla dice de esta etapa, que es que todavía no parte.
+      {
+        id: "etp-liq-06",
+        servicioId: "srv-liquidacion",
+        orden: 2,
+        visibleParaCliente: true,
+        nombreParaCliente: "Tu liquidación se presentará más adelante",
+        mensajePrincipal:
+          "Tu caso cumple los requisitos para liquidar, pero todavía no es el momento de presentarlo.",
+        queHaceLexy:
+          "Revisamos tu situación cada cierto tiempo para presentar apenas corresponda.",
+        queNecesitamosDelCliente:
+          "Nada por ahora. Avísanos si te llega una demanda o una notificación del tribunal.",
+        quePuedePasarDespues:
+          "Cuando llegue el momento, presentamos tu liquidación y te avisamos.",
+        plazoEsperado:
+          "Depende de cuándo se cumplan las condiciones para presentar. Tu abogado te lo confirma.",
+        contactoPrincipal: "abogado",
+        clase: "liquidacionEnEspera",
         nivelUrgencia: "tranquilidad",
       },
 

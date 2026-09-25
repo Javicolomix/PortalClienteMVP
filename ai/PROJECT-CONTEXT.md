@@ -1153,8 +1153,9 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   liquidación detenida: **Patricia Zúñiga** (con juicio y escritura: manda el
   juicio) y **Cristóbal Reyes** (solo escrituras: el segundo contacto sale de
   PP). Entre los dos se ve la regla del desempate sin mover a nadie.
-  PENDIENTE CON TI: cuál es la etapa «Mediata» en el embudo de liquidación de
-  Streak. Hoy solo está marcada «En espera del plazo para comenzar».
+  El 24-09 entró **«Mediata»** al catálogo, con la misma clase que «En espera».
+  Los textos que ve el cliente en esa etapa son provisorios: los escribe el
+  capitán. PENDIENTE CON TI: confirmar el nombre exacto de la etapa en Streak.
 
 - 2026-09-21: **los encabezados del inicio quedan en 20 px**, iguales en el
   teléfono y en el computador. Bajaban a 16 en mobile, que es el mismo porte del
