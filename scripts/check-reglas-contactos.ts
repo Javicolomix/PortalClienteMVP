@@ -14,6 +14,13 @@
 import { contactosVisibles } from "../src/features/portal/contactos-visibles";
 import type { Caja, Contacto, Etapa, TipoServicio } from "../src/features/portal/portal.types";
 
+/**
+ * Cada ficha lleva **su propio número**. No es decorado: el portal reconoce a
+ * una persona por el número de WhatsApp —es lo que decide a dónde va el
+ * mensaje— y con un número compartido entre todas, dos fichas distintas se ven
+ * como la misma y la regla del segundo contacto no tendría a quién ofrecer.
+ */
+let numeroSiguiente = 0;
 const contacto = (
   id: string,
   servicioTipo: Contacto["servicioTipo"],
@@ -24,8 +31,16 @@ const contacto = (
   nombre: id,
   rol,
   servicioTipo,
-  telefonoWhatsapp: "+56 9 0000 0000",
+  telefonoWhatsapp: `+56 9 0000 00${String(++numeroSiguiente).padStart(2, "0")}`,
 });
+
+/** Con un número dado, para probar a la misma persona en dos servicios. */
+const contactoConNumero = (
+  id: string,
+  servicioTipo: Contacto["servicioTipo"],
+  rol: Contacto["rol"],
+  telefonoWhatsapp: string,
+): Contacto => ({ id, clienteId: "cli", nombre: id, rol, servicioTipo, telefonoWhatsapp });
 
 /** Un cliente con equipo en los cuatro embudos: el peor caso para la regla. */
 const EQUIPO = [
@@ -72,6 +87,8 @@ type Caso = {
   litigios?: boolean;
   pp?: boolean;
   esperado: string[];
+  /** Para los casos que necesitan un equipo distinto del general. */
+  equipo?: Contacto[];
 };
 
 const EN_ESPERA = etapa("liquidacionEnEspera");
@@ -160,11 +177,22 @@ const CASOS: Caso[] = [
     pp: true,
     esperado: ["PP-ejecutiva"],
   },
+  {
+    nombre: "Liquidación · Mediata · la misma persona atiende liquidación y litigios",
+    servicioPrincipal: ["liquidacion"],
+    etapaDelCaso: EN_ESPERA,
+    litigios: true,
+    esperado: ["LIQ-abogado"],
+    equipo: [
+      contactoConNumero("LIQ-abogado", "liquidacion", "abogado", "+56 9 1111 2222"),
+      contactoConNumero("LIT-abogado", "defensaEnJuicio", "abogado", "+56 9 1111 2222"),
+    ],
+  },
 ];
 
 const correr = (caso: Caso) =>
   contactosVisibles({
-    contactos: EQUIPO,
+    contactos: caso.equipo ?? EQUIPO,
     etapaDelCaso: caso.etapaDelCaso,
     servicioPrincipal: caso.servicioPrincipal,
     juicios: caso.litigios ? [caja("defensaEnJuicio")] : [],

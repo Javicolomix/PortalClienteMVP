@@ -11,7 +11,7 @@ export type Fixtures = {
  * teléfonos +56, fechas ISO, CLP entero, correos example.com).
  */
 export const fixtures: Fixtures = {
-  datasetVersion: 55,
+  datasetVersion: 56,
   entities: {
     cliente: [
       // **Los cuatro casos que el portal tiene que saber armar.** No son
@@ -1193,6 +1193,28 @@ export const fixtures: Fixtures = {
         rol: "abogado",
         servicioTipo: "defensaEnJuicio",
         telefonoWhatsapp: "+56 9 4490 8815",
+      },
+      // **Los mismos dos, repetidos.** Gabriela tiene dos cajas de
+      // renegociación —la real y el duplicado de «Demandado»— y del panel de
+      // comunicaciones llega una ficha de contacto por caja: la misma ejecutiva
+      // y el mismo abogado, dos veces cada uno. Están acá a propósito, para que
+      // el portal tenga que resolverlo y no para que alguien los borre a mano
+      // en Streak.
+      {
+        id: "con-019",
+        clienteId: "cli-007",
+        nombre: "Paulina Tapia",
+        rol: "ejecutiva",
+        servicioTipo: "renegociacion",
+        telefonoWhatsapp: "+56 9 7156 2284",
+      },
+      {
+        id: "con-020",
+        clienteId: "cli-007",
+        nombre: "Ignacio Valdés",
+        rol: "abogado",
+        servicioTipo: "renegociacion",
+        telefonoWhatsapp: "+56 9 6033 4471",
       },
       // Tomás: con la renegociación archivada, manda litigios. Su ejecutiva de
       // renegociación queda cargada y no debe salir.

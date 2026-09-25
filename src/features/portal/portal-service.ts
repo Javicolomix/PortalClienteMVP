@@ -2,7 +2,7 @@ import { sesion } from "@/features/auth";
 import { read } from "@/prototype/ports";
 
 import { componerInicio, determinarServicioPrincipal, nombreDelServicioPrincipal } from "./composicion";
-import { contactosVisibles } from "./contactos-visibles";
+import { contactosVisibles, sinFichasRepetidas } from "./contactos-visibles";
 import type {
   Caja,
   CajaConEtapa,
@@ -221,7 +221,7 @@ export async function cargarInicio(): Promise<DatosInicio> {
     // regla vive en `contactos-visibles.ts` y no acá porque es de negocio, no
     // de carga de datos.
     contactos: contactosVisibles({
-      contactos,
+      contactos: sinFichasRepetidas(contactos),
       etapaDelCaso,
       servicioPrincipal: composicion.servicioPrincipal,
       juicios: composicion.juicios,
@@ -284,7 +284,9 @@ export async function cargarMiEquipo(): Promise<DatosMiEquipo> {
     cargarConfiguracion(),
   ]);
 
-  return { cliente, contactos, configuracion };
+  // Sin las fichas repetidas: del panel de comunicaciones llega una por caja, y
+  // con dos cajas del mismo embudo la misma persona llega dos veces.
+  return { cliente, contactos: sinFichasRepetidas(contactos), configuracion };
 }
 
 /** «Mis pagos»: la próxima cuota pendiente y por dónde pagarla. */

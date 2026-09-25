@@ -1089,6 +1089,14 @@ contenido de las etapas, quién puede editarlo y si queda historial de versiones
   cambia el tono de la pantalla. «¿Qué significa esta etapa?» pierde su dibujo:
   el recuadro ya viene dentro de una fila que tiene el suyo.
 
+- 2026-09-24: del panel de comunicaciones llega **una ficha de contacto por
+  caja, no por persona**, así que con dos cajas del mismo embudo la misma
+  ejecutiva y el mismo abogado llegaban dos veces cada uno y el portal los
+  listaba a los cuatro. Se agrupa al cargar, por **persona y servicio** —el
+  número de WhatsApp es quien identifica a la persona—, así que alguien que
+  atiende dos embudos con el mismo número conserva sus dos fichas, que es lo que
+  la regla del segundo contacto necesita para resolver.
+
 - 2026-09-24: la tabla de decisión de contactos en liquidación queda **verificada
   por script** (`npx tsx scripts/check-reglas-contactos.ts`): once casos y tres
   reglas duras que se corren contra la función real. El comportamiento ya

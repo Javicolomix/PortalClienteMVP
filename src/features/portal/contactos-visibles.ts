@@ -1,6 +1,50 @@
 import type { Caja, Contacto, Etapa, TipoServicio } from "./portal.types";
 
 /**
+ * **Quién es la persona detrás de una ficha de contacto.**
+ *
+ * El número de WhatsApp y no el nombre ni el id: es lo que decide a dónde va el
+ * mensaje, así que dos fichas con el mismo número abren la misma conversación
+ * por definición, se llamen como se llamen. Si el número faltara, el nombre
+ * sirve de reemplazo.
+ */
+const personaDetras = (contacto: Contacto): string =>
+  contacto.telefonoWhatsapp.replace(/\D/g, "") || contacto.nombre.trim().toLowerCase();
+
+const esLaMismaPersona = (uno: Contacto, otro: Contacto): boolean =>
+  personaDetras(uno) === personaDetras(otro);
+
+/**
+ * **Una ficha por persona y servicio.**
+ *
+ * Del panel de comunicaciones llega **una ficha por caja**, no por persona. Con
+ * dos cajas del mismo embudo —una renegociación y su duplicado de «Demandado»,
+ * por ejemplo— la misma ejecutiva y el mismo abogado llegan dos veces cada uno,
+ * y el portal los listaba a los cuatro: dos filas idénticas, con el mismo
+ * nombre, el mismo cargo y el mismo botón verde. Quien lo ve no entiende que es
+ * la misma persona; entiende que hay dos, y que tiene que elegir.
+ *
+ * Se agrupa por **persona y servicio**, no solo por persona: alguien puede
+ * atender liquidación y litigios a la vez con el mismo número, y ahí las dos
+ * fichas dicen cosas distintas —la regla de contactos necesita las dos para
+ * resolver cuál de los dos frentes ofrecer—. Lo que se descarta es la copia
+ * exacta: misma persona, mismo servicio, mismo rol.
+ *
+ * Se aplica al cargar, no al mostrar, para que valga igual en el panel de
+ * WhatsApp y en «Mi equipo». Cuando estuvo solo en el panel, el tope de dos
+ * contactos tapaba el problema ahí y lo dejaba a la vista en la otra pantalla.
+ */
+export const sinFichasRepetidas = (contactos: Contacto[]): Contacto[] => {
+  const vistas = new Set<string>();
+  return contactos.filter((contacto) => {
+    const clave = `${personaDetras(contacto)}|${contacto.servicioTipo}|${contacto.rol}`;
+    if (vistas.has(clave)) return false;
+    vistas.add(clave);
+    return true;
+  });
+};
+
+/**
  * **Nunca más de dos.** Lo fija la regla de operaciones y vale para todos los
  * caminos, también para los de respaldo: el panel es una salida, y una salida
  * con cinco puertas deja de serlo.
@@ -92,8 +136,10 @@ export function contactosVisibles({
     (escrituras.length > 0 ? delServicio("proteccionPatrimonial")[0] : undefined);
 
   // Puede coincidir con el de la liquidación si una misma persona atiende los
-  // dos servicios: ahí es un contacto, no dos filas iguales.
-  return delOtroFrente && delOtroFrente.id !== deLaLiquidacion.id
+  // dos servicios: ahí es un contacto, no dos filas iguales. Se compara por
+  // persona y no por id, porque son dos fichas distintas —una por servicio— con
+  // el mismo número detrás.
+  return delOtroFrente && !esLaMismaPersona(delOtroFrente, deLaLiquidacion)
     ? [deLaLiquidacion, delOtroFrente]
     : [deLaLiquidacion];
 }
