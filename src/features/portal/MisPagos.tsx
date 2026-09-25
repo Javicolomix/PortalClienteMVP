@@ -252,26 +252,25 @@ function ComoPagar({
             Entra con el correo asociado a tu cuenta y paga con tarjeta. El pago queda registrado
             automáticamente, sin que tengas que avisarnos.
           </p>
-          {/* **Del ancho de la tarjeta en el teléfono, a la derecha en el
-              computador.** En el teléfono los tres botones de la pantalla
-              cruzan su tarjeta entera y se leen como una columna; uno corto y
-              pegado a la izquierda se vería de otra clase, y este es el
-              principal.
+          {/* **Del ancho de su tarjeta, en las dos pantallas.**
+              Se probaron las tres alineaciones —izquierda, derecha, centro— y
+              las tres discuten lo mismo: a qué lado arrimar un botón más
+              angosto que su tarjeta. Cruzándola entera esa pregunta no existe,
+              y con ella se va el problema que la abrió: suelto contra el margen
+              izquierdo, el botón quedaba debajo del párrafo como si fuera parte
+              de él.
 
-              Desde `sm` vuelve a su ancho natural y se centra. La tarjeta pasa
-              a medir el doble: un botón que la cruza entera pesa más de lo que
-              le toca, y uno suelto contra el margen izquierdo queda debajo del
-              texto, como si fuera parte del párrafo. Al centro se despega de la
-              columna de lectura y se lee como lo que es, el cierre de la
-              tarjeta. */}
-          <div className="mt-4 flex sm:justify-center">
-            <Button asChild size="lg" className="w-full sm:w-auto">
-              <a href={configuracion.urlPagoEnLinea} target="_blank" rel="noreferrer">
-                Ir a pagar en línea
-                <ExternalLink aria-hidden />
-              </a>
-            </Button>
-          </div>
+              Gana además dos cosas. El botón se comporta igual en el teléfono
+              que en el computador, así que deja de haber dos versiones del
+              mismo según el ancho. Y «Copiar los datos», el botón del paso 2,
+              ya cruzaba su bloque entero: ahora los dos pasos de «Cómo pagar»
+              resuelven lo mismo de la misma forma. */}
+          <Button asChild size="lg" className="mt-4 w-full">
+            <a href={configuracion.urlPagoEnLinea} target="_blank" rel="noreferrer">
+              Ir a pagar en línea
+              <ExternalLink aria-hidden />
+            </a>
+          </Button>
         </PasoDePago>
 
         <PasoDePago numero={2} titulo="Transferencia bancaria">
@@ -504,17 +503,14 @@ function DudasDelCobro({
         tu situación y te ayudará con las dudas sobre tus pagos.
       </p>
 
-      {/* Mismo reparto que «Ir a pagar en línea»: del ancho de la tarjeta en el
-          teléfono, y centrado desde `sm`. Los dos son el cierre de su recuadro,
-          así que caen en el mismo sitio. */}
-      <div className="mt-4 flex sm:justify-center">
-        <Button asChild variant="outline" className="w-full sm:w-auto">
-          <a href={enlace} target="_blank" rel="noreferrer">
-            <MarcaWhatsapp className="size-4 text-[#25d366]" />
-            Contactar a finanzas
-          </a>
-        </Button>
-      </div>
+      {/* Del ancho de su tarjeta, igual que «Ir a pagar en línea»: los dos son
+          el cierre de su recuadro y se resuelven de la misma forma. */}
+      <Button asChild variant="outline" className="mt-4 w-full">
+        <a href={enlace} target="_blank" rel="noreferrer">
+          <MarcaWhatsapp className="size-4 text-[#25d366]" />
+          Contactar a finanzas
+        </a>
+      </Button>
     </section>
   );
 }
