@@ -258,13 +258,13 @@ function ComoPagar({
               pegado a la izquierda se vería de otra clase, y este es el
               principal.
 
-              Desde `sm` vuelve a su ancho natural y se va al borde derecho. La
-              tarjeta pasa a medir el doble: un botón que la cruza entera pesa
-              más de lo que le toca, y uno suelto a la izquierda queda debajo del
-              texto, como si fuera parte del párrafo. Contra el canto derecho se
-              lee como lo que es, el cierre de la tarjeta, y queda además donde
-              termina la lectura. */}
-          <div className="mt-4 flex sm:justify-end">
+              Desde `sm` vuelve a su ancho natural y se centra. La tarjeta pasa
+              a medir el doble: un botón que la cruza entera pesa más de lo que
+              le toca, y uno suelto contra el margen izquierdo queda debajo del
+              texto, como si fuera parte del párrafo. Al centro se despega de la
+              columna de lectura y se lee como lo que es, el cierre de la
+              tarjeta. */}
+          <div className="mt-4 flex sm:justify-center">
             <Button asChild size="lg" className="w-full sm:w-auto">
               <a href={configuracion.urlPagoEnLinea} target="_blank" rel="noreferrer">
                 Ir a pagar en línea
@@ -505,9 +505,9 @@ function DudasDelCobro({
       </p>
 
       {/* Mismo reparto que «Ir a pagar en línea»: del ancho de la tarjeta en el
-          teléfono, y al canto derecho desde `sm`. Los dos son el cierre de su
-          recuadro, así que caen en el mismo sitio. */}
-      <div className="mt-4 flex sm:justify-end">
+          teléfono, y centrado desde `sm`. Los dos son el cierre de su recuadro,
+          así que caen en el mismo sitio. */}
+      <div className="mt-4 flex sm:justify-center">
         <Button asChild variant="outline" className="w-full sm:w-auto">
           <a href={enlace} target="_blank" rel="noreferrer">
             <MarcaWhatsapp className="size-4 text-[#25d366]" />
