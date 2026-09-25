@@ -252,18 +252,26 @@ function ComoPagar({
             Entra con el correo asociado a tu cuenta y paga con tarjeta. El pago queda registrado
             automáticamente, sin que tengas que avisarnos.
           </p>
-          {/* Del ancho de la tarjeta en el teléfono, como «Copiar los datos» y
-              «Contactar a finanzas». Era el único de la pantalla que se quedaba
-              corto y pegado a la izquierda, y con tres botones apilados en la
-              misma columna esa diferencia se lee como si este fuera de otra
-              clase. Desde `sm` vuelve a su ancho natural: ahí la tarjeta mide el
-              doble y un botón que la cruza entera pesa más de lo que le toca. */}
-          <Button asChild size="lg" className="mt-4 w-full sm:w-auto">
-            <a href={configuracion.urlPagoEnLinea} target="_blank" rel="noreferrer">
-              Ir a pagar en línea
-              <ExternalLink aria-hidden />
-            </a>
-          </Button>
+          {/* **Del ancho de la tarjeta en el teléfono, a la derecha en el
+              computador.** En el teléfono los tres botones de la pantalla
+              cruzan su tarjeta entera y se leen como una columna; uno corto y
+              pegado a la izquierda se vería de otra clase, y este es el
+              principal.
+
+              Desde `sm` vuelve a su ancho natural y se va al borde derecho. La
+              tarjeta pasa a medir el doble: un botón que la cruza entera pesa
+              más de lo que le toca, y uno suelto a la izquierda queda debajo del
+              texto, como si fuera parte del párrafo. Contra el canto derecho se
+              lee como lo que es, el cierre de la tarjeta, y queda además donde
+              termina la lectura. */}
+          <div className="mt-4 flex sm:justify-end">
+            <Button asChild size="lg" className="w-full sm:w-auto">
+              <a href={configuracion.urlPagoEnLinea} target="_blank" rel="noreferrer">
+                Ir a pagar en línea
+                <ExternalLink aria-hidden />
+              </a>
+            </Button>
+          </div>
         </PasoDePago>
 
         <PasoDePago numero={2} titulo="Transferencia bancaria">
@@ -496,12 +504,17 @@ function DudasDelCobro({
         tu situación y te ayudará con las dudas sobre tus pagos.
       </p>
 
-      <Button asChild variant="outline" className="mt-4 w-full sm:w-auto">
-        <a href={enlace} target="_blank" rel="noreferrer">
-          <MarcaWhatsapp className="size-4 text-[#25d366]" />
-          Contactar a finanzas
-        </a>
-      </Button>
+      {/* Mismo reparto que «Ir a pagar en línea»: del ancho de la tarjeta en el
+          teléfono, y al canto derecho desde `sm`. Los dos son el cierre de su
+          recuadro, así que caen en el mismo sitio. */}
+      <div className="mt-4 flex sm:justify-end">
+        <Button asChild variant="outline" className="w-full sm:w-auto">
+          <a href={enlace} target="_blank" rel="noreferrer">
+            <MarcaWhatsapp className="size-4 text-[#25d366]" />
+            Contactar a finanzas
+          </a>
+        </Button>
+      </div>
     </section>
   );
 }
